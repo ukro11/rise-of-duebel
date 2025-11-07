@@ -3,12 +3,12 @@ package KAGO_framework.control;
 import KAGO_framework.Config;
 import KAGO_framework.view.DrawTool;
 import com.google.common.util.concurrent.*;
-import kebab_simulator.ProgramController;
+import project_base.ProgramController;
 import KAGO_framework.view.DrawFrame;
-import kebab_simulator.Wrapper;
-import kebab_simulator.event.events.KeyPressedEvent;
-import kebab_simulator.model.scene.*;
-import kebab_simulator.model.visual.impl.gui.GuiScreen;
+import project_base.Wrapper;
+import project_base.event.events.KeyPressedEvent;
+import project_base.model.scene.*;
+import project_base.model.debug.impl.gui.GuiScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +70,7 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
 
         SwingUtilities.invokeLater(() -> this.createWindow());
 
-        if (!kebab_simulator.Config.SHOW_DEFAULT_WINDOW) {
+        if (!project_base.Config.SHOW_DEFAULT_WINDOW) {
             this.setDrawFrameVisible(false);
             if(Config.INFO_MESSAGES) System.out.println("** Achtung! Standardfenster deaktiviert => wird nicht angezeigt.). **");
         }
@@ -183,15 +183,15 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         GraphicsDevice gd = env.getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
-        int x = width / 2 - kebab_simulator.Config.WINDOW_WIDTH / 2;
-        int y = height / 2 - kebab_simulator.Config.WINDOW_HEIGHT / 2;
+        int x = width / 2 - project_base.Config.WINDOW_WIDTH / 2;
+        int y = height / 2 - project_base.Config.WINDOW_HEIGHT / 2;
         logger.info("Graphics Device: {}", gd.getIDstring());
 
         Scene.open(new LoadingScene());
-        this.drawFrame = new DrawFrame(kebab_simulator.Config.WINDOW_TITLE, x, y, kebab_simulator.Config.WINDOW_WIDTH, kebab_simulator.Config.WINDOW_HEIGHT, this);
+        this.drawFrame = new DrawFrame(project_base.Config.WINDOW_TITLE, x, y, project_base.Config.WINDOW_WIDTH, project_base.Config.WINDOW_HEIGHT, this);
         this.drawFrame.setResizable(false);
 
-        if (kebab_simulator.Config.RUN_ENV == kebab_simulator.Config.Environment.PRODUCTION) {
+        if (project_base.Config.RUN_ENV == project_base.Config.Environment.PRODUCTION) {
             this.drawFrame.addWindowListener(new WindowListener() {
                 @Override
                 public void windowOpened(WindowEvent e) {}
@@ -223,7 +223,7 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
             }
         });
 
-        if (kebab_simulator.Config.WINDOW_FULLSCREEN) {
+        if (project_base.Config.WINDOW_FULLSCREEN) {
             this.drawFrame.setUndecorated(true);
             this.drawFrame.setVisible(true);
             this.drawFrame.setResizable(false);
@@ -251,7 +251,7 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         this.drawTool.setGraphics2D(g2d,this);
         if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(this.drawTool);
         if (GuiScreen.getCurrentScreen() != null) GuiScreen.getCurrentScreen().draw(this.drawTool);
-        if (kebab_simulator.Config.WINDOW_FULLSCREEN) Toolkit.getDefaultToolkit().sync();
+        if (project_base.Config.WINDOW_FULLSCREEN) Toolkit.getDefaultToolkit().sync();
     }
 
     /**

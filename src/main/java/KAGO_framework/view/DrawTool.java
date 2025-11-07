@@ -1,7 +1,7 @@
 package KAGO_framework.view;
 
-import kebab_simulator.graphics.KebabGraphics;
-import kebab_simulator.utils.misc.Vec2;
+import project_base.graphics.FrameworkGraphics;
+import project_base.utils.Vec2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +21,7 @@ import java.util.List;
 public class DrawTool {
 
     // Referenzen
-    private static KebabGraphics kebabGraphics; //java-spezifisches Objekt zum Arbeiten mit 2D-Grafik
+    private static FrameworkGraphics frameworkGraphics; //java-spezifisches Objekt zum Arbeiten mit 2D-Grafik
     private JComponent parent;
 
     /**
@@ -31,11 +31,11 @@ public class DrawTool {
      * @param y Die y-Koordinate der oberen linken Ecke
      */
     public void drawImage(BufferedImage bI, double x, double y){
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().drawImage(bI, (int)x, (int)y, null);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().drawImage(bI, (int)x, (int)y, null);
     }
 
     public void drawImage(BufferedImage bI, double x, double y, Color color){
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().drawImage(bI, (int)x, (int)y, color, null);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().drawImage(bI, (int)x, (int)y, color, null);
     }
 
     /**
@@ -47,7 +47,7 @@ public class DrawTool {
      * @param scale Faktor mit dem das Bild skaliert werden soll (für Wirkung > 0)
      */
     public void drawTransformedImage(BufferedImage bI, double x, double y, double degrees, double scale){
-        if (this.kebabGraphics != null){
+        if (this.frameworkGraphics != null){
             AffineTransform transform = new AffineTransform();
 
             transform.translate(x,y);
@@ -60,7 +60,7 @@ public class DrawTool {
                 }
             }
             transform.rotate( Math.toRadians(degrees), bI.getWidth()/ (double) 2, bI.getHeight()/ (double) 2 );
-            kebabGraphics.getGraphics2D().drawImage(bI, transform, null);
+            frameworkGraphics.getGraphics2D().drawImage(bI, transform, null);
         }
     }
 
@@ -70,8 +70,8 @@ public class DrawTool {
      * @param size die gewünschte Breite in Pixeln
      */
     public void setLineWidth(int size){
-        if (this.kebabGraphics != null){
-            kebabGraphics.getGraphics2D().setStroke(new BasicStroke(size));
+        if (this.frameworkGraphics != null){
+            frameworkGraphics.getGraphics2D().setStroke(new BasicStroke(size));
         }
     }
 
@@ -84,7 +84,7 @@ public class DrawTool {
      */
     public void drawRectangle(double x, double y, double width, double height){
         Rectangle2D.Double r = new Rectangle2D.Double(x,y,width,height);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().draw(r);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().draw(r);
     }
 
     /**
@@ -108,7 +108,7 @@ public class DrawTool {
      */
     public void drawFilledRectangle(double x, double y, double width, double height){
         Rectangle2D.Double r = new Rectangle2D.Double(x,y,width,height);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().fill(r);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().fill(r);
     }
 
     /**
@@ -120,8 +120,8 @@ public class DrawTool {
      * @param alpha Die Transparenz der Farbe, wobei 0 nicht sichtbar und 255 voll deckend ist
      */
     public void setCurrentColor(int r, int g, int b, int alpha){
-        if (this.kebabGraphics != null) {
-            kebabGraphics.getGraphics2D().setColor( new Color(r,g,b,alpha) );
+        if (this.frameworkGraphics != null) {
+            frameworkGraphics.getGraphics2D().setColor( new Color(r,g,b,alpha) );
         }
     }
 
@@ -131,13 +131,13 @@ public class DrawTool {
      * @param color Von außen festgelegtes Farb-Objekt
      */
     public void setCurrentColor(Color color){
-        if (this.kebabGraphics != null && color != null) kebabGraphics.getGraphics2D().setColor( color );
+        if (this.frameworkGraphics != null && color != null) frameworkGraphics.getGraphics2D().setColor( color );
     }
 
     public void setCurrentColor(Color color, int alpha){
-        if (this.kebabGraphics != null && color != null) {
+        if (this.frameworkGraphics != null && color != null) {
             var c = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-            kebabGraphics.getGraphics2D().setColor(c);
+            frameworkGraphics.getGraphics2D().setColor(c);
         }
     }
 
@@ -151,11 +151,11 @@ public class DrawTool {
      * @param b Die Helligkeit der Farbe in Prozent (0-100)
      */
     public void setCurrentHSBColor(float h, float s, float b){
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().setColor( Color.getHSBColor(h,s,b));
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().setColor( Color.getHSBColor(h,s,b));
     }
 
     public void resetColor(){
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().setColor(Color.WHITE);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().setColor(Color.WHITE);
     }
 
     /**
@@ -166,7 +166,7 @@ public class DrawTool {
      */
     public void drawCircle(double x, double y, double radius){
         Ellipse2D.Double e = new Ellipse2D.Double(x-radius,y-radius,radius*2,radius*2);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().draw(e);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().draw(e);
     }
 
     /**
@@ -177,7 +177,7 @@ public class DrawTool {
      */
     public void drawFilledCircle(double x, double y, double radius){
         Ellipse2D.Double e = new Ellipse2D.Double(x-radius,y-radius,radius*2,radius*2);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().fill(e);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().fill(e);
     }
 
     /**
@@ -212,15 +212,15 @@ public class DrawTool {
      * @author Nils Derenthal
      */
     public void drawPolygon (double ... eckpunkte) {
-        kebabGraphics.getGraphics2D().draw(getPolygon(eckpunkte));
+        frameworkGraphics.getGraphics2D().draw(getPolygon(eckpunkte));
     }
 
     public void drawPolygon(Vec2... eckpunkte) {
-        kebabGraphics.getGraphics2D().draw(getPolygon(List.of(eckpunkte)));
+        frameworkGraphics.getGraphics2D().draw(getPolygon(List.of(eckpunkte)));
     }
 
     public void drawPolygon(List<Vec2> eckpunkte) {
-        kebabGraphics.getGraphics2D().draw(getPolygon(eckpunkte));
+        frameworkGraphics.getGraphics2D().draw(getPolygon(eckpunkte));
     }
 
     /**
@@ -229,11 +229,11 @@ public class DrawTool {
      * @author Nils Derenthal
      */
     public void drawFilledPolygon (double ... eckpunkte) {
-        kebabGraphics.getGraphics2D().fill(getPolygon(eckpunkte));
+        frameworkGraphics.getGraphics2D().fill(getPolygon(eckpunkte));
     }
 
     public void drawFilledPolygon (Vec2 ... eckpunkte) {
-        kebabGraphics.getGraphics2D().fill(getPolygon(List.of(eckpunkte)));
+        frameworkGraphics.getGraphics2D().fill(getPolygon(List.of(eckpunkte)));
     }
 
     /**
@@ -245,7 +245,7 @@ public class DrawTool {
     private Polygon getPolygon(double[] eckPunkte) {
         //garantiert das eine gerade anzahl an ecken vorhanden ist und das es mehr als 3 ecken sind
         assert eckPunkte.length % 2 == 0 && eckPunkte.length >= 3 * 2;
-        assert this.kebabGraphics  != null;
+        assert this.frameworkGraphics  != null;
 
         Polygon p = new Polygon();
 
@@ -258,7 +258,7 @@ public class DrawTool {
     private Polygon getPolygon(List<Vec2> eckPunkte) {
         //garantiert das eine gerade anzahl an ecken vorhanden ist und das es mehr als 3 ecken sind
         assert eckPunkte.size() % 2 == 0 && eckPunkte.size() >= 3;
-        assert this.kebabGraphics  != null;
+        assert this.frameworkGraphics  != null;
 
         Polygon p = new Polygon();
 
@@ -277,7 +277,7 @@ public class DrawTool {
      */
     public void drawLine(double x1, double y1, double x2, double y2){
         Line2D.Double line = new Line2D.Double(x1,y1,x2,y2);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().draw(line);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().draw(line);
     }
 
     /**
@@ -290,7 +290,7 @@ public class DrawTool {
      */
     public void drawEllipse (double x, double y, double radiusX, double radiusY){
         Ellipse2D.Double e = new Ellipse2D.Double(x-radiusX,y-radiusY,radiusX*2,radiusY*2);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().draw(e);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().draw(e);
     }
 
     /**
@@ -303,7 +303,7 @@ public class DrawTool {
      */
     public void drawFilledEllipse (double x, double y, double radiusX, double radiusY){
         Ellipse2D.Double e = new Ellipse2D.Double(x-radiusX,y-radiusY,radiusX*2,radiusY*2);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().fill(e);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().fill(e);
     }
 
     /**
@@ -320,7 +320,7 @@ public class DrawTool {
     public void drawArc(double x, double y, double radius, double startingAngle, double endingAngle, int type){
         if (type > 2)  throw new IllegalArgumentException("must be in a 0 - 2 scope");
         Arc2D.Double arc = new Arc2D.Double(x,y,radius,radius,startingAngle,endingAngle,type);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().draw(arc);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().draw(arc);
     }
 
     /**
@@ -337,7 +337,7 @@ public class DrawTool {
     public void drawFilledArc(double x, double y, double radius, double startingAngle, double endingAngle, int type){
         if (type > 2)  throw new IllegalArgumentException("must be in a 0 - 2 scope");
         Arc2D.Double arc = new Arc2D.Double(x,y,radius,radius,startingAngle,endingAngle,type);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().fill(arc);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().fill(arc);
     }
 
     /**
@@ -355,7 +355,7 @@ public class DrawTool {
     public void drawEllipticArc(double x, double y, double radiusX, double radiusY, double startingAngle, double endingAngle, int type){
         if (type > 2)  throw new IllegalArgumentException("must be in a 0 - 2 scope");
         Arc2D.Double arc = new Arc2D.Double(x,y,radiusX,radiusY,startingAngle,endingAngle,type);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().draw(arc);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().draw(arc);
     }
 
     /**
@@ -373,7 +373,7 @@ public class DrawTool {
     public void drawFilledEllipticArc(double x, double y, double radiusX, double radiusY, double startingAngle, double endingAngle, int type){
         if (type > 2)  throw new IllegalArgumentException("must be in a 0 - 2 scope");
         Arc2D.Double arc = new Arc2D.Double(x,y,radiusX,radiusY,startingAngle,endingAngle,type);
-        if (this.kebabGraphics != null) kebabGraphics.getGraphics2D().fill(arc);
+        if (this.frameworkGraphics != null) frameworkGraphics.getGraphics2D().fill(arc);
     }
 
     /**
@@ -383,7 +383,7 @@ public class DrawTool {
      * @param text Der anzuzeigende Text
      */
     public void drawText(String text, double x, double y){
-        if (this.kebabGraphics !=null) kebabGraphics.getGraphics2D().drawString(text,(float) x, (float) y);
+        if (this.frameworkGraphics !=null) frameworkGraphics.getGraphics2D().drawString(text,(float) x, (float) y);
     }
 
     public void drawTextOutline(String text, double x, double y, Color color, double outlineWidth, Color outline) {
@@ -391,34 +391,34 @@ public class DrawTool {
     }
 
     public void drawTextOutline(String text, double x, double y, Color color, double outlineWidth, Color outline, boolean pixelated) {
-        if (this.kebabGraphics != null) {
-            var font = kebabGraphics.getGraphics2D().getFont();
+        if (this.frameworkGraphics != null) {
+            var font = frameworkGraphics.getGraphics2D().getFont();
             AttributedString as = new AttributedString(text.replace(" ", "  "));
             as.addAttribute(TextAttribute.FONT, font);
             as.addAttribute(TextAttribute.TRACKING, outlineWidth + 2.0);
             as.addAttribute(TextAttribute.KERNING, TextAttribute.KERNING_ON);
             this.push();
             if (pixelated) {
-                kebabGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+                frameworkGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
             } else {
-                kebabGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                frameworkGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             }
 
             // 2. Font und FontRenderContext holen
-            kebabGraphics.getGraphics2D().setFont(font);
-            FontRenderContext frc = kebabGraphics.getGraphics2D().getFontRenderContext();
+            frameworkGraphics.getGraphics2D().setFont(font);
+            FontRenderContext frc = frameworkGraphics.getGraphics2D().getFontRenderContext();
 
             // 3. Text in ein Shape umwandeln
             GlyphVector gv = font.createGlyphVector(frc, as.getIterator());
             Shape textShape = gv.getOutline((float) x, (float) y);
 
-            kebabGraphics.getGraphics2D().setColor(outline);
-            kebabGraphics.getGraphics2D().setStroke(new BasicStroke((float) outlineWidth)); // Dicke der Kontur
-            kebabGraphics.getGraphics2D().draw(textShape);
+            frameworkGraphics.getGraphics2D().setColor(outline);
+            frameworkGraphics.getGraphics2D().setStroke(new BasicStroke((float) outlineWidth)); // Dicke der Kontur
+            frameworkGraphics.getGraphics2D().draw(textShape);
 
-            kebabGraphics.getGraphics2D().setColor(color);
-            kebabGraphics.getGraphics2D().fill(textShape);
+            frameworkGraphics.getGraphics2D().setColor(color);
+            frameworkGraphics.getGraphics2D().fill(textShape);
             this.pop();
         }
     }
@@ -428,37 +428,37 @@ public class DrawTool {
     }
 
     public void drawCenteredTextOutline(String text, double x, double y, double width, double height, Color color, double outlineWidth, Color outline, boolean pixelated){
-        if (this.kebabGraphics != null) {
-            var font = kebabGraphics.getGraphics2D().getFont();
+        if (this.frameworkGraphics != null) {
+            var font = frameworkGraphics.getGraphics2D().getFont();
             AttributedString as = new AttributedString(text.replace(" ", "  "));
             as.addAttribute(TextAttribute.FONT, font);
             as.addAttribute(TextAttribute.TRACKING, outlineWidth + 2.0);
             as.addAttribute(TextAttribute.KERNING, TextAttribute.KERNING_ON);
             this.push();
             if (pixelated) {
-                kebabGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+                frameworkGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
             } else {
-                kebabGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                frameworkGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             }
 
             // 2. Font und FontRenderContext holen
-            kebabGraphics.getGraphics2D().setFont(font);
-            FontRenderContext frc = kebabGraphics.getGraphics2D().getFontRenderContext();
+            frameworkGraphics.getGraphics2D().setFont(font);
+            FontRenderContext frc = frameworkGraphics.getGraphics2D().getFontRenderContext();
 
             // 3. Text in ein Shape umwandeln
             GlyphVector gv = font.createGlyphVector(frc, as.getIterator());
-            FontMetrics metrics = kebabGraphics.getGraphics2D().getFontMetrics(font);
+            FontMetrics metrics = frameworkGraphics.getGraphics2D().getFontMetrics(font);
             double textX = x + (width - metrics.stringWidth(text)) / 2;
             double textY = y + ((height - metrics.getHeight()) / 2) + metrics.getAscent();
             Shape textShape = gv.getOutline((float) textX, (float) textY);
 
-            kebabGraphics.getGraphics2D().setColor(outline);
-            kebabGraphics.getGraphics2D().setStroke(new BasicStroke((float) outlineWidth)); // Dicke der Kontur
-            kebabGraphics.getGraphics2D().draw(textShape);
+            frameworkGraphics.getGraphics2D().setColor(outline);
+            frameworkGraphics.getGraphics2D().setStroke(new BasicStroke((float) outlineWidth)); // Dicke der Kontur
+            frameworkGraphics.getGraphics2D().draw(textShape);
 
-            kebabGraphics.getGraphics2D().setColor(color);
-            kebabGraphics.getGraphics2D().fill(textShape);
+            frameworkGraphics.getGraphics2D().setColor(color);
+            frameworkGraphics.getGraphics2D().fill(textShape);
             this.pop();
         }
     }
@@ -470,86 +470,86 @@ public class DrawTool {
      * @param size Die Größe der Schrift
      */
     public void formatText(String fontName, int style, int size){
-        if (this.kebabGraphics  != null) kebabGraphics.getGraphics2D().setFont(new Font(fontName, style, size));
+        if (this.frameworkGraphics  != null) frameworkGraphics.getGraphics2D().setFont(new Font(fontName, style, size));
     }
 
     public void push() {
-        this.kebabGraphics.push();
+        this.frameworkGraphics.push();
     }
 
     public void pop() {
-        this.kebabGraphics.pop();
+        this.frameworkGraphics.pop();
     }
 
     private void resetGraphics() {
-        kebabGraphics.getGraphics2D().setTransform(new AffineTransform());
-        kebabGraphics.getGraphics2D().setRenderingHints(new RenderingHints(null));
-        kebabGraphics.getGraphics2D().setStroke(new BasicStroke());
+        frameworkGraphics.getGraphics2D().setTransform(new AffineTransform());
+        frameworkGraphics.getGraphics2D().setRenderingHints(new RenderingHints(null));
+        frameworkGraphics.getGraphics2D().setStroke(new BasicStroke());
     }
 
     public void drawCenteredText(String text, double x, double y, double width, double height){
-        this.drawCenteredText(kebabGraphics.getGraphics2D().getFont(), text, x, y, width, height);
+        this.drawCenteredText(frameworkGraphics.getGraphics2D().getFont(), text, x, y, width, height);
     }
 
     public void drawCenteredText(Font font, String text, double x, double y, double width, double height){
-        FontMetrics metrics = kebabGraphics.getGraphics2D().getFontMetrics(font);
+        FontMetrics metrics = frameworkGraphics.getGraphics2D().getFontMetrics(font);
         double textX = x + (width - metrics.stringWidth(text)) / 2;
         double textY = y + ((height - metrics.getHeight()) / 2) + metrics.getAscent();
-        kebabGraphics.getGraphics2D().setFont(font);
+        frameworkGraphics.getGraphics2D().setFont(font);
         this.drawText(text, textX, textY);
     }
 
     public int getWindowX() {
-        return this.kebabGraphics.getGraphics2D().getDeviceConfiguration().getBounds().x;
+        return this.frameworkGraphics.getGraphics2D().getDeviceConfiguration().getBounds().x;
     }
 
     public int getWindowY() {
-        return this.kebabGraphics.getGraphics2D().getDeviceConfiguration().getBounds().y;
+        return this.frameworkGraphics.getGraphics2D().getDeviceConfiguration().getBounds().y;
     }
 
     public int getWindowWidth() {
-        return this.kebabGraphics.getGraphics2D().getDeviceConfiguration().getBounds().width;
+        return this.frameworkGraphics.getGraphics2D().getDeviceConfiguration().getBounds().width;
     }
 
     public int getWindowHeight() {
-        return this.kebabGraphics.getGraphics2D().getDeviceConfiguration().getBounds().height;
+        return this.frameworkGraphics.getGraphics2D().getDeviceConfiguration().getBounds().height;
     }
 
     // Window Height without title bar -> Content height
     public int getContentHeight() {
-        return DrawTool.kebabGraphics.getGraphics2D().getDeviceConfiguration().getBounds().height - 29;
+        return DrawTool.frameworkGraphics.getGraphics2D().getDeviceConfiguration().getBounds().height - 29;
     }
 
     public static int getX() {
-        return DrawTool.kebabGraphics.getGraphics2D().getDeviceConfiguration().getBounds().x;
+        return DrawTool.frameworkGraphics.getGraphics2D().getDeviceConfiguration().getBounds().x;
     }
 
     public int getY() {
-        return DrawTool.kebabGraphics.getGraphics2D().getDeviceConfiguration().getBounds().y;
+        return DrawTool.frameworkGraphics.getGraphics2D().getDeviceConfiguration().getBounds().y;
     }
 
     public int getWidth() {
-        return DrawTool.kebabGraphics.getGraphics2D().getDeviceConfiguration().getBounds().width;
+        return DrawTool.frameworkGraphics.getGraphics2D().getDeviceConfiguration().getBounds().width;
     }
 
     public int getHeight() {
-        return DrawTool.kebabGraphics.getGraphics2D().getDeviceConfiguration().getBounds().height;
+        return DrawTool.frameworkGraphics.getGraphics2D().getDeviceConfiguration().getBounds().height;
     }
 
     public double getFontWidth(String text) {
-        return this.getFontWidth(kebabGraphics.getGraphics2D().getFont(), text);
+        return this.getFontWidth(frameworkGraphics.getGraphics2D().getFont(), text);
     }
 
     public double getFontWidth(Font font, String text) {
-        return kebabGraphics.getGraphics2D().getFontMetrics(font).stringWidth(text);
+        return frameworkGraphics.getGraphics2D().getFontMetrics(font).stringWidth(text);
     }
 
     public double getFontHeight() {
-        return this.getFontHeight(kebabGraphics.getGraphics2D().getFont());
+        return this.getFontHeight(frameworkGraphics.getGraphics2D().getFont());
     }
 
     public double getFontHeight(Font font) {
-        return kebabGraphics.getGraphics2D().getFontMetrics(font).getDescent();
+        return frameworkGraphics.getGraphics2D().getFontMetrics(font).getDescent();
     }
 
     /**
@@ -559,18 +559,18 @@ public class DrawTool {
      * @param g2d Das java-interne Grafikobjekt des Programmfensters
      */
     public void setGraphics2D(Graphics2D g2d, JComponent parent){
-        this.kebabGraphics = new KebabGraphics(g2d);
-        kebabGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        kebabGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        this.frameworkGraphics = new FrameworkGraphics(g2d);
+        frameworkGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        frameworkGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         this.parent = parent;
     }
 
-    public KebabGraphics getKebabGraphics() {
-        return this.kebabGraphics;
+    public FrameworkGraphics getKebabGraphics() {
+        return this.frameworkGraphics;
     }
 
     public Graphics2D getGraphics2D(){
-        return this.kebabGraphics.getGraphics2D();
+        return this.frameworkGraphics.getGraphics2D();
     }
 
     public JComponent getParent(){

@@ -2,7 +2,7 @@ package KAGO_framework.view;
 
 import KAGO_framework.control.ViewController;
 import KAGO_framework.model.InteractiveGraphicalObject;
-import kebab_simulator.ProgramController;
+import project_base.ProgramController;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;

@@ -3,9 +3,8 @@ package KAGO_framework.view;
 import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
 import KAGO_framework.control.ViewController;
-import kebab_simulator.model.visual.VisualModel;
+import project_base.model.debug.VisualModel;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

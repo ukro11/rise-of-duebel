@@ -2,7 +2,7 @@ package KAGO_framework.control;
 
 import KAGO_framework.Config;
 import KAGO_framework.model.abitur.netz.Client;
-import kebab_simulator.ProgramController;
+import project_base.ProgramController;
 
 import javax.swing.*;
 import java.io.IOException;
