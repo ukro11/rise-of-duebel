@@ -2,8 +2,6 @@ package project_base.model.entity.impl;
 
 import project_base.Wrapper;
 import project_base.animation.IAnimationState;
-import project_base.graphics.spawner.table.TableKnifeSpawner;
-import project_base.graphics.spawner.table.TableNormalSpawner;
 import project_base.model.entity.Entity;
 import project_base.model.entity.impl.player.EntityPlayer;
 import project_base.model.sound.SoundManager;
@@ -56,44 +54,6 @@ public abstract class EntityItem<T extends Enum<T> & IAnimationState> extends En
     }
 
     public void positionItem(EntityItemLocation location) {
-        if (location instanceof TableNormalSpawner) {
-            var normal = (TableNormalSpawner) location;
-            switch (normal.getType()) {
-                case NORMAL -> {
-                    if (normal.isLeft()) {
-                        this.rotation = 270;
-
-                    } else {
-                        this.rotation = 90;
-                    }
-                }
-                case NORMAL_TOP, NORMAL_LEFT_TOP, NORMAL_RIGHT_TOP -> {
-                    this.body.setY(this.body.getY() - 1);
-                    this.rotation = 0;
-                }
-                default -> this.rotation = 0;
-            }
-
-        } else if (location instanceof TableKnifeSpawner) {
-            var knife = (TableKnifeSpawner) location;
-            if (knife.isLeft()) {
-                this.rotation = 270;
-
-            } else {
-                this.rotation = 90;
-            }
-
-        } else if (location instanceof EntityPan) {
-            if (this instanceof EntityMeat) {
-                ((EntityMeat) this).setScale(0.7);
-            }
-
-        } else {
-            this.rotation = 0;
-        }
-
-        if (location instanceof EntityPlate) {
-            this.rotation = location.getRotation();
-        }
+        this.rotation = location.getRotation();
     }
 }

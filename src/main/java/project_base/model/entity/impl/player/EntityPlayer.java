@@ -3,11 +3,13 @@ package project_base.model.entity.impl.player;
 import KAGO_framework.control.ViewController;
 import KAGO_framework.view.DrawTool;
 import project_base.animation.AnimationRenderer;
-import project_base.animation.states.entity.CharacterAnimationState;
 import project_base.Wrapper;
+import project_base.animation.entity.EntityState;
+import project_base.animation.states.CharacterAnimationState;
 import project_base.event.services.EventProcessCallback;
 import project_base.event.services.process.EventLoadAssetsProcess;
 import project_base.model.entity.Entity;
+import project_base.model.entity.EntityDirection;
 import project_base.physics.Collider;
 import project_base.utils.Vec2;
 
@@ -15,7 +17,7 @@ import java.awt.event.KeyEvent;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class EntityPlayer extends Entity {
+public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     private EntityDirection direction = EntityDirection.BOTTOM;
     private PlayerInventory inventory;
@@ -47,11 +49,11 @@ public class EntityPlayer extends Entity {
         super.update(dt);
         if (!this.body.isDestroyed() && this.renderer != null) {
             // EntityPlayer.IDLE_STATES.contains(this.renderer.getCurrentAnimation().getState())
-            if (this.freeze && this.isCurrentAnimation(false)) return;
+            if (this.freeze && !this.isWalking()) return;
 
             this.onMove();
             if (this.body.getVelocity().magnitude() == 0) {
-                this.renderer.switchState(this.getStateForEntityState(this.direction, false));
+                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.IDLE));
             }
         }
     }
@@ -88,34 +90,34 @@ public class EntityPlayer extends Entity {
         if (ViewController.isKeyDown(KeyEvent.VK_W) && !ViewController.isKeyDown(KeyEvent.VK_S)) {
             moveVelocity.set(null, -this.speed);
             this.direction = EntityDirection.TOP;
-            this.renderer.switchState(this.getStateForEntityState(this.direction, true));
+            this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
             verticalKeyDown = true;
 
         } else if (ViewController.isKeyDown(KeyEvent.VK_S) && !ViewController.isKeyDown(KeyEvent.VK_W)) {
             moveVelocity.set(null, this.speed);
             this.direction = EntityDirection.BOTTOM;
-            this.renderer.switchState(this.getStateForEntityState(this.direction, true));
+            this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
             verticalKeyDown = true;
         }
 
         if (ViewController.isKeyDown(KeyEvent.VK_A) && !ViewController.isKeyDown(KeyEvent.VK_D)) {
             moveVelocity.set(-this.speed, null);
             this.direction = EntityDirection.LEFT;
-            if (!this.isCurrentAnimation(EntityDirection.TOP, true) && !this.isCurrentAnimation(EntityDirection.BOTTOM, true)) {
-                this.renderer.switchState(this.getStateForEntityState(this.direction, true));
+            if (!this.isWalking(EntityDirection.TOP) && !this.isWalking(EntityDirection.BOTTOM)) {
+                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
 
             } else if (!verticalKeyDown) {
-                this.renderer.switchState(this.getStateForEntityState(this.direction, true));
+                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
             }
 
         } else if (ViewController.isKeyDown(KeyEvent.VK_D) && !ViewController.isKeyDown(KeyEvent.VK_A)) {
             moveVelocity.set(this.speed, null);
             this.direction = EntityDirection.RIGHT;
-            if (!this.isCurrentAnimation(EntityDirection.TOP, true) && !this.isCurrentAnimation(EntityDirection.BOTTOM, true)) {
-                this.renderer.switchState(this.getStateForEntityState(this.direction, true));
+            if (!this.isWalking(EntityDirection.TOP) && !this.isWalking(EntityDirection.BOTTOM)) {
+                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
 
             } else if (!verticalKeyDown) {
-                this.renderer.switchState(this.getStateForEntityState(this.direction, true));
+                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
             }
         }
         if (moveVelocity.magnitude() > 0) {
@@ -124,84 +126,41 @@ public class EntityPlayer extends Entity {
         this.body.setLinearVelocity(moveVelocity.x, moveVelocity.y);
     }
 
-    private CharacterAnimationState getStateForEntityState(EntityDirection direction, boolean walking) {
-        switch (direction) {
-            case TOP: {
-                if (walking) {
-                    return !this.inventory.hasItemInventory() ? CharacterAnimationState.WALK_TOP : CharacterAnimationState.PLATE_WALK_TOP;
-
-                } else {
-                    return !this.inventory.hasItemInventory() ? CharacterAnimationState.IDLE_TOP : CharacterAnimationState.PLATE_IDLE_TOP;
-                }
+    private List<CharacterAnimationState> getStatesForEntityState(EntityDirection direction, EntityState state) {
+        List<CharacterAnimationState> s = List.of();
+        for (CharacterAnimationState anim : CharacterAnimationState.values()) {
+            if (anim.getDirection() == direction && anim.getState() == state) {
+                s.add(anim);
             }
-            case LEFT: {
-                if (walking) {
-                    return !this.inventory.hasItemInventory() ? CharacterAnimationState.WALK_LEFT : CharacterAnimationState.PLATE_WALK_LEFT;
+        }
+        return s;
+    }
 
-                } else {
-                    return !this.inventory.hasItemInventory() ? CharacterAnimationState.IDLE_LEFT : CharacterAnimationState.PLATE_IDLE_LEFT;
-                }
-            }
-            case BOTTOM: {
-                if (walking) {
-                    return !this.inventory.hasItemInventory() ? CharacterAnimationState.WALK_BOTTOM : CharacterAnimationState.PLATE_WALK_BOTTOM;
-
-                } else {
-                    return !this.inventory.hasItemInventory() ? CharacterAnimationState.IDLE_BOTTOM : CharacterAnimationState.PLATE_IDLE_BOTTOM;
-                }
-            }
-            case RIGHT: {
-                if (walking) {
-                    return !this.inventory.hasItemInventory() ? CharacterAnimationState.WALK_RIGHT : CharacterAnimationState.PLATE_WALK_RIGHT;
-
-                } else {
-                    return !this.inventory.hasItemInventory() ? CharacterAnimationState.IDLE_RIGHT : CharacterAnimationState.PLATE_IDLE_RIGHT;
-                }
+    private CharacterAnimationState getStateForEntityState(EntityDirection direction, EntityState state) {
+        for (CharacterAnimationState anim : CharacterAnimationState.values()) {
+            if (anim.getDirection() == direction && anim.getState() == state) {
+                return anim;
             }
         }
         return null;
     }
 
-    private boolean isCurrentAnimation(boolean walking) {
-        return this.isCurrentAnimation(this.direction, walking);
+    private boolean isCurrentAnimation(EntityState state) {
+        var anim = this.renderer.getCurrentAnimation().getState();
+        return anim.getState() == state;
     }
 
-    private boolean isCurrentAnimation(EntityDirection direction, boolean walking) {
-        switch (direction) {
-            case TOP: {
-                if (walking) {
-                    return this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.WALK_TOP || this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.PLATE_WALK_TOP;
+    private boolean isCurrentAnimation(EntityDirection direction, EntityState state) {
+        var anim = this.renderer.getCurrentAnimation().getState();
+        return anim.getDirection() == direction && anim.getState() == state;
+    }
 
-                } else {
-                    return this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.IDLE_TOP || this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.PLATE_IDLE_TOP;
-                }
-            }
-            case LEFT: {
-                if (walking) {
-                    return this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.WALK_LEFT || this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.PLATE_WALK_LEFT;
+    private boolean isWalking() {
+        return this.isCurrentAnimation(EntityState.WALKING);
+    }
 
-                } else {
-                    return this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.IDLE_LEFT || this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.PLATE_IDLE_LEFT;
-                }
-            }
-            case BOTTOM: {
-                if (walking) {
-                    return this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.WALK_BOTTOM || this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.PLATE_WALK_BOTTOM;
-
-                } else {
-                    return this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.IDLE_BOTTOM || this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.PLATE_IDLE_BOTTOM;
-                }
-            }
-            case RIGHT: {
-                if (walking) {
-                    return this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.WALK_RIGHT || this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.PLATE_WALK_RIGHT;
-
-                } else {
-                    return this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.IDLE_RIGHT || this.renderer.getCurrentAnimation().getState() == CharacterAnimationState.PLATE_IDLE_RIGHT;
-                }
-            }
-        }
-        return false;
+    private boolean isWalking(EntityDirection direction) {
+        return this.isCurrentAnimation(direction, EntityState.WALKING);
     }
 
     public void freeze(boolean flag) {
@@ -227,7 +186,7 @@ public class EntityPlayer extends Entity {
     @Override
     public void keyPressed(KeyEvent key) {
         // EntityPlayer.IDLE_STATES.contains(this.renderer.getCurrentAnimation().getState())
-        if (this.freeze && this.isCurrentAnimation(false)) return;
+        if (this.freeze && !this.isWalking()) return;
         switch (key.getKeyCode()) {
             case KeyEvent.VK_W: {
                 this.direction = EntityDirection.TOP;

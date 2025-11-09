@@ -8,13 +8,7 @@ import project_base.Wrapper;
 import project_base.animation.Easings;
 import project_base.graphics.CameraRenderer;
 import project_base.graphics.OrderRenderer;
-import project_base.graphics.map.MapManager;
 import project_base.graphics.spawner.ObjectSpawner;
-import project_base.graphics.spawner.table.TableItemIntegration;
-import project_base.graphics.spawner.table.TableSpawner;
-import project_base.graphics.spawner.table.TableStorageSpawner;
-import project_base.graphics.tooltip.Tooltip;
-import project_base.model.KeyManagerModel;
 import project_base.model.sound.SoundManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +26,6 @@ public class GameScene extends Scene {
     private List<Interactable> interactables;
     private List<Drawable> drawables;
     private OrderRenderer renderer;
-    private MapManager gameMap;
 
     private static GameScene instance = new GameScene();
 
@@ -67,24 +60,24 @@ public class GameScene extends Scene {
         super.update(dt);
     }
 
-    private void drawAllHitboxes() {
-        /*Wrapper.getColliderManager().getColliders().values().forEach(r -> {
+    private void drawAllHitboxes(DrawTool drawTool) {
+        Wrapper.getColliderManager().getColliders().values().forEach(r -> {
             r.drawHitbox(drawTool);
-        });*/
+        });
     }
 
     public void drawGame(DrawTool drawTool) {
         this.cameraRenderer.attach(drawTool);
-        if (this.gameMap != null) {
-            drawTool.push();
-            this.gameMap.draw(drawTool);
-            drawTool.pop();
-        }
+        drawTool.push();
+        Wrapper.getMapManager().draw(drawTool);
+        drawTool.pop();
 
         GameScene.getInstance().getRenderer().draw(drawTool);
         this.getDrawables().forEach(d -> d.draw(drawTool));
 
-        this.gameMap.drawAfterPlayer(drawTool);
+        this.drawAllHitboxes(drawTool);
+
+        Wrapper.getMapManager().drawAfterPlayer(drawTool);
 
         this.cameraRenderer.detach(drawTool);
     }
@@ -150,14 +143,6 @@ public class GameScene extends Scene {
         super.keyReleased(e);
         Wrapper.getEntityManager().getEntities().values().forEach(entity -> entity.keyReleased(e));
         this.interactables.forEach(entity -> entity.keyReleased(e));
-    }
-
-    public MapManager getGameMap() {
-        return this.gameMap;
-    }
-
-    public void setGameMap(MapManager gameMap) {
-        this.gameMap = gameMap;
     }
 
     public CameraRenderer getCameraRenderer() {

@@ -565,7 +565,7 @@ public class DrawTool {
         this.parent = parent;
     }
 
-    public FrameworkGraphics getKebabGraphics() {
+    public FrameworkGraphics getFrameworkGraphics() {
         return this.frameworkGraphics;
     }
 

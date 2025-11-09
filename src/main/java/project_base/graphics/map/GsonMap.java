@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Map {
+public class GsonMap {
 
     private int width;
     private int height;

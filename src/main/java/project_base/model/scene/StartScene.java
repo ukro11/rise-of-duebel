@@ -37,8 +37,8 @@ public class StartScene extends Scene {
         drawTool.setCurrentColor(VisualConstants.TEXT_COLOR);
         drawTool.getGraphics2D().setFont(VisualConstants.getFont(VisualConstants.Fonts.PIXEL_FONT, 100));
 
-        drawTool.drawCenteredText("Kebab".toUpperCase(), 0, -130, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
-        drawTool.drawCenteredText("Simulator".toUpperCase(), 0, -50, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        drawTool.drawCenteredText("Kago".toUpperCase(), 0, -130, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        drawTool.drawCenteredText("Framework".toUpperCase(), 0, -50, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
 
         int keyX = Config.WINDOW_WIDTH / 2 - 210 + KeyManagerModel.KEY_START_GAME.getIcon().getWidth() / 2;
         int keyY = Config.WINDOW_HEIGHT - 210;

@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class LoadingScene extends Scene {
 
-    private double loadingProgress = 0;  // Wert zwischen 0.0 und 1.0
+    private double loadingProgress = 0;
     private double elapsed = 0;
     private double duration = 5;
     private boolean loadingComplete = false;
@@ -21,15 +21,11 @@ public class LoadingScene extends Scene {
 
     @Override
     public void update(double dt) {
-        // Fortschritt erhöhen (max 1.0)
-        if (elapsed < duration) {
-            elapsed += dt;  // Geschwindigkeit anpassen (0.25 = ca. 4s)
-            loadingProgress = elapsed / duration;
-            if (elapsed >= duration) {
-                loadingComplete = true;
-
-                // Beispiel: Wechsle zur GameScene oder MainMenuScene
-                // Wrapper.getSceneManager().changeScene(GameScene.getInstance());
+        if (this.elapsed < this.duration) {
+            this.elapsed += dt;
+            this.loadingProgress = this.elapsed / this.duration;
+            if (this.elapsed >= this.duration) {
+                this.loadingComplete = true;
             }
         }
     }
@@ -43,10 +39,10 @@ public class LoadingScene extends Scene {
         // Titel (zentriert)
         drawTool.setCurrentColor(VisualConstants.TEXT_COLOR);
         drawTool.getGraphics2D().setFont(VisualConstants.getFont(VisualConstants.Fonts.PIXEL_FONT, 100));
-        String title = "Kebab      Simulator";
+        String title = "Kago Framework";
 
-        drawTool.drawCenteredText("Kebab".toUpperCase(), 0, -130, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
-        drawTool.drawCenteredText("Simulator".toUpperCase(), 0, -50, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        drawTool.drawCenteredText("Kago".toUpperCase(), 0, -130, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        drawTool.drawCenteredText("Framework".toUpperCase(), 0, -50, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
 
         // Ladebalken
         int barWidth = 400;

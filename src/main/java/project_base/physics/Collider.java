@@ -13,7 +13,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public abstract class Collider {
@@ -189,7 +188,7 @@ public abstract class Collider {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Collider body = (Collider) o;
-        return Objects.equals(this.id, body.id);
+        return this.id.equals(body.id);
     }
 
     public Entity getEntity() {

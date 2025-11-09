@@ -20,16 +20,6 @@ public class PlayerInventory {
         return this.item;
     }
 
-    public EntityPlate getItemAsPlate() {
-        if (this.item != null) return (EntityPlate) this.item;
-        return null;
-    }
-
-    public EntityFood<?> getItemAsFood() {
-        if (this.item != null) return (EntityFood<?>) this.item;
-        return null;
-    }
-
     public void pickItem(EntityItem<?> item) {
         this.item = item;
         this.item.onPick(this.player);

@@ -1,7 +1,6 @@
 package project_base.model.entity;
 
 import project_base.graphics.spawner.ObjectSpawner;
-import project_base.model.entity.impl.food.*;
 import project_base.model.entity.impl.player.EntityPlayer;
 import project_base.physics.BodyType;
 import project_base.physics.colliders.ColliderPolygon;
@@ -29,11 +28,10 @@ public class EntityManager {
         }
     }
 
-    public EntityFood unregister(Entity entity) {
+    public void unregister(Entity entity) {
         if (entity != null) {
             this.entities.remove(entity.getId());
         }
-        return null;
     }
 
 

@@ -8,7 +8,6 @@ import KAGO_framework.view.DrawFrame;
 import project_base.Wrapper;
 import project_base.event.events.KeyPressedEvent;
 import project_base.model.scene.*;
-import project_base.model.debug.impl.gui.GuiScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,14 +111,10 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
             double dt = Wrapper.getTimer().getDeltaTime();
             this.programController.updateProgram(dt);
             if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
-            if (GuiScreen.getCurrentScreen() != null) GuiScreen.getCurrentScreen().update(dt);
         }
     }
 
     private void startPhysicsEngine() {
-        /*var physicService = this.physicsExecutor.scheduleAtFixedRate(() -> {
-
-        }, 0, 1000 / Wrapper.getTimer().getFPSCap(), TimeUnit.MILLISECONDS);*/
         var physicService = this.physicsExecutor.submit(() -> {
             while (true) {
                 if (this.watchPhysics.get()) {
@@ -146,6 +141,7 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
     }
 
     private void shutdown() {
+        this.programController.shutdown();
         this.physicsExecutor.shutdown();
         Wrapper.getProcessManager().shutdown();
         try {
@@ -250,7 +246,6 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         Graphics2D g2d = (Graphics2D) g;
         this.drawTool.setGraphics2D(g2d,this);
         if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(this.drawTool);
-        if (GuiScreen.getCurrentScreen() != null) GuiScreen.getCurrentScreen().draw(this.drawTool);
         if (project_base.Config.WINDOW_FULLSCREEN) Toolkit.getDefaultToolkit().sync();
     }
 
@@ -293,18 +288,12 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         if (Scene.getCurrentScene() != null) {
             Scene.getCurrentScene().mouseEntered(e);
         }
-        if (GuiScreen.getCurrentScreen() != null) {
-            GuiScreen.getCurrentScreen().mouseEntered(e);
-        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         if (Scene.getCurrentScene() != null) {
             Scene.getCurrentScene().mouseExited(e);
-        }
-        if (GuiScreen.getCurrentScreen() != null) {
-            GuiScreen.getCurrentScreen().mouseExited(e);
         }
     }
 
@@ -315,9 +304,6 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         if (Scene.getCurrentScene() != null) {
             Scene.getCurrentScene().mouseReleased(e);
         }
-        if (GuiScreen.getCurrentScreen() != null) {
-            GuiScreen.getCurrentScreen().mouseReleased(e);
-        }
     }
 
     @Override
@@ -326,9 +312,6 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         if (Scene.getCurrentScene() != null) {
             Scene.getCurrentScene().mouseClicked(e);
         }
-        if (GuiScreen.getCurrentScreen() != null) {
-            GuiScreen.getCurrentScreen().mouseClicked(e);
-        }
     }
 
     @Override
@@ -336,18 +319,12 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         if (Scene.getCurrentScene() != null) {
             Scene.getCurrentScene().mouseDragged(e);
         }
-        if (GuiScreen.getCurrentScreen() != null) {
-            GuiScreen.getCurrentScreen().mouseDragged(e);
-        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         if (Scene.getCurrentScene() != null) {
             Scene.getCurrentScene().mouseMoved(e);
-        }
-        if (GuiScreen.getCurrentScreen() != null) {
-            GuiScreen.getCurrentScreen().mouseMoved(e);
         }
     }
 
@@ -363,9 +340,6 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         if (Scene.getCurrentScene() != null) {
             Scene.getCurrentScene().keyTyped(e);
         }
-        if (GuiScreen.getCurrentScreen() != null) {
-            GuiScreen.getCurrentScreen().keyTyped(e);
-        }
     }
 
     @Override
@@ -376,9 +350,6 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         if (Scene.getCurrentScene() != null) {
             Scene.getCurrentScene().keyPressed(e);
         }
-        if (GuiScreen.getCurrentScreen() != null) {
-            GuiScreen.getCurrentScreen().keyPressed(e);
-        }
     }
 
     @Override
@@ -386,9 +357,6 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         currentlyPressedKeys.remove(Integer.valueOf(e.getKeyCode()));
         if (Scene.getCurrentScene() != null) {
             Scene.getCurrentScene().keyReleased(e);
-        }
-        if (GuiScreen.getCurrentScreen() != null) {
-            GuiScreen.getCurrentScreen().keyReleased(e);
         }
     }
 

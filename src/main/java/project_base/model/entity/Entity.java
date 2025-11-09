@@ -225,11 +225,4 @@ public abstract class Entity<T extends Enum<T> & IAnimationState> implements Dra
     public int hashCode() {
         return Objects.hashCode(id);
     }
-
-    public enum EntityDirection {
-        TOP,
-        LEFT,
-        BOTTOM,
-        RIGHT,
-    }
 }
