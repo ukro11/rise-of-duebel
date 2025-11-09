@@ -17,7 +17,7 @@ public class WinScene extends Scene {
     private final List<Interactable> interactables;
 
     public WinScene() {
-        super("lose");
+        super("win");
         this.drawables = new ArrayList<>();
         this.interactables = new ArrayList<>();
     }

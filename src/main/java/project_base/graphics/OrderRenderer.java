@@ -12,7 +12,7 @@ import java.util.List;
 public class OrderRenderer {
 
     private final Logger logger = LoggerFactory.getLogger(OrderRenderer.class);
-    private final ArrayList<IOrderRenderer> drawables;
+    private final List<IOrderRenderer> drawables;
 
     public OrderRenderer() {
         this.drawables = new ArrayList<>();

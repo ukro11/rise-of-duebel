@@ -1,8 +1,5 @@
 package project_base.animation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -15,7 +12,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AnimationRenderer<T extends Enum<T> & IAnimationState> {
 
-    private Logger logger = LoggerFactory.getLogger(AnimationRenderer.class);
     private final HashMap<T, Animation<T>> animations;
 
     private HashMap<T, Runnable> onStart;

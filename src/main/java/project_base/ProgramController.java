@@ -5,11 +5,12 @@ import project_base.animation.tween.Tween;
 import project_base.event.events.KeyPressedEvent;
 import project_base.event.services.EventProcessCallback;
 import project_base.event.services.process.EventLoadAssetsProcess;
-import project_base.graphics.map.MapManager;
+import project_base.graphics.map.GsonMap;
+import project_base.graphics.map.TileMap;
 import project_base.model.entity.impl.player.EntityPlayer;
-import project_base.model.meal.MealModel;
 import project_base.model.scene.GameScene;
 import project_base.model.debug.impl.InfoComponent;
+import project_base.physics.Collider;
 import project_base.utils.CooldownManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class ProgramController {
     private final ViewController viewController;
     public EntityPlayer player;
 
-    /**
+    /***
      * Konstruktor
      * Dieser legt das Objekt der Klasse ProgramController an, das den Programmfluss steuert.
      * Damit der ProgramController auf das Fenster zugreifen kann, benötigt er eine Referenz auf das Objekt
@@ -43,14 +44,18 @@ public class ProgramController {
         this.viewController = viewController;
     }
 
-    /**
+    /***
      * Wird als aller erstes aufgerufen beim starten. "startProgram" wird hingegen nur
      * nach Erstellen des Fensters, usw. erst aufgerufen.
      */
     public void preStartProgram() {
         Wrapper.getProcessManager().queue(new EventLoadAssetsProcess("Loading map", () -> {
-            MapManager map = MapManager.importMap("/map/kitchen.json", List.of("ground"), List.of("light"));
-            GameScene.getInstance().setGameMap(map);
+            Wrapper.getMapManager().importMap(new TileMap("/map/kitchen.json", List.of("ground"), List.of("light")) {
+                @Override
+                public void loadCollider(GsonMap.Layer layer, GsonMap.ObjectCollider objCollider, Collider collider) {
+
+                }
+            });
 
         }, new EventProcessCallback() {
             @Override
@@ -60,7 +65,7 @@ public class ProgramController {
         }));
     }
 
-    /**
+    /***
      * Diese Methode wird genau ein mal nach Programmstart aufgerufen. Hier sollte also alles geregelt werden,
      * was zu diesem Zeipunkt passieren muss.
      */
@@ -77,9 +82,12 @@ public class ProgramController {
         this.player = Wrapper.getEntityManager().spawnPlayer("player", 383, 682);
         this.player.setShowHitbox(false);
         GameScene.getInstance().getCameraRenderer().focusAtEntity(this.player);
-
-        MealModel.init();
     }
+
+    /***
+     * Diese Methode wird gecalled, wenn das Game geschlossen wird
+     */
+    public void shutdown() {}
 
     /**
      * Diese Methode wird vom ViewController-Objekt automatisch mit jedem Frame aufgerufen (ca. 60mal pro Sekunde)

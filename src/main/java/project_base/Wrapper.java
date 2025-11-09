@@ -3,6 +3,7 @@ package project_base;
 import KAGO_framework.control.ViewController;
 import project_base.event.EventManager;
 import project_base.event.services.EventProcessingQueue;
+import project_base.graphics.map.MapManager;
 import project_base.graphics.tooltip.TooltipManager;
 import project_base.model.GameHandlerModel;
 import project_base.model.entity.EntityManager;
@@ -26,6 +27,7 @@ public class Wrapper {
     private final static SoundConstants soundConstants = new SoundConstants();
     private final static TimerUtils timer = new TimerUtils();
     private final static TimerUtils physicsTimer = new TimerUtils();
+    private final static MapManager mapManager = new MapManager();
 
     public static EventManager getEventManager() {
         return eventManager;
@@ -52,6 +54,8 @@ public class Wrapper {
     public static TimerUtils getPhysicsTimer() { return physicsTimer; }
 
     public static GameHandlerModel getGameHandler() { return gameHandlerModel; }
+
+    public static MapManager getMapManager() { return mapManager; }
 
     public static BufferedImage getImage(String src) {
         try {
