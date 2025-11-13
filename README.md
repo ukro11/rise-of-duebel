@@ -18,10 +18,10 @@ Im Anschluss sollte alles funktionieren.
 ##Kurzanleitung: wo ist was?
 Alle wichtigen Dinge zum Arbeiten befinden sich im Ordner **src > main > java**. Hier befindet sich der Ordner "KAGO_Framework" das komplette Framework. Es ist les- und editierbar, aber alle Änderungen sind immer auf eigenes Risiko!
 
-###Der Ordner "project_base"
+###Der Ordner "rise_of_duebel"
 Dies ist der Ordner zum Arbeiten.
 * In diesem Ordner findest du die Klasse "MainProgram". Mit dieser Klasse wird das Programm gestartet (Rechtsklick > Run).
-* Innerhalb von "project_base" sind außerdem die drei Unterordner "control", "model" und "view". Diese Ordner nennt man "Pakete" oder "packages".
+* Innerhalb von "rise_of_duebel" sind außerdem die drei Unterordner "control", "model" und "view". Diese Ordner nennt man "Pakete" oder "packages".
   Für den Anfang kannst du dir merken, dass in "control" die Klassen gehören, die das Programm steuern und in "model" die Klassen stehen, die "Dinge" im Programm repräsentieren.
   Du erfährst später mehr dazu.
 * Im Paket "control" befindet sich die wichtigste Klasse: "ProgramController", deren Objekt den Kern des Programms steuert.
