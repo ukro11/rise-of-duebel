@@ -156,6 +156,7 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
             Wrapper.getProcessManager().getServicesExecutor().shutdownNow();
             Thread.currentThread().interrupt();
         }
+        System.exit(0);
     }
 
     public boolean watchPhysics() {

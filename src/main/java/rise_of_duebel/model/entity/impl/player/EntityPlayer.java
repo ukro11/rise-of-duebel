@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     private EntityDirection direction = EntityDirection.BOTTOM;
+    private EntityDirection lastDirection = null;
     private PlayerInventory inventory;
 
     private final double speed = 140.0;
@@ -34,7 +35,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         this.exitOnWrongRegistration();
 
         Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<AnimationRenderer>("Loading animations", () -> new AnimationRenderer(
-                "/graphic/character/ali.png", 5, 24, 16, 32,
+                "/graphic/temp/player/spritesheet.png", 9, 12, 192, 128,
                 CharacterAnimationState.IDLE_BOTTOM
         ), new EventProcessCallback<AnimationRenderer>() {
             @Override
@@ -68,14 +69,26 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     @Override
     protected void drawEntity(DrawTool drawTool) {
         if (this.renderer != null && this.renderer.getCurrentFrame() != null) {
+            boolean mirror = (this.direction == EntityDirection.LEFT) || (this.lastDirection == EntityDirection.LEFT && (this.direction == EntityDirection.TOP || this.direction == EntityDirection.BOTTOM));
+            drawTool.push();
+            if (mirror) {
+                double centerX = this.getX() + 58;
+                double centerY = this.getY() + this.height / 2;
+
+                drawTool.getGraphics2D().translate(centerX, centerY);
+                drawTool.getGraphics2D().scale(-1, 1);
+                drawTool.getGraphics2D().translate(-centerX, -centerY);
+            }
+
             drawTool.getGraphics2D().drawImage(
                 this.renderer.getCurrentFrame(),
-                this.inventory.hasItemInventory() ? (int) this.getX() - this.renderer.getCurrentFrame().getWidth() / 2 : (int) this.getX(),
+                (int) this.getX(),
                 (int) this.getY(),
-                this.inventory.hasItemInventory() ? (int) this.height : (int) this.width,
+                (int) this.width,
                 (int) this.height,
                 null
             );
+            drawTool.pop();
         }
     }
 
@@ -89,6 +102,9 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
         boolean verticalKeyDown = false;
         Vec2 moveVelocity = new Vec2();
+        if (this.lastDirection != this.direction && this.direction != EntityDirection.BOTTOM && this.direction != EntityDirection.TOP) {
+            this.lastDirection = this.direction;
+        }
         if (ViewController.isKeyDown(KeyEvent.VK_W) && !ViewController.isKeyDown(KeyEvent.VK_S)) {
             moveVelocity.set(null, -this.speed);
             this.direction = EntityDirection.TOP;

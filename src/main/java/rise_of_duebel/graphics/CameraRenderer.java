@@ -1,13 +1,11 @@
 package rise_of_duebel.graphics;
 
-import KAGO_framework.control.ViewController;
 import KAGO_framework.view.DrawTool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import rise_of_duebel.Config;
-import rise_of_duebel.ProgramController;
-import rise_of_duebel.animation.Easings;
+import rise_of_duebel.Wrapper;
+import rise_of_duebel.event.events.CameraMoveEvent;
 import rise_of_duebel.model.entity.Entity;
+import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.utils.MathUtils;
 import rise_of_duebel.utils.Vec2;
 
@@ -15,22 +13,14 @@ import java.awt.*;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 public class CameraRenderer {
 
-    private Logger logger = LoggerFactory.getLogger(CameraRenderer.class);
-    private ViewController viewController;
-    private ProgramController programController;
-    private Vec2 anchor;
     private double x;
     private double y;
     private boolean smooth = false;
-    private Function<Double, Double> easing = (x) -> Easings.easeInCubic(x);
     private double zoom = 1.0;
     private double angle = 0;
-    private double duration = 1.0;
-    private double elapsed = 0.0;
     private Vec2 offset = new Vec2();
     private Vec2 prevScale;
     private Entity focusEntity;
@@ -40,21 +30,17 @@ public class CameraRenderer {
     private double shakeElapsed = 0.0;
     private Map<Instant, Double> queue = new HashMap<>();
 
-    private CameraRenderer(ViewController view, ProgramController controller, double startX, double startY) {
-        this.viewController = view;
-        this.programController = controller;
+    private CameraRenderer(double startX, double startY) {
         this.x = startX;
         this.y = startY;
-        this.anchor = new Vec2(Config.WINDOW_WIDTH / 2, Config.WINDOW_HEIGHT / 2);
     }
 
-    public static CameraRenderer create(ViewController view, ProgramController controller, double startX, double startY) {
-        return new CameraRenderer(view, controller, startX, startY);
+    public static CameraRenderer create(double startX, double startY) {
+        return new CameraRenderer(startX, startY);
     }
 
-    public CameraRenderer smooth(Function<Double, Double> easing) {
+    public CameraRenderer smooth() {
         this.smooth = true;
-        this.easing = easing;
         return this;
     }
 
@@ -116,6 +102,7 @@ public class CameraRenderer {
                 (target < current && newPosition < target)) {
             newPosition = target;
         }
+        Wrapper.getEventManager().dispatchEvent(new CameraMoveEvent(this));
         return newPosition;
     }
 
@@ -145,8 +132,8 @@ public class CameraRenderer {
         double camX = x * this.zoom - Config.WINDOW_WIDTH / 2 + this.offset.x;
         double camY = y * this.zoom - Config.WINDOW_HEIGHT / 2 + this.offset.y;
         Vec2 velocity = new Vec2(camX - this.x, camY - this.y);
-        camX = MathUtils.clamp(camX, 0, this.cameraMax.x * this.zoom);
-        camY = MathUtils.clamp(camY, 0, this.cameraMax.y * this.zoom);
+        //camX = MathUtils.clamp(camX, 0, this.cameraMax.x * this.zoom);
+        //camY = MathUtils.clamp(camY, 0, this.cameraMax.y * this.zoom);
 
         this.x = smoothDamp(this.x, camX, velocity.x, 0.1, 100_000, dt * 5);
         this.y = smoothDamp(this.y, camY, velocity.y, 0.1, 100_000, dt * 5);
@@ -213,6 +200,14 @@ public class CameraRenderer {
 
     public double getY() {
         return this.y;
+    }
+
+    public double getWorldX() {
+        return Math.floor(GameScene.getInstance().getCameraRenderer().getX() / GameScene.getInstance().getCameraRenderer().getZoom());
+    }
+
+    public double getWorldY() {
+        return Math.floor(GameScene.getInstance().getCameraRenderer().getY() / GameScene.getInstance().getCameraRenderer().getZoom());
     }
 
     public double getZoom() {

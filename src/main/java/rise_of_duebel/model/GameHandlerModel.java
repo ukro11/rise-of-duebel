@@ -3,9 +3,6 @@ package rise_of_duebel.model;
 import KAGO_framework.view.DrawTool;
 import rise_of_duebel.Config;
 import rise_of_duebel.model.debug.VisualConstants;
-import rise_of_duebel.model.scene.LoseScene;
-import rise_of_duebel.model.scene.Scene;
-import rise_of_duebel.model.scene.WinScene;
 
 import java.awt.*;
 
@@ -39,13 +36,13 @@ public class GameHandlerModel {
             if (this.timer < 0) this.timer = 0;
 
         } else if (this.timer == 0) {
-            this.state = GameState.END;
+            /*this.state = GameState.END;
             if (this.score >= 250) {
                 Scene.open(new WinScene());
 
             } else {
                 Scene.open(new LoseScene());
-            }
+            }*/
         }
     }
 

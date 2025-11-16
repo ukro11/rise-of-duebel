@@ -43,7 +43,7 @@ public class Noise {
                 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254, 138, 236,
                 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66,
                 215, 61, 156, 180 };
-        this.default_size = 35;
+        this.default_size = 15;
 
         // Populate it
         for (int i = 0; i < 256; i++) {
@@ -98,6 +98,10 @@ public class Noise {
         return value / initialSize;
     }
 
+    public double normalizedNoise(double x, double y) {
+        return (this.noise(x, y) + 1.0) / 2.0;
+    }
+
     public double noise(double x) {
         double value = 0.0;
         double size = default_size;
@@ -143,7 +147,7 @@ public class Noise {
                 lerp(v, lerp(u, grad(p[AA + 1], x, 		y, 		z - 1	), 	// CORNERS
                                 grad(p[BA + 1], x - 1, 	y, 		z - 1	)), // OF CUBE
                         lerp(u, grad(p[AB + 1], x, 		y - 1,	z - 1	),
-                                grad(p[BB + 1], x - 1, 	y - 1, 	z - 1	)))) * 0.5 + 0.5;
+                                grad(p[BB + 1], x - 1, 	y - 1, 	z - 1	))));
     }
 
     private double fade(double t) {

@@ -20,7 +20,7 @@ public class SpritesheetRenderer<T extends Enum<T> & ISheetState> {
                 for (int j = 0; j < columns; j++) {
                     var state = ISheetState.fetch(clazz, i, j);
                     if (state == null) continue;
-                    this.sprites.put(state, this.sheet.getSubimage(i * state.getFrameWidth(), j * state.getFrameHeight(), state.getFrameWidth(), state.getFrameHeight()));
+                    this.sprites.put(state, this.sheet.getSubimage(j * state.getFrameWidth(), i * state.getFrameHeight(), state.getFrameWidth(), state.getFrameHeight()));
                 }
             }
 

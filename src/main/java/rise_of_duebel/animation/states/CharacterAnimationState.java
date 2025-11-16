@@ -7,19 +7,19 @@ import rise_of_duebel.model.entity.EntityDirection;
 
 public enum CharacterAnimationState implements IEntityAnimationState {
     STILL_TOP(EntityDirection.TOP, EntityState.STILL, 0, Range.closed(1, 1), 1, 0.5),
-    STILL_BOTTOM(EntityDirection.BOTTOM, EntityState.STILL, 0, Range.closed(3, 3), 1, 0.5),
-    STILL_LEFT(EntityDirection.LEFT, EntityState.STILL, 0, Range.closed(2, 2), 1, 0.5),
-    STILL_RIGHT(EntityDirection.RIGHT, EntityState.STILL, 0, Range.closed(0, 0), 1, 0.5),
+    STILL_BOTTOM(EntityDirection.BOTTOM, EntityState.STILL, 0, Range.closed(1, 1), 1, 0.5),
+    STILL_LEFT(EntityDirection.LEFT, EntityState.STILL, 0, Range.closed(1, 1), 1, 0.5),
+    STILL_RIGHT(EntityDirection.RIGHT, EntityState.STILL, 0, Range.closed(1, 1), 1, 0.5),
 
-    IDLE_TOP(EntityDirection.TOP, EntityState.IDLE, 1, Range.closed(6, 11), 6, 0.5),
-    IDLE_BOTTOM(EntityDirection.BOTTOM, EntityState.IDLE, 1, Range.closed(18, 23), 6, 0.5),
-    IDLE_LEFT(EntityDirection.LEFT, EntityState.IDLE, 1, Range.closed(12, 17), 6, 0.5),
-    IDLE_RIGHT(EntityDirection.RIGHT, EntityState.IDLE, 1, Range.closed(0, 5), 6, 0.5),
+    IDLE_TOP(EntityDirection.TOP, EntityState.IDLE, 0, Range.closed(0, 5), 6, 0.5),
+    IDLE_BOTTOM(EntityDirection.BOTTOM, EntityState.IDLE, 0, Range.closed(0, 5), 6, 0.5),
+    IDLE_LEFT(EntityDirection.LEFT, EntityState.IDLE, 0, Range.closed(0, 5), 6, 0.5),
+    IDLE_RIGHT(EntityDirection.RIGHT, EntityState.IDLE, 0, Range.closed(0, 5), 6, 0.5),
 
-    WALK_TOP(EntityDirection.TOP, EntityState.WALKING, 2, Range.closed(6, 11), 6, 0.5),
-    WALK_BOTTOM(EntityDirection.BOTTOM, EntityState.WALKING, 2, Range.closed(18, 23), 6, 0.5),
-    WALK_LEFT(EntityDirection.LEFT, EntityState.WALKING, 2, Range.closed(12, 17), 6, 0.5),
-    WALK_RIGHT(EntityDirection.RIGHT, EntityState.WALKING, 2, Range.closed(0, 5), 6, 0.5);
+    WALK_TOP(EntityDirection.TOP, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.5),
+    WALK_BOTTOM(EntityDirection.BOTTOM, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.5),
+    WALK_LEFT(EntityDirection.LEFT, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.5),
+    WALK_RIGHT(EntityDirection.RIGHT, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.5);
 
     private final EntityDirection direction;
     private final EntityState state;
