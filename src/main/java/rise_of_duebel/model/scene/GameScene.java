@@ -22,7 +22,6 @@ import java.util.List;
 
 public class GameScene extends Scene {
 
-    private final Logger logger = LoggerFactory.getLogger(GameScene.class);
     private CameraRenderer cameraRenderer;
     private List<Interactable> interactables;
     private List<Drawable> drawables;
@@ -41,9 +40,9 @@ public class GameScene extends Scene {
         this.drawables = new ArrayList<>();
         this.interactables = new ArrayList<>();
         this.cameraRenderer = CameraRenderer
-                .create(this.viewController, this.viewController.getProgramController(), 0, 0)
-                .zoom(2)
-                .smooth((x) -> Easings.easeInCubic(x));
+                .create(0, 0)
+                .zoom(3)
+                .smooth();
         this.renderer = new OrderRenderer();
     }
 
@@ -60,6 +59,7 @@ public class GameScene extends Scene {
         }
         Wrapper.getTooltipManager().update(dt);
         Wrapper.getGameHandler().update(dt);
+        //this.generatedMap.update(dt);
         super.update(dt);
     }
 
@@ -72,16 +72,16 @@ public class GameScene extends Scene {
     public void drawGame(DrawTool drawTool) {
         this.cameraRenderer.attach(drawTool);
         drawTool.push();
-        //Wrapper.getMapManager().draw(drawTool);
-        this.generatedMap.draw(drawTool);
+        Wrapper.getMapManager().draw(drawTool);
+        //this.generatedMap.draw(drawTool);
         drawTool.pop();
 
         GameScene.getInstance().getRenderer().draw(drawTool);
         this.getDrawables().forEach(d -> d.draw(drawTool));
 
-        this.drawAllHitboxes(drawTool);
+        //this.drawAllHitboxes(drawTool);
 
-        //Wrapper.getMapManager().drawAfterPlayer(drawTool);
+        Wrapper.getMapManager().drawAfterPlayer(drawTool);
 
         this.cameraRenderer.detach(drawTool);
     }

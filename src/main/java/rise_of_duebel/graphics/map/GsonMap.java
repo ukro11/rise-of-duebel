@@ -8,6 +8,10 @@ public class GsonMap {
 
     private int width;
     private int height;
+    @SerializedName("tilewidth")
+    private int tileWidth;
+    @SerializedName("tileheight")
+    private int tileHeight;
     private List<Tileset> tilesets;
     private List<Layer> layers;
 
@@ -17,6 +21,14 @@ public class GsonMap {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public int getTileWidth() {
+        return this.tileWidth;
+    }
+
+    public int getTileHeight() {
+        return this.tileHeight;
     }
 
     public List<Tileset> getTilesets() {
@@ -76,7 +88,7 @@ public class GsonMap {
 
         private String path;
 
-        public int getFirstGid() {
+        public long getFirstGid() {
             return this.firstGid;
         }
 
@@ -153,13 +165,13 @@ public class GsonMap {
         private int y;
         private int width;
         private int height;
-        private List<Integer> data;
+        private List<Long> data;
 
         public int getX() { return x; }
         public int getY() { return y; }
         public int getWidth() { return width; }
         public int getHeight() { return height; }
-        public List<Integer> getData() { return data; }
+        public List<Long> getData() { return data; }
     }
 
     public class ObjectCollider {

@@ -3,6 +3,8 @@ package rise_of_duebel.graphics.map;
 import KAGO_framework.view.DrawTool;
 import com.google.gson.Gson;
 import rise_of_duebel.Config;
+import rise_of_duebel.Wrapper;
+import rise_of_duebel.graphics.CameraRenderer;
 import rise_of_duebel.graphics.IOrderRenderer;
 import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.physics.BodyType;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,18 +29,31 @@ import java.util.List;
 public abstract class TileMap {
 
     private GsonMap map;
+    private Path directory;
     private String fileName;
     private final HashMap<GsonMap.Tileset, Batch> batches;
+    private final List<String> batchLayers;
+    private final List<String> batchLayersAfterPlayer;
     private final List<String> staticLayers;
     private final List<String> staticLayersAfterPlayer;
+    private final List<Quad> batchQuads;
+    private final List<Quad> batchQuadsAfterPlayer;
     private final List<Quad> staticQuads;
     private final List<Quad> staticQuadsAfterPlayer;
 
-    public TileMap(String fileName, List<String> staticLayers, List<String> staticLayersAfterPlayer) {
+    private BufferedImage batchImage;
+    private BufferedImage batchImageAfterPlayer;
+
+    private final CameraRenderer camera;
+
+    public TileMap(String fileName, List<String> staticLayers, List<String> staticLayersAfterPlayer, List<String> batchLayers, List<String> batchLayersAfterPlayer) {
         String[] f = fileName.split("/");
+        this.directory = Path.of(fileName).getParent();
         this.fileName = f[f.length - 1];
         this.staticLayers = staticLayers;
         this.staticLayersAfterPlayer = staticLayersAfterPlayer;
+        this.batchLayers = batchLayers;
+        this.batchLayersAfterPlayer = batchLayersAfterPlayer;
         InputStream fileStream = getClass().getResourceAsStream("/graphic" + fileName);
         if (fileStream == null) throw new NullPointerException("The map you want to import does not exist");
         Gson gson = new Gson();
@@ -45,6 +61,9 @@ public abstract class TileMap {
         this.batches = new HashMap<>();
         this.staticQuads = new ArrayList<>();
         this.staticQuadsAfterPlayer = new ArrayList<>();
+        this.batchQuads = new ArrayList<>();
+        this.batchQuadsAfterPlayer = new ArrayList<>();
+        this.camera = GameScene.getInstance().getCameraRenderer();
         this.load();
     }
 
@@ -100,6 +119,26 @@ public abstract class TileMap {
                 }
             }
         }
+
+        int mapWidthPx = this.map.getWidth() * this.map.getTileWidth();
+        int mapHeightPx = this.map.getHeight() * this.map.getTileHeight();
+        this.batchImage = new BufferedImage(mapWidthPx, mapHeightPx, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = this.batchImage.createGraphics();
+        for (Quad quad : this.batchQuads) {
+            g.drawImage(quad.getQuadImage(), (int) quad.getX(), (int) quad.getY(), (int) quad.getWidth(), (int) quad.getHeight(), null);
+        }
+        g.dispose();
+        //this.batchLayers.clear();
+        //this.batchQuads.clear();
+
+        this.batchImageAfterPlayer = new BufferedImage(mapWidthPx, mapHeightPx, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = this.batchImageAfterPlayer.createGraphics();
+        for (Quad quad : this.batchQuadsAfterPlayer) {
+            g2.drawImage(quad.getQuadImage(), (int) quad.getX(), (int) quad.getY(), (int) quad.getWidth(), (int) quad.getHeight(), null);
+        }
+        g2.dispose();
+        //this.batchLayersAfterPlayer.clear();
+        //this.batchQuadsAfterPlayer.clear();
     }
 
     private void loadChunk(GsonMap.Layer layer, GsonMap.Chunk chunk) {
@@ -109,19 +148,20 @@ public abstract class TileMap {
         for (int y = 0; y < chunk.getHeight(); y++) {
             for (int x = 0; x < chunk.getWidth(); x++) {
                 int index = y * chunk.getWidth() + x;
-                int gid = chunk.getData().get(index);
+                long gid = chunk.getData().get(index);
                 if (gid > 0) {
                     GsonMap.Tileset currentTileset = this.findTilesetForGid(gid);
                     if (currentTileset == null) continue;
                     if (!this.batches.containsKey(currentTileset)) {
                         try {
-                            String path = currentTileset.getImage().replace("sprites", "/graphic/map/sprites").toString();
-                            BufferedImage image = ImageIO.read(getClass().getResource(path));
+                            //String path = currentTileset.getImage().replace("sprites", "/graphic/map/sprites").toString();
+                            String path = this.directory.resolve(currentTileset.getImage()).toString();
+                            BufferedImage image = ImageIO.read(getClass().getResource("/graphic/" + path));
 
                             if (layer.getName().equals("light")) {
                                 double factor = 1.6d;
-                                for (int imageX = 0; x < image.getWidth(); x++) {
-                                    for (int imageY = 0; y < image.getHeight(); y++) {
+                                for (int imageX = 0; imageX < image.getWidth(); imageX++) {
+                                    for (int imageY = 0; imageY < image.getHeight(); imageY++) {
                                         // Hole den Farbwert des aktuellen Pixels
                                         Color originalColor = new Color(image.getRGB(imageX, imageY));
 
@@ -162,11 +202,17 @@ public abstract class TileMap {
                             currentTileset.getTileHeight()
                     );
 
-                    if (this.staticLayers.contains(layer.getName())) {
+                    if ((quad.tile != null && quad.tile.getAnimation() != null) || this.staticLayers.contains("*") || this.staticLayers.contains(layer.getName())) {
                         this.staticQuads.add(quad);
 
                     } else if (this.staticLayersAfterPlayer.contains(layer.getName())) {
                         this.staticQuadsAfterPlayer.add(quad);
+
+                    } else if (this.batchLayers.contains(layer.getName())) {
+                        this.batchQuads.add(quad);
+
+                    } else if (this.batchLayersAfterPlayer.contains(layer.getName())) {
+                        this.batchQuadsAfterPlayer.add(quad);
 
                     } else {
                         GameScene.getInstance().getRenderer().register(quad);
@@ -176,17 +222,17 @@ public abstract class TileMap {
         }
     }
 
-    protected GsonMap.Tile getTile(GsonMap.Tileset tileset, int tileId) {
+    protected GsonMap.Tile getTile(GsonMap.Tileset tileset, long tileId) {
         if (tileset.getTiles() == null) return null;
 
         return tileset.getTiles().stream().filter(t -> t.getId() == tileId).findFirst().orElse(null);
     }
 
     protected boolean isTileAnimated(GsonMap.Tile tile) {
-        return tile.getAnimation() != null;
+        return tile != null && tile.getAnimation() != null;
     }
 
-    private BufferedImage getAnimatedTileImage(GsonMap.Tileset tileset, BufferedImage image, int finalTileId, int elapsedTime) {
+    private BufferedImage getAnimatedTileImage(GsonMap.Tileset tileset, BufferedImage image, long finalTileId, int elapsedTime) {
         if (tileset.getTiles() == null) return null;
 
         GsonMap.Tile tile = tileset.getTiles().stream()
@@ -194,7 +240,7 @@ public abstract class TileMap {
                 .findFirst()
                 .orElse(null);
 
-        int tileId = finalTileId;
+        long tileId = finalTileId;
 
         if (!this.isTileAnimated(tile)) return null;
 
@@ -216,13 +262,13 @@ public abstract class TileMap {
         }
 
         int tilesPerRow = tileset.getImageWidth() / tileset.getTileWidth();
-        int tileX = (tileId % tilesPerRow) * tileset.getTileWidth();
-        int tileY = (tileId / tilesPerRow) * tileset.getTileHeight();
+        int tileX = ((int)tileId % tilesPerRow) * tileset.getTileWidth();
+        int tileY = ((int)tileId / tilesPerRow) * tileset.getTileHeight();
 
         return image.getSubimage(tileX, tileY, tileset.getTileWidth(), tileset.getTileHeight());
     }
 
-    private GsonMap.Tileset findTilesetForGid(int gid) {
+    private GsonMap.Tileset findTilesetForGid(long gid) {
         for (GsonMap.Tileset tileset : this.map.getTilesets()) {
             if (gid >= tileset.getFirstGid() &&
                     gid < tileset.getFirstGid() + tileset.getTileCount()) {
@@ -234,27 +280,45 @@ public abstract class TileMap {
 
     public void draw(DrawTool drawTool) {
         Graphics gr = drawTool.getGraphics2D();
+        double camX = this.camera.getX() / this.camera.getZoom();
+        double camY = this.camera.getY() / this.camera.getZoom();
+        double camW = Config.WINDOW_WIDTH  / this.camera.getZoom();
+        double camH = Config.WINDOW_HEIGHT / this.camera.getZoom();
         for (Quad quad : this.staticQuads) {
-            if (this.inView(quad)) {
+            if (this.inView(quad, camX, camY, camW, camH)) {
                 gr.drawImage(quad.getQuadImage(), (int) quad.getX(), (int) quad.getY(), (int) quad.getWidth(), (int) quad.getHeight(), null);
             }
         }
+        drawTool.drawImage(this.batchImage, 0, 0, null);
     }
 
     public void drawAfterPlayer(DrawTool drawTool) {
         Graphics gr = drawTool.getGraphics2D();
+        double camX = this.camera.getX() / this.camera.getZoom();
+        double camY = this.camera.getY() / this.camera.getZoom();
+        double camW = Config.WINDOW_WIDTH  / this.camera.getZoom();
+        double camH = Config.WINDOW_HEIGHT / this.camera.getZoom();
         for (Quad quad : this.staticQuadsAfterPlayer) {
-            if (this.inView(quad)) {
+            if (this.inView(quad, camX, camY, camW, camH)) {
                 gr.drawImage(quad.getQuadImage(), (int) quad.getX(), (int) quad.getY(), (int) quad.getWidth(), (int) quad.getHeight(), null);
             }
         }
+        drawTool.drawImage(this.batchImageAfterPlayer, 0, 0, null);
+    }
+
+    private static boolean inView(Quad q, double camX, double camY, double camW, double camH) {
+        return q.getX() + q.getWidth()  >= camX - 32 &&
+                q.getY() + q.getHeight() >= camY - 32 &&
+                q.getX() <= camX + camW + 32 &&
+                q.getY() <= camY + camH + 32;
     }
 
     private static boolean inView(Quad quad) {
         int quadSize = 32;
-        if (quad.getX() >= GameScene.getInstance().getCameraRenderer().getX() / GameScene.getInstance().getCameraRenderer().getZoom() - quadSize && quad.getY() >= GameScene.getInstance().getCameraRenderer().getY() / GameScene.getInstance().getCameraRenderer().getZoom() - quadSize) {
-            if (quad.getX() + quad.getWidth() <= (GameScene.getInstance().getCameraRenderer().getX() + Config.WINDOW_WIDTH) / GameScene.getInstance().getCameraRenderer().getZoom() + quadSize &&
-                    quad.getY() + quad.getHeight() <= (GameScene.getInstance().getCameraRenderer().getY() + Config.WINDOW_HEIGHT) / GameScene.getInstance().getCameraRenderer().getZoom() + quadSize) {
+        CameraRenderer camera = GameScene.getInstance().getCameraRenderer();
+        if (quad.getX() >= camera.getX() / camera.getZoom() - quadSize && quad.getY() >= camera.getY() / camera.getZoom() - quadSize) {
+            if (quad.getX() + quad.getWidth() <= (camera.getX() + Config.WINDOW_WIDTH) / camera.getZoom() + quadSize &&
+                    quad.getY() + quad.getHeight() <= (camera.getY() + Config.WINDOW_HEIGHT) / camera.getZoom() + quadSize) {
                 return true;
             }
         }
@@ -298,9 +362,9 @@ public abstract class TileMap {
     public class Quad implements IOrderRenderer {
         private Batch batch;
         private BufferedImage quadImage;
-        private int tileId;
+        private long tileId;
         private GsonMap.Tile tile;
-        private int gid;
+        private long gid;
         private double x;
         private double y;
         private double quadX;
@@ -308,7 +372,11 @@ public abstract class TileMap {
         private double width;
         private double height;
 
-        public Quad(Batch batch, int gid, double x, double y, int quadX, int quadY, int width, int height) {
+        private BufferedImage[] animationFrames;
+        private int[] frameDurations;
+        private int totalDuration;
+
+        public Quad(Batch batch, long gid, double x, double y, int quadX, int quadY, int width, int height) {
             this.batch = batch;
             this.quadImage = batch.getImage().getSubimage(quadX, quadY, width, height);
             this.gid = gid;
@@ -320,6 +388,29 @@ public abstract class TileMap {
             this.quadY = quadY;
             this.width = width;
             this.height = height;
+
+            if (this.tile != null && this.tile.getAnimation() != null) {
+                List<GsonMap.TileAnimationFrame> frames = this.tile.getAnimation();
+
+                this.animationFrames = new BufferedImage[frames.size()];
+                this.frameDurations = new int[frames.size()];
+
+                int tilesPerRow = batch.getTileset().getImageWidth() / batch.getTileset().getTileWidth();
+                int tw = batch.getTileset().getTileWidth();
+                int th = batch.getTileset().getTileHeight();
+
+                int total = 0;
+                for (int i = 0; i < frames.size(); i++) {
+                    GsonMap.TileAnimationFrame f = frames.get(i);
+                    int tid = (int) f.getTileId();
+                    int sx = (tid % tilesPerRow) * tw;
+                    int sy = (tid / tilesPerRow) * th;
+                    this.animationFrames[i] = batch.getImage().getSubimage(sx, sy, tw, th);
+                    this.frameDurations[i]  = f.getDuration();
+                    total += f.getDuration();
+                }
+                this.totalDuration = total;
+            }
         }
 
         public Quad(Batch batch, int gid, double x, double y, BufferedImage tileImage, int width, int height) {
@@ -349,14 +440,22 @@ public abstract class TileMap {
         }
 
         public BufferedImage getQuadImage() {
-            if (this.tile != null && isTileAnimated(this.tile)) {
-                return getAnimatedTileImage(this.batch.getTileset(), this.batch.getImage(), this.tileId, (int) System.currentTimeMillis());
-            }
+            if (this.animationFrames == null) return this.quadImage;
 
-            return this.quadImage;
+            int t = (int) ((Wrapper.getTimer().getRunningTime() * 1000) % this.totalDuration);
+            int acc = 0;
+            int idx = 0;
+            for (int i = 0; i < this.frameDurations.length; i++) {
+                acc += this.frameDurations[i];
+                if (t < acc) {
+                    idx = i;
+                    break;
+                }
+            }
+            return this.animationFrames[idx];
         }
 
-        public int getGid() {
+        public long getGid() {
             return this.gid;
         }
 

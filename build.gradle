@@ -53,3 +53,11 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+application {
+    mainClass = 'MainProgram'
+
+    applicationDefaultJvmArgs = [
+        "-Dsun.java2d.opengl=true"
+    ]
+}

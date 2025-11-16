@@ -2,6 +2,7 @@ package rise_of_duebel.utils;
 
 public class TimerUtils {
 
+    private double runningTime = 0;
     private double elapsedTime = 0;
     private double lastTime = System.nanoTime() / 1e9;
     private double deltaTime = 0.0;
@@ -25,6 +26,7 @@ public class TimerUtils {
         if (this.deltaTime == 0) this.deltaTime = 0.01;
 
         this.elapsedTime += this.deltaTime;
+        this.runningTime += this.deltaTime;
         if (this.elapsedTime >= this.FPS_UPDATE_INTERVAL) {
             this.updated = true;
         }
@@ -47,6 +49,10 @@ public class TimerUtils {
             this.frameCount = 0;
             this.elapsedTime = 0;
         }
+    }
+
+    public double getRunningTime() {
+        return this.runningTime;
     }
 
     public int getFPSCap() {
