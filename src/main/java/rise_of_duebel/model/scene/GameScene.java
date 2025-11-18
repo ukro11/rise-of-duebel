@@ -3,11 +3,8 @@ package rise_of_duebel.model.scene;
 import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
 import KAGO_framework.view.DrawTool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import rise_of_duebel.Config;
 import rise_of_duebel.Wrapper;
-import rise_of_duebel.animation.Easings;
 import rise_of_duebel.graphics.CameraRenderer;
 import rise_of_duebel.graphics.OrderRenderer;
 import rise_of_duebel.graphics.map.generation.GeneratedMap;
@@ -41,7 +38,7 @@ public class GameScene extends Scene {
         this.interactables = new ArrayList<>();
         this.cameraRenderer = CameraRenderer
                 .create(0, 0)
-                .zoom(3)
+                .zoom(4)
                 .smooth();
         this.renderer = new OrderRenderer();
     }

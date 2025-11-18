@@ -1,4 +1,4 @@
-package rise_of_duebel.model.entity.impl.player;
+package rise_of_duebel.model.entity.player;
 
 import KAGO_framework.control.ViewController;
 import KAGO_framework.view.DrawTool;
@@ -25,7 +25,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     private EntityDirection lastDirection = null;
     private PlayerInventory inventory;
 
-    private final double speed = 140.0;
+    private final double speed = 120.0;
     private boolean freeze = false;
 
     private List<Consumer<EntityPlayer>> onDirectionChange = new ArrayList<>();
@@ -35,7 +35,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         this.exitOnWrongRegistration();
 
         Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<AnimationRenderer>("Loading animations", () -> new AnimationRenderer(
-                "/graphic/temp/player/spritesheet.png", 9, 12, 192, 128,
+                "/graphic/character/player/player.png", 9, 12, 192, 128,
                 CharacterAnimationState.IDLE_BOTTOM
         ), new EventProcessCallback<AnimationRenderer>() {
             @Override
@@ -100,8 +100,8 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         }
         if (this.freeze) return;
 
-        boolean verticalKeyDown = false;
         Vec2 moveVelocity = new Vec2();
+        boolean verticalKeyDown = false;
         if (this.lastDirection != this.direction && this.direction != EntityDirection.BOTTOM && this.direction != EntityDirection.TOP) {
             this.lastDirection = this.direction;
         }

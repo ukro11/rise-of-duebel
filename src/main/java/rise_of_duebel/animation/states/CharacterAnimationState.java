@@ -16,10 +16,10 @@ public enum CharacterAnimationState implements IEntityAnimationState {
     IDLE_LEFT(EntityDirection.LEFT, EntityState.IDLE, 0, Range.closed(0, 5), 6, 0.5),
     IDLE_RIGHT(EntityDirection.RIGHT, EntityState.IDLE, 0, Range.closed(0, 5), 6, 0.5),
 
-    WALK_TOP(EntityDirection.TOP, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.5),
-    WALK_BOTTOM(EntityDirection.BOTTOM, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.5),
-    WALK_LEFT(EntityDirection.LEFT, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.5),
-    WALK_RIGHT(EntityDirection.RIGHT, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.5);
+    WALK_TOP(EntityDirection.TOP, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.4),
+    WALK_BOTTOM(EntityDirection.BOTTOM, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.4),
+    WALK_LEFT(EntityDirection.LEFT, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.4),
+    WALK_RIGHT(EntityDirection.RIGHT, EntityState.WALKING, 1, Range.closed(0, 3), 4, 0.4);
 
     private final EntityDirection direction;
     private final EntityState state;

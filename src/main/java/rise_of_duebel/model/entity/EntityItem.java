@@ -1,9 +1,8 @@
-package rise_of_duebel.model.entity.impl;
+package rise_of_duebel.model.entity;
 
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.animation.IAnimationState;
-import rise_of_duebel.model.entity.Entity;
-import rise_of_duebel.model.entity.impl.player.EntityPlayer;
+import rise_of_duebel.model.entity.player.EntityPlayer;
 import rise_of_duebel.model.sound.SoundManager;
 import rise_of_duebel.physics.Collider;
 import rise_of_duebel.utils.Vec2;

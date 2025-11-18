@@ -134,6 +134,7 @@ public class GsonMap {
         private String type;
         private int width;
         private int height;
+        private boolean visible;
         private List<ObjectCollider> objects;
         private List<Chunk> data;
         private List<Chunk> chunks;
@@ -143,6 +144,7 @@ public class GsonMap {
         public int getWidth() { return this.width; }
         public int getHeight() { return this.height; }
         public List<ObjectCollider> getObjects() { return this.objects; }
+        public boolean isVisible() { return this.visible; }
         public List<Chunk> getChunks() { return this.chunks; }
         public List<Chunk> getData() { return data; }
 

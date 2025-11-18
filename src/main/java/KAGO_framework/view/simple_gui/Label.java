@@ -2,6 +2,7 @@ package KAGO_framework.view.simple_gui;
 
 import KAGO_framework.model.GraphicalObject;
 import KAGO_framework.view.DrawTool;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 

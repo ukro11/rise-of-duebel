@@ -1,8 +1,8 @@
 package rise_of_duebel.animation;
 
-import javax.imageio.ImageIO;
+import rise_of_duebel.utils.CacheManager;
+
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,58 +28,53 @@ public class AnimationRenderer<T extends Enum<T> & IAnimationState> {
     }
 
     public AnimationRenderer(String spriteSheetPath, int rows, int maxColumns, int frameWidth, int frameHeight, int marginX, int marginY, T state) {
-        try {
-            BufferedImage spriteSheet = ImageIO.read(AnimationRenderer.class.getResource(spriteSheetPath));
-            HashMap<T, Animation<T>> animations = new HashMap<>();
-            Class<T> enumClass = state.getDeclaringClass();
-            for (int i = 0; i < rows; i++) {
-                List<BufferedImage> frames = new ArrayList<>();
-                for (int j = 0; j < maxColumns; j++) {
-                    List<T> animationStates = IAnimationState.fetch(enumClass, i, j);
-                    if (animationStates == null || animationStates.isEmpty()) break;
+        BufferedImage spriteSheet = CacheManager.loadImage(spriteSheetPath);
+        HashMap<T, Animation<T>> animations = new HashMap<>();
+        Class<T> enumClass = state.getDeclaringClass();
+        for (int i = 0; i < rows; i++) {
+            List<BufferedImage> frames = new ArrayList<>();
+            for (int j = 0; j < maxColumns; j++) {
+                List<T> animationStates = IAnimationState.fetch(enumClass, i, j);
+                if (animationStates == null || animationStates.isEmpty()) break;
 
-                    BufferedImage animationImage = null;
-                    int customFrameWidth = animationStates.get(0).getFrameWidth();
-                    int customFrameHeight = animationStates.get(0).getFrameHeight();
+                BufferedImage animationImage = null;
+                int customFrameWidth = animationStates.get(0).getFrameWidth();
+                int customFrameHeight = animationStates.get(0).getFrameHeight();
 
-                    if (customFrameWidth == 0 || customFrameHeight == 0) {
-                        animationImage = spriteSheet.getSubimage(j * (frameWidth + marginX), i * (frameHeight + marginY), frameWidth, frameHeight);
+                if (customFrameWidth == 0 || customFrameHeight == 0) {
+                    animationImage = spriteSheet.getSubimage(j * (frameWidth + marginX), i * (frameHeight + marginY), frameWidth, frameHeight);
 
-                    } else {
-                        animationImage = spriteSheet.getSubimage(j * (customFrameWidth + marginX), i * (customFrameHeight + marginY), customFrameWidth, customFrameHeight);
-                    }
-
-                    frames.add(animationImage);
-
-                    int ref = j;
-                    AtomicBoolean clear = new AtomicBoolean(false);
-                    animationStates.forEach(animationState -> {
-                        if (animationState.getColumnRange().upperEndpoint() == ref) {
-                            var f = frames.subList(0, frames.size());
-                            if (animationState.isReverse()) Collections.reverse(f);
-                            animations.put(animationState, new Animation<T>(animationState, f, animationState.getDuration(), animationState.isLoop(), animationState.isReverse()));
-                            clear.set(true);
-                        }
-                    });
-                    if (clear.get()) frames.clear();
+                } else {
+                    animationImage = spriteSheet.getSubimage(j * (customFrameWidth + marginX), i * (customFrameHeight + marginY), customFrameWidth, customFrameHeight);
                 }
+
+                frames.add(animationImage);
+
+                int ref = j;
+                AtomicBoolean clear = new AtomicBoolean(false);
+                animationStates.forEach(animationState -> {
+                    if (animationState.getColumnRange().upperEndpoint() == ref) {
+                        var f = frames.subList(0, frames.size());
+                        if (animationState.isReverse()) Collections.reverse(f);
+                        animations.put(animationState, new Animation<T>(animationState, f, animationState.getDuration(), animationState.isLoop(), animationState.isReverse()));
+                        clear.set(true);
+                    }
+                });
+                if (clear.get()) frames.clear();
             }
-            this.animations = animations;
-            this.onStart = new HashMap<>();
-            this.onCycle = new HashMap<>();
-            this.onFinish = new HashMap<>();
-
-            if (this.animations.values().stream().anyMatch(f -> this.animations.values().stream().filter(_f -> f.getState().equals(_f.getState())).count() > 1)) {
-                throw new InvalidParameterException("Atleast 2 framesLists have been found with the same state.");
-            }
-
-            this.currentAnimation = this.animations.values().stream().filter(s -> s.getState().equals(state)).findFirst().orElse(null);
-
-            if (this.currentAnimation == null) throw new NullPointerException(String.format("You did not passed an animation with the state: %s", state.name()));
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+        this.animations = animations;
+        this.onStart = new HashMap<>();
+        this.onCycle = new HashMap<>();
+        this.onFinish = new HashMap<>();
+
+        if (this.animations.values().stream().anyMatch(f -> this.animations.values().stream().filter(_f -> f.getState().equals(_f.getState())).count() > 1)) {
+            throw new InvalidParameterException("Atleast 2 framesLists have been found with the same state.");
+        }
+
+        this.currentAnimation = this.animations.values().stream().filter(s -> s.getState().equals(state)).findFirst().orElse(null);
+
+        if (this.currentAnimation == null) throw new NullPointerException(String.format("You did not passed an animation with the state: %s", state.name()));
     }
 
     public AnimationRenderer(List<Animation<T>> animations, T state) {

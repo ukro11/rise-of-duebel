@@ -1,7 +1,7 @@
 package rise_of_duebel.model.entity;
 
 import rise_of_duebel.graphics.spawner.ObjectSpawner;
-import rise_of_duebel.model.entity.impl.player.EntityPlayer;
+import rise_of_duebel.model.entity.player.EntityPlayer;
 import rise_of_duebel.physics.BodyType;
 import rise_of_duebel.physics.colliders.ColliderPolygon;
 

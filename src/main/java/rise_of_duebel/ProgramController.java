@@ -10,7 +10,7 @@ import rise_of_duebel.event.services.process.EventLoadAssetsProcess;
 import rise_of_duebel.graphics.map.GsonMap;
 import rise_of_duebel.graphics.map.TileMap;
 import rise_of_duebel.model.debug.impl.InfoComponent;
-import rise_of_duebel.model.entity.impl.player.EntityPlayer;
+import rise_of_duebel.model.entity.player.EntityPlayer;
 import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.physics.Collider;
 import rise_of_duebel.utils.CooldownManager;
@@ -50,7 +50,10 @@ public class ProgramController {
      */
     public void preStartProgram() {
         Wrapper.getProcessManager().queue(new EventLoadAssetsProcess("Loading map", () -> {
-            Wrapper.getMapManager().importMap(new TileMap("/temp/undead/Tiled_files/Undead_land.json", List.of("*"), List.of(), List.of(), List.of()) {
+            // /temp/undead/Tiled_files/Undead_land.json
+            // /map/kitchen.json
+            // /map/overworld/Undead_land.json
+            Wrapper.getMapManager().importMap(new TileMap("/map/overworld/Undead_land.json", List.of("*"), List.of(), List.of(), List.of()) {
                 @Override
                 public void loadCollider(GsonMap.Layer layer, GsonMap.ObjectCollider objCollider, Collider collider) {
 
@@ -80,7 +83,7 @@ public class ProgramController {
         }
         GameScene.getInstance().getVisuals().add(new InfoComponent());
 
-        this.player = Wrapper.getEntityManager().spawnPlayer("player", 383, 682);
+        this.player = Wrapper.getEntityManager().spawnPlayer("player", 270, 190);
         this.player.setShowHitbox(false);
         GameScene.getInstance().getCameraRenderer().focusAtEntity(this.player);
     }

@@ -1,7 +1,5 @@
 package KAGO_framework.control;
 
-import KAGO_framework.Config;
-
 /**
  * Diese Klasse enthält die main-Methode. Von ihr wird als erstes ein Objekt innerhalb der main-Methode erzeugt,
  * die zu Programmstart aufgerufen wird und kein Objekt benötigt, da sie statisch ist.

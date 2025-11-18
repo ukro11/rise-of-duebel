@@ -12,12 +12,11 @@ import rise_of_duebel.physics.Collider;
 import rise_of_duebel.physics.colliders.ColliderCircle;
 import rise_of_duebel.physics.colliders.ColliderPolygon;
 import rise_of_duebel.physics.colliders.ColliderRectangle;
+import rise_of_duebel.utils.CacheManager;
 import rise_of_duebel.utils.Vec2;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -77,7 +76,7 @@ public abstract class TileMap {
 
     private void load() {
         for (GsonMap.Layer layer : this.map.getLayers()) {
-            if (layer.getType().equals("tilelayer")) {
+            if (layer.getType().equals("tilelayer") && layer.isVisible()) {
                 if (layer.getChunks() != null && !layer.getChunks().isEmpty()) {
                     for (GsonMap.Chunk chunk : layer.getChunks()) {
                         this.loadChunk(layer, chunk);
@@ -122,23 +121,28 @@ public abstract class TileMap {
 
         int mapWidthPx = this.map.getWidth() * this.map.getTileWidth();
         int mapHeightPx = this.map.getHeight() * this.map.getTileHeight();
-        this.batchImage = new BufferedImage(mapWidthPx, mapHeightPx, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = this.batchImage.createGraphics();
-        for (Quad quad : this.batchQuads) {
-            g.drawImage(quad.getQuadImage(), (int) quad.getX(), (int) quad.getY(), (int) quad.getWidth(), (int) quad.getHeight(), null);
-        }
-        g.dispose();
-        //this.batchLayers.clear();
-        //this.batchQuads.clear();
 
-        this.batchImageAfterPlayer = new BufferedImage(mapWidthPx, mapHeightPx, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = this.batchImageAfterPlayer.createGraphics();
-        for (Quad quad : this.batchQuadsAfterPlayer) {
-            g2.drawImage(quad.getQuadImage(), (int) quad.getX(), (int) quad.getY(), (int) quad.getWidth(), (int) quad.getHeight(), null);
+        if (!this.batchLayers.isEmpty()) {
+            this.batchImage = new BufferedImage(mapWidthPx, mapHeightPx, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = this.batchImage.createGraphics();
+            for (Quad quad : this.batchQuads) {
+                g.drawImage(quad.getQuadImage(), (int) quad.getX(), (int) quad.getY(), (int) quad.getWidth(), (int) quad.getHeight(), null);
+            }
+            g.dispose();
+            this.batchLayers.clear();
+            this.batchQuads.clear();
         }
-        g2.dispose();
-        //this.batchLayersAfterPlayer.clear();
-        //this.batchQuadsAfterPlayer.clear();
+
+        if (!this.batchLayersAfterPlayer.isEmpty()) {
+            this.batchImageAfterPlayer = new BufferedImage(mapWidthPx, mapHeightPx, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = this.batchImageAfterPlayer.createGraphics();
+            for (Quad quad : this.batchQuadsAfterPlayer) {
+                g2.drawImage(quad.getQuadImage(), (int) quad.getX(), (int) quad.getY(), (int) quad.getWidth(), (int) quad.getHeight(), null);
+            }
+            g2.dispose();
+            this.batchLayersAfterPlayer.clear();
+            this.batchQuadsAfterPlayer.clear();
+        }
     }
 
     private void loadChunk(GsonMap.Layer layer, GsonMap.Chunk chunk) {
@@ -153,37 +157,31 @@ public abstract class TileMap {
                     GsonMap.Tileset currentTileset = this.findTilesetForGid(gid);
                     if (currentTileset == null) continue;
                     if (!this.batches.containsKey(currentTileset)) {
-                        try {
-                            //String path = currentTileset.getImage().replace("sprites", "/graphic/map/sprites").toString();
-                            String path = this.directory.resolve(currentTileset.getImage()).toString();
-                            BufferedImage image = ImageIO.read(getClass().getResource("/graphic/" + path));
+                        String path = this.directory.resolve(currentTileset.getImage()).toString();
+                        BufferedImage image = CacheManager.loadImage(String.format("/graphic/%s", path));
 
-                            if (layer.getName().equals("light")) {
-                                double factor = 1.6d;
-                                for (int imageX = 0; imageX < image.getWidth(); imageX++) {
-                                    for (int imageY = 0; imageY < image.getHeight(); imageY++) {
-                                        // Hole den Farbwert des aktuellen Pixels
-                                        Color originalColor = new Color(image.getRGB(imageX, imageY));
+                        if (layer.getName().equals("light")) {
+                            double factor = 1.6d;
+                            for (int imageX = 0; imageX < image.getWidth(); imageX++) {
+                                for (int imageY = 0; imageY < image.getHeight(); imageY++) {
+                                    // Hole den Farbwert des aktuellen Pixels
+                                    Color originalColor = new Color(image.getRGB(imageX, imageY));
 
-                                        // Berechne den neuen Farbwert, indem du den Faktor anwendest
-                                        int r = Math.min((int)(originalColor.getRed() * factor), 255);
-                                        int g = Math.min((int)(originalColor.getGreen() * factor), 255);
-                                        int b = Math.min((int)(originalColor.getBlue() * factor), 255);
+                                    // Berechne den neuen Farbwert, indem du den Faktor anwendest
+                                    int r = Math.min((int)(originalColor.getRed() * factor), 255);
+                                    int g = Math.min((int)(originalColor.getGreen() * factor), 255);
+                                    int b = Math.min((int)(originalColor.getBlue() * factor), 255);
 
-                                        // Setze den neuen Farbwert in das neue Bild
-                                        image.setRGB(imageX, imageY, new Color(r, g, b).getRGB());
-                                    }
+                                    // Setze den neuen Farbwert in das neue Bild
+                                    image.setRGB(imageX, imageY, new Color(r, g, b).getRGB());
                                 }
                             }
-
-                            currentTileset.setPath(path);
-                            this.batches.put(currentTileset, new Batch(
-                                    image, currentTileset.getImage(), currentTileset, layer
-                            ));
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
+
+                        currentTileset.setPath(path);
+                        this.batches.put(currentTileset, new Batch(
+                                image, currentTileset.getImage(), currentTileset, layer
+                        ));
                     }
                     double tilesInX = currentTileset.getImageWidth() / currentTileset.getTileWidth();
                     double offsetGid = (gid - currentTileset.getFirstGid());

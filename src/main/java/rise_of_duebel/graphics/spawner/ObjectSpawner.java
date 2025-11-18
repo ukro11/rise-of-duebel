@@ -7,7 +7,7 @@ import rise_of_duebel.ProgramController;
 import rise_of_duebel.animation.AnimationRenderer;
 import rise_of_duebel.animation.IAnimationState;
 import rise_of_duebel.graphics.IOrderRenderer;
-import rise_of_duebel.model.entity.impl.player.EntityPlayer;
+import rise_of_duebel.model.entity.player.EntityPlayer;
 import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.physics.Collider;
 

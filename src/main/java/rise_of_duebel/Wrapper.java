@@ -7,14 +7,10 @@ import rise_of_duebel.graphics.map.MapManager;
 import rise_of_duebel.graphics.tooltip.TooltipManager;
 import rise_of_duebel.model.GameHandlerModel;
 import rise_of_duebel.model.entity.EntityManager;
-import rise_of_duebel.model.entity.impl.player.EntityPlayer;
+import rise_of_duebel.model.entity.player.EntityPlayer;
 import rise_of_duebel.model.sound.SoundConstants;
 import rise_of_duebel.physics.ColliderManager;
 import rise_of_duebel.utils.TimerUtils;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class Wrapper {
 
@@ -56,14 +52,4 @@ public class Wrapper {
     public static GameHandlerModel getGameHandler() { return gameHandlerModel; }
 
     public static MapManager getMapManager() { return mapManager; }
-
-    public static BufferedImage getImage(String src) {
-        try {
-            return ImageIO.read(Wrapper.class.getResourceAsStream(src));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

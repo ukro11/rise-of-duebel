@@ -21,8 +21,11 @@ package KAGO_framework.model.abitur.netz; /**
  * @version 30.08.2016
  */
 
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class Connection
 {

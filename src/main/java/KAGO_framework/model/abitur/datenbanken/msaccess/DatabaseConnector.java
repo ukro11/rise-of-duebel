@@ -2,7 +2,10 @@ package KAGO_framework.model.abitur.datenbanken.msaccess;
 
 import KAGO_framework.model.abitur.datenstrukturen.Queue;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 /**
  * <p>

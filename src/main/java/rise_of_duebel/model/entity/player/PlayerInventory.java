@@ -1,7 +1,7 @@
-package rise_of_duebel.model.entity.impl.player;
+package rise_of_duebel.model.entity.player;
 
-import rise_of_duebel.model.entity.impl.EntityItem;
-import rise_of_duebel.model.entity.impl.EntityItemLocation;
+import rise_of_duebel.model.entity.EntityItem;
+import rise_of_duebel.model.entity.EntityItemLocation;
 
 public class PlayerInventory {
 

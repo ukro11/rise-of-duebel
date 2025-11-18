@@ -31,7 +31,7 @@ public class GeneratedMap {
         this.terrainNoise = new Noise();
         this.treeNoise = new Noise();
         // 11 x 7
-        this.renderer = new SpritesheetRenderer<>("/graphic/temp/undead/Tiled_files/water_coasts.png", 7, 11, TerrainStates.class);
+        this.renderer = new SpritesheetRenderer<>("/graphic/map/overworld/water_coasts.png", 7, 11, TerrainStates.class);
 
         TileCoord coord = new TileCoord(0, 0);
         boolean found = false;

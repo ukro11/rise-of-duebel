@@ -13,13 +13,14 @@ public class OrderRenderer {
 
     private final Logger logger = LoggerFactory.getLogger(OrderRenderer.class);
     private final List<IOrderRenderer> drawables;
+    private static final Comparator<IOrderRenderer> Z_INDEX_COMPARATOR = Comparator.comparingDouble(IOrderRenderer::zIndex);
 
     public OrderRenderer() {
         this.drawables = new ArrayList<>();
     }
 
     public void draw(DrawTool drawTool) {
-        this.drawables.sort(Comparator.comparing(IOrderRenderer::zIndex));
+        //this.drawables.sort(Z_INDEX_COMPARATOR);
         for (int i = 0; i < this.drawables.size(); i++) {
             var d = this.drawables.get(i);
             if (d.shouldRender()) {

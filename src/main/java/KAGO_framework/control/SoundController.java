@@ -4,8 +4,10 @@ import KAGO_framework.Config;
 import KAGO_framework.model.Sound;
 import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import javafx.embed.swing.JFXPanel;
+
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Achtung:

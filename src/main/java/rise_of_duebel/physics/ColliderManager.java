@@ -3,6 +3,7 @@ package rise_of_duebel.physics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,14 +25,15 @@ public class ColliderManager {
     }
 
     public void queueCollisions() {
-        for (Map.Entry<String, Collider> entry1 : colliders.entrySet()) {
-            for (Map.Entry<String, Collider> entry2 : colliders.entrySet()) {
-                if (!entry1.getKey().equals(entry2.getKey())) {
-                    Collider body1 = entry1.getValue();
-                    Collider body2 = entry2.getValue();
-                    if (this.canCollide(body1, body2) && body1.collides(body2) && ColliderManager.DEBUG) {
-                        this.logger.debug("Collision detected between Body {} and Body {}", body1.getId(), body2.getId());
-                    }
+        var list = new ArrayList<>(colliders.values());
+        int size = list.size();
+
+        for (int i = 0; i < size; i++) {
+            Collider body1 = list.get(i);
+            for (int j = i + 1; j < size; j++) {
+                Collider body2 = list.get(j);
+                if (this.canCollide(body1, body2) && body1.collides(body2) && ColliderManager.DEBUG) {
+                    this.logger.debug("Collision detected between Body {} and Body {}", body1.getId(), body2.getId());
                 }
             }
         }
@@ -56,8 +58,19 @@ public class ColliderManager {
     }
 
     public void updateColliders(double dt) {
-        this.colliders.entrySet().forEach(c -> c.getValue().update(dt));
-        this.queueCollisions();
+        double maxSubDt = 1.0 / 120.0;
+
+        int steps = (int) Math.ceil(dt / maxSubDt);
+        if (steps < 1) steps = 1;
+
+        double subDt = dt / steps;
+
+        for (int s = 0; s < steps; s++) {
+            for (Collider c : colliders.values()) {
+                c.update(subDt);
+            }
+            this.queueCollisions();
+        }
     }
 
     public void createBody(Collider body) {

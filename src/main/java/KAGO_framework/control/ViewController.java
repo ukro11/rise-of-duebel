@@ -1,15 +1,20 @@
 package KAGO_framework.control;
 
 import KAGO_framework.Config;
-import KAGO_framework.view.DrawTool;
-import com.google.common.util.concurrent.*;
-import rise_of_duebel.ProgramController;
 import KAGO_framework.view.DrawFrame;
-import rise_of_duebel.Wrapper;
-import rise_of_duebel.event.events.KeyPressedEvent;
-import rise_of_duebel.model.scene.*;
+import KAGO_framework.view.DrawTool;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rise_of_duebel.ProgramController;
+import rise_of_duebel.Wrapper;
+import rise_of_duebel.event.events.KeyPressedEvent;
+import rise_of_duebel.model.scene.GameScene;
+import rise_of_duebel.model.scene.LoadingScene;
+import rise_of_duebel.model.scene.Scene;
 
 import javax.swing.*;
 import java.awt.*;
@@ -100,29 +105,49 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         this.setWatchPhyics(true);
         Wrapper.getProcessManager().processPostGame();
         while (true) {
-            startGameLoop();
+            Wrapper.getTimer().update();
+            double dt = Wrapper.getTimer().getDeltaTime();
+
+            this.programController.updateProgram(dt);
+            if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
+
             repaint();
-            Wrapper.getTimer().update(true);
         }
     }
 
-    private void startGameLoop() {
-        if (Wrapper.getTimer().fpsUpdated()) {
-            double dt = Wrapper.getTimer().getDeltaTime();
-            this.programController.updateProgram(dt);
-            if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
+    @Override
+    public void paintComponent(Graphics g) {
+        if(!requested){
+            addMouseListener(this);
+            addKeyListener(this);
+            addMouseMotionListener(this);
+            setFocusable(true);
+            this.requestFocusInWindow();
+            requested = !requested;
         }
+
+        super.paintComponent(g);
+
+        Wrapper.getTimer().updateFrames();
+
+        Graphics2D g2d = (Graphics2D) g;
+        this.drawTool.setGraphics2D(g2d,this);
+
+        if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(this.drawTool);
+
+        //if (rise_of_duebel.Config.WINDOW_FULLSCREEN) Toolkit.getDefaultToolkit().sync();
     }
 
     private void startPhysicsEngine() {
         var physicService = this.physicsExecutor.submit(() -> {
             while (true) {
                 if (this.watchPhysics.get()) {
-                    double dt = Wrapper.getPhysicsTimer().getDeltaTime();
-                    Wrapper.getColliderManager().updateColliders(dt);
-                    if (Scene.getCurrentScene() instanceof GameScene) GameScene.getInstance().updatePhysics(dt);
                     Wrapper.getPhysicsTimer().update(true);
 
+                    double dt = Wrapper.getPhysicsTimer().getDeltaTime();
+
+                    Wrapper.getColliderManager().updateColliders(dt);
+                    if (Scene.getCurrentScene() instanceof GameScene) GameScene.getInstance().updatePhysics(dt);
                 } else {
                     Thread.sleep(100);
                 }
@@ -235,24 +260,6 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         if (rise_of_duebel.Config.RUN_ENV == rise_of_duebel.Config.Environment.DEVELOPMENT) {
             Scene.open(GameScene.getInstance());
         }
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        if(!requested){
-            addMouseListener(this);
-            addKeyListener(this);
-            addMouseMotionListener(this);
-            setFocusable(true);
-            this.requestFocusInWindow();
-            requested = !requested;
-        }
-        Wrapper.getTimer().updateFrames();
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        this.drawTool.setGraphics2D(g2d,this);
-        if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(this.drawTool);
-        if (rise_of_duebel.Config.WINDOW_FULLSCREEN) Toolkit.getDefaultToolkit().sync();
     }
 
     /**

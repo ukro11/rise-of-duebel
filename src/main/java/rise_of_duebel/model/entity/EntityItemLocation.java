@@ -1,4 +1,4 @@
-package rise_of_duebel.model.entity.impl;
+package rise_of_duebel.model.entity;
 
 import rise_of_duebel.physics.Collider;
 
