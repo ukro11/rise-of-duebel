@@ -2,7 +2,6 @@ package rise_of_duebel.physics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rise_of_duebel.Wrapper;
 
 import java.util.ArrayList;
 import java.util.Map;

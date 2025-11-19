@@ -49,33 +49,6 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation 'ch.qos.logback:logback-classic:1.4.14'
     implementation "com.google.guava:guava:33.4.8-jre"
-
-    implementation "org.jogamp.gluegen:gluegen-rt:2.3.1"
-    implementation "org.jogamp.jogl:jogl-all:2.3.1"
-
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-android-aarch64"
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-android-armv6"
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-amd64"
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-armv6"
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-armv6hf"
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-i586"
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-macosx-universal"
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-solaris-amd64"
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-solaris-i586"
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-windows-amd64"
-    runtimeOnly "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-windows-i586"
-
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-android-aarch64"
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-android-armv6"
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-amd64"
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-armv6"
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-armv6hf"
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-i586"
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-macosx-universal"
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-solaris-amd64"
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-solaris-i586"
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-windows-amd64"
-    runtimeOnly "org.jogamp.jogl:jogl-all:2.3.1:natives-windows-i586"
 }
 
 test {
