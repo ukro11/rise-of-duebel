@@ -29,7 +29,7 @@ public class InfoComponent extends VisualModel {
         drawTool.getGraphics2D().setFont(this.debugFont);
 
         drawTool.drawTextOutline(
-            String.format("FPS: %s", Wrapper.getTimer().getFPS()),
+            String.format("FPS: %s, P-FPS: %s", Wrapper.getTimer().getFPS(), Wrapper.getPhysicsTimer().getFPS()),
             20,
             this.startY + this.margin,
             Color.decode("#b29f99"),

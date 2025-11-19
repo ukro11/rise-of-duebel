@@ -19,6 +19,7 @@ import rise_of_duebel.model.scene.Scene;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -29,19 +30,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Sie kann verschiedene Objekte erzeugen und den Panels hinzufuegen.
  * Vorgegebene Klasse des Frameworks. Modifikation auf eigene Gefahr.
  */
-public class ViewController extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
+public class ViewController extends Canvas implements KeyListener, MouseListener, MouseMotionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
     private final ProgramController programController;
     private final DrawTool drawTool;
-    //private final ListeningScheduledExecutorService physicsExecutor;
     private final ListeningExecutorService physicsExecutor;
 
     private final AtomicBoolean watchPhysics;
     private final AtomicBoolean initializing;
 
     private DrawFrame drawFrame;
-    private boolean requested = false;
 
     // Instanzvariablen für gedrückte Tasten und Mausknöpfe
     private final static java.util.List<Integer> currentlyPressedKeys = new ArrayList<>();
@@ -72,10 +71,9 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         logger.info("PreStart Setup is finished.");
         logger.info("Starting Engine.");
 
-        SwingUtilities.invokeLater(() -> this.createWindow());
+        this.createWindow();
 
         if (!rise_of_duebel.Config.SHOW_DEFAULT_WINDOW) {
-            this.setDrawFrameVisible(false);
             if(Config.INFO_MESSAGES) System.out.println("** Achtung! Standardfenster deaktiviert => wird nicht angezeigt.). **");
         }
 
@@ -104,6 +102,10 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         this.programController.startProgram();
         this.setWatchPhyics(true);
         Wrapper.getProcessManager().processPostGame();
+
+        this.createBufferStrategy(3);
+        BufferStrategy bs = this.getBufferStrategy();
+
         while (true) {
             Wrapper.getTimer().update();
             double dt = Wrapper.getTimer().getDeltaTime();
@@ -111,31 +113,15 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
             this.programController.updateProgram(dt);
             if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
 
-            repaint();
+            Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+            this.drawTool.setGraphics2D(g);
+            if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(this.drawTool);
+            g.dispose();
+            bs.show();
+            Toolkit.getDefaultToolkit().sync();
+
+            Wrapper.getTimer().updateFrames();
         }
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        if(!requested){
-            addMouseListener(this);
-            addKeyListener(this);
-            addMouseMotionListener(this);
-            setFocusable(true);
-            this.requestFocusInWindow();
-            requested = !requested;
-        }
-
-        super.paintComponent(g);
-
-        Wrapper.getTimer().updateFrames();
-
-        Graphics2D g2d = (Graphics2D) g;
-        this.drawTool.setGraphics2D(g2d,this);
-
-        if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(this.drawTool);
-
-        //if (rise_of_duebel.Config.WINDOW_FULLSCREEN) Toolkit.getDefaultToolkit().sync();
     }
 
     private void startPhysicsEngine() {
@@ -148,6 +134,8 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
 
                     Wrapper.getColliderManager().updateColliders(dt);
                     if (Scene.getCurrentScene() instanceof GameScene) GameScene.getInstance().updatePhysics(dt);
+
+                    Wrapper.getPhysicsTimer().updateFrames();
                 } else {
                     Thread.sleep(100);
                 }
@@ -198,7 +186,6 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
 
     private void createWindow(){
         this.setBackground(Color.decode("#d0b99c"));
-        this.setDoubleBuffered(true);
         logger.info("Creating Window...");
 
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -237,9 +224,7 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         }
         this.drawFrame.addWindowFocusListener(new WindowFocusListener() {
             @Override
-            public void windowGainedFocus(WindowEvent e) {
-
-            }
+            public void windowGainedFocus(WindowEvent e) {}
             @Override
             public void windowLostFocus(WindowEvent e) {
                 currentlyPressedKeys.clear();
@@ -256,7 +241,13 @@ public class ViewController extends JPanel implements KeyListener, MouseListener
         } else {
             this.drawFrame.setVisible(true);
         }
-        this.drawFrame.setActiveDrawingPanel(this);
+
+        this.addMouseListener(this);
+        this.addKeyListener(this);
+        this.addMouseMotionListener(this);
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+
         if (rise_of_duebel.Config.RUN_ENV == rise_of_duebel.Config.Environment.DEVELOPMENT) {
             Scene.open(GameScene.getInstance());
         }

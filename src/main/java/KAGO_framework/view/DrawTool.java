@@ -552,6 +552,12 @@ public class DrawTool {
         return frameworkGraphics.getGraphics2D().getFontMetrics(font).getDescent();
     }
 
+    public void setGraphics2D(Graphics2D g2d){
+        this.frameworkGraphics = new FrameworkGraphics(g2d);
+        frameworkGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        frameworkGraphics.getGraphics2D().setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+    }
+
     /**
      * Spezifiziert das zu verwendende Grafikobjekt von Java und
      * das Objekt in dem gezeichnet wird.
