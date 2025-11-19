@@ -1,6 +1,7 @@
 package KAGO_framework.view;
 
 import javax.swing.*;
+import java.awt.*;
 
 /** Entspricht einem Fenster, das DrawingPanels beinhalten kann.
  *  Vorgegebene Klasse des Frameworks. Modifikation auf eigene Gefahr.
@@ -11,6 +12,7 @@ public class DrawFrame extends JFrame {
 
     // Referenzen
     private JPanel activePanel;           // Das im Moment sichtbare DrawingPanel
+    private Canvas canvas;
 
     /**
      * Konstruktor
@@ -26,6 +28,16 @@ public class DrawFrame extends JFrame {
         setSize(width,height);
         setTitle(name);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //setVisible(true);
+    }
+
+    public DrawFrame(String name, int x, int y, int width, int height, Canvas canvas) {
+        this.canvas = canvas;
+        setLocation(x,y);
+        setSize(width,height);
+        setTitle(name);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        add(canvas);
         //setVisible(true);
     }
 
@@ -56,5 +68,6 @@ public class DrawFrame extends JFrame {
         return activePanel.getHeight();
     }
 
+    public Canvas getCanvas() { return canvas; }
 }
 

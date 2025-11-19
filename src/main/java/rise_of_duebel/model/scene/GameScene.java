@@ -68,6 +68,7 @@ public class GameScene extends Scene {
 
     public void drawGame(DrawTool drawTool) {
         this.cameraRenderer.attach(drawTool);
+
         drawTool.push();
         Wrapper.getMapManager().draw(drawTool);
         //this.generatedMap.draw(drawTool);
