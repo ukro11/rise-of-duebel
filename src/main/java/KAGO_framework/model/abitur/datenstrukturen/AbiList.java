@@ -92,6 +92,8 @@ public class AbiList<ContentType> {
   // aktuelles Element der Liste
   ListNode current;
 
+  private int size;
+
   /**
    * Eine leere Liste wird erzeugt.
    */
@@ -99,9 +101,14 @@ public class AbiList<ContentType> {
     first = null;
     last = null;
     current = null;
+    size = 0;
   }
 
-  /**
+    public int size() {
+        return size;
+    }
+
+    /**
    * Die Anfrage liefert den Wert true, wenn die Liste keine Objekte enthaelt,
    * sonst liefert sie den Wert false.
    * 
@@ -214,6 +221,7 @@ public class AbiList<ContentType> {
           newNode.setNextNode(first);
           first = newNode;
         }
+        size++;
 
       } else { //Fall: Es gibt kein aktuelles Element.
 
@@ -224,8 +232,8 @@ public class AbiList<ContentType> {
 
           first = newNode;
           last = newNode;
+          size++;
         }
-
       }
     }
   }
@@ -252,6 +260,7 @@ public class AbiList<ContentType> {
 
         last.setNextNode(newNode);
         last = newNode; // Letzten Knoten aktualisieren.
+        size++;
       }
 
     }
@@ -283,6 +292,7 @@ public class AbiList<ContentType> {
       pList.first = null;
       pList.last = null;
       pList.current = null;
+      size += pList.size();
     }
   }
 
@@ -318,6 +328,8 @@ public class AbiList<ContentType> {
       if (this.isEmpty()) {
         last = null;
       }
+
+      size--;
     }
   }
 
