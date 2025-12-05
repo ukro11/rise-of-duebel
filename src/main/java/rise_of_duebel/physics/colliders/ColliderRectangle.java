@@ -2,6 +2,7 @@ package rise_of_duebel.physics.colliders;
 
 import rise_of_duebel.physics.AABB;
 import rise_of_duebel.physics.BodyType;
+import rise_of_duebel.physics.ChildCollider;
 import rise_of_duebel.physics.ColliderForm;
 import rise_of_duebel.utils.Vec2;
 
@@ -14,7 +15,15 @@ public class ColliderRectangle extends ColliderPolygon {
     }
 
     public ColliderRectangle(String id, BodyType type, double x, double y, double width, double height) {
-        super(id, type, x, y, new Vec2[] { new Vec2(0, 0), new Vec2(width, 0), new Vec2(width, height), new Vec2(0, height) });
+        this(id, type, x, y, width, height, false);
+    }
+
+    public ColliderRectangle(String id, BodyType type, double x, double y, double width, double height, boolean gravity) {
+        this(id, type, x, y, width, height, gravity, null);
+    }
+
+    public ColliderRectangle(String id, BodyType type, double x, double y, double width, double height, boolean gravity, ChildCollider footCollider) {
+        super(id, type, x, y, new Vec2[] { new Vec2(0, 0), new Vec2(width, 0), new Vec2(width, height), new Vec2(0, height) }, gravity, footCollider);
         this.x = x;
         this.y = y;
         this.width = width;

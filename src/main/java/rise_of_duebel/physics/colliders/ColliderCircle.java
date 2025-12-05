@@ -17,6 +17,15 @@ public class ColliderCircle extends Collider {
     }
 
     public ColliderCircle(String id, BodyType type, double x, double y, double radius) {
+        this(id, type, x, y, radius, false);
+    }
+
+    public ColliderCircle(String id, BodyType type, double x, double y, double radius, boolean gravity) {
+        this(id, type, x, y, radius, gravity, null);
+    }
+
+    public ColliderCircle(String id, BodyType type, double x, double y, double radius, boolean gravity, ChildCollider footCollider) {
+        super(gravity, footCollider);
         this.id = id;
         this.type = type;
         this.x = x;
@@ -51,6 +60,12 @@ public class ColliderCircle extends Collider {
         double maxX = center.x + this.radius;
         double maxY = center.y + this.radius;
         return new AABB(minX, minY, maxX, maxY);
+    }
+
+    @Override
+    protected ChildCollider createFootColider() {
+        // TODO
+        return null;
     }
 
     @Override

@@ -28,6 +28,9 @@ public abstract class Collider {
     protected double width;
     protected double height;
     protected Vec2 velocity = new Vec2();
+    protected double gravity = 0;
+    protected final boolean gravityEnabled;
+    protected boolean grounded = false;
     protected Entity entity;
     protected String colliderClass;
     protected boolean sensor = false;
@@ -43,6 +46,17 @@ public abstract class Collider {
 
     private HashMap<String, Boolean> wasColliding = new HashMap<>();
 
+    public Collider(boolean gravity) {
+        this(gravity, null);
+    }
+
+    public Collider(boolean gravity, ChildCollider foot) {
+        this.gravityEnabled = gravity;
+        if (gravity) {
+            this.children.add(foot == null ? this.createFootColider() : foot);
+        }
+    }
+
     /**
      * Setzt die lineare Geschwindigkeit des Bodys in der x- und y-Richtung. Damit kann der Body bewegt werden.
      * @param velocityX
@@ -50,6 +64,10 @@ public abstract class Collider {
      */
     public void setLinearVelocity(double velocityX, double velocityY) {
         this.velocity.set(velocityX, velocityY);
+    }
+
+    public void setGravity(double gravity) {
+        this.gravity = gravity;
     }
 
     /**
@@ -90,6 +108,7 @@ public abstract class Collider {
     public abstract Interval project(Vec2 vector);
     public abstract List<Vec2> getAxes();
     public abstract AABB computeAABB();
+    protected abstract ChildCollider createFootColider();
 
     public void addChild(Collider collider) {
         if (collider.getType() == BodyType.DYNAMIC) {
@@ -106,6 +125,14 @@ public abstract class Collider {
             collider.getCollider().parent = null;
             this.children.remove(collider);
         }
+    }
+
+    public boolean isGrounded() {
+        return this.grounded;
+    }
+
+    public boolean isGravityEnabled() {
+        return this.gravityEnabled;
     }
 
     public ChildCollider getChildInstance() {

@@ -49,6 +49,10 @@ public class AABB {
         }
     }
 
+    public boolean overlapsX(AABB aabb) {
+        return this.minX <= aabb.maxX && this.maxX >= aabb.minX;
+    }
+
     public boolean overlaps(AABB aabb) {
         return this.minX <= aabb.maxX &&
                 this.maxX >= aabb.minX &&

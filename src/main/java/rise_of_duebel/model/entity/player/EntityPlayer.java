@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 public class EntityPlayer extends Entity<CharacterAnimationState> {
 
-    private EntityDirection direction = EntityDirection.BOTTOM;
+    private EntityDirection direction = EntityDirection.RIGHT;
     private EntityDirection lastDirection = null;
     private PlayerInventory inventory;
 
@@ -36,7 +36,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
         Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<AnimationRenderer>("Loading animations", () -> new AnimationRenderer(
                 "/graphic/character/player/player.png", 9, 12, 192, 128,
-                CharacterAnimationState.IDLE_BOTTOM
+                CharacterAnimationState.IDLE_RIGHT
         ), new EventProcessCallback<AnimationRenderer>() {
             @Override
             public void onSuccess(AnimationRenderer data) {
@@ -69,9 +69,8 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     @Override
     protected void drawEntity(DrawTool drawTool) {
         if (this.renderer != null && this.renderer.getCurrentFrame() != null) {
-            boolean mirror = (this.direction == EntityDirection.LEFT) || (this.lastDirection == EntityDirection.LEFT && (this.direction == EntityDirection.TOP || this.direction == EntityDirection.BOTTOM));
             drawTool.push();
-            if (mirror) {
+            if (this.direction == EntityDirection.LEFT) {
                 double centerX = this.getX() + 58;
                 double centerY = this.getY() + this.height / 2;
 
@@ -101,43 +100,19 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         if (this.freeze) return;
 
         Vec2 moveVelocity = new Vec2();
-        boolean verticalKeyDown = false;
-        if (this.lastDirection != this.direction && this.direction != EntityDirection.BOTTOM && this.direction != EntityDirection.TOP) {
-            this.lastDirection = this.direction;
-        }
-        if (ViewController.isKeyDown(KeyEvent.VK_W) && !ViewController.isKeyDown(KeyEvent.VK_S)) {
-            moveVelocity.set(null, -this.speed);
-            this.direction = EntityDirection.TOP;
-            this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
-            verticalKeyDown = true;
-
-        } else if (ViewController.isKeyDown(KeyEvent.VK_S) && !ViewController.isKeyDown(KeyEvent.VK_W)) {
-            moveVelocity.set(null, this.speed);
-            this.direction = EntityDirection.BOTTOM;
-            this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
-            verticalKeyDown = true;
-        }
+        if (this.lastDirection != this.direction) this.lastDirection = this.direction;
 
         if (ViewController.isKeyDown(KeyEvent.VK_A) && !ViewController.isKeyDown(KeyEvent.VK_D)) {
             moveVelocity.set(-this.speed, null);
             this.direction = EntityDirection.LEFT;
-            if (!this.isWalking(EntityDirection.TOP) && !this.isWalking(EntityDirection.BOTTOM)) {
-                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
-
-            } else if (!verticalKeyDown) {
-                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
-            }
-
-        } else if (ViewController.isKeyDown(KeyEvent.VK_D) && !ViewController.isKeyDown(KeyEvent.VK_A)) {
+            this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
+        }
+        if (ViewController.isKeyDown(KeyEvent.VK_D) && !ViewController.isKeyDown(KeyEvent.VK_A)) {
             moveVelocity.set(this.speed, null);
             this.direction = EntityDirection.RIGHT;
-            if (!this.isWalking(EntityDirection.TOP) && !this.isWalking(EntityDirection.BOTTOM)) {
-                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
-
-            } else if (!verticalKeyDown) {
-                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
-            }
+            this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
         }
+
         if (moveVelocity.magnitude() > 0) {
             moveVelocity.normalize().mul(this.speed, this.speed);
         }
@@ -203,21 +178,10 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     @Override
     public void keyPressed(KeyEvent key) {
-        // EntityPlayer.IDLE_STATES.contains(this.renderer.getCurrentAnimation().getState())
         if (this.freeze && !this.isWalking()) return;
         switch (key.getKeyCode()) {
-            case KeyEvent.VK_W: {
-                this.direction = EntityDirection.TOP;
-                this.onDirectionChange();
-                break;
-            }
             case KeyEvent.VK_A: {
                 this.direction = EntityDirection.LEFT;
-                this.onDirectionChange();
-                break;
-            }
-            case KeyEvent.VK_S: {
-                this.direction = EntityDirection.BOTTOM;
                 this.onDirectionChange();
                 break;
             }

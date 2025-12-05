@@ -32,10 +32,15 @@ public class ColliderPolygon extends Collider {
     }
 
     public ColliderPolygon(String id, BodyType type, double x, double y, Vec2[] vertices) {
-        this(id, type, x, y, vertices, true);
+        this(id, type, x, y, vertices, false);
     }
 
-    public ColliderPolygon(String id, BodyType type, double x, double y, Vec2[] vertices, boolean register) {
+    public ColliderPolygon(String id, BodyType type, double x, double y, Vec2[] vertices, boolean gravity) {
+        this(id, type, x, y, vertices, gravity, null);
+    }
+
+    public ColliderPolygon(String id, BodyType type, double x, double y, Vec2[] vertices, boolean gravity, ChildCollider footCollider) {
+        super(gravity, footCollider);
         this.id = id;
         this.type = type;
         if (vertices.length <= 2) {
@@ -52,7 +57,7 @@ public class ColliderPolygon extends Collider {
         this.normals = this.getCounterClockwiseEdgeNormals(this.vertices);
         this.computeCenter();
 
-        if (register) Wrapper.getColliderManager().createBody(this);
+        Wrapper.getColliderManager().createBody(this);
     }
 
     @Override
@@ -91,6 +96,12 @@ public class ColliderPolygon extends Collider {
             }
         }
         return new AABB(minX, minY, maxX, maxY);
+    }
+
+    @Override
+    protected ChildCollider createFootColider() {
+        // TODO
+        return null;
     }
 
     @Override
