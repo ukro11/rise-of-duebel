@@ -3,7 +3,6 @@ package rise_of_duebel.model.scene;
 import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
 import KAGO_framework.view.DrawTool;
-import rise_of_duebel.Config;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.graphics.CameraRenderer;
 import rise_of_duebel.graphics.OrderRenderer;
@@ -77,7 +76,7 @@ public class GameScene extends Scene {
         GameScene.getInstance().getRenderer().draw(drawTool);
         this.getDrawables().forEach(d -> d.draw(drawTool));
 
-        //this.drawAllHitboxes(drawTool);
+        this.drawAllHitboxes(drawTool);
 
         Wrapper.getMapManager().drawAfterPlayer(drawTool);
 
@@ -90,8 +89,8 @@ public class GameScene extends Scene {
         Wrapper.getGameHandler().draw(drawTool);
         Wrapper.getTooltipManager().draw(drawTool);
         super.draw(drawTool);
-        drawTool.setCurrentColor(new Color(3, 15, 45), 50);
-        drawTool.drawFilledRectangle(0, 0, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        drawTool.setCurrentColor(new Color(157, 196, 94), 50);
+        drawTool.drawFilledRectangle(0, 0, 4000, 4000);
         drawTool.resetColor();
     }
 

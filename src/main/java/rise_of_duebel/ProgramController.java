@@ -12,7 +12,9 @@ import rise_of_duebel.graphics.map.TileMap;
 import rise_of_duebel.model.debug.impl.InfoComponent;
 import rise_of_duebel.model.entity.player.EntityPlayer;
 import rise_of_duebel.model.scene.GameScene;
+import rise_of_duebel.physics.BodyType;
 import rise_of_duebel.physics.Collider;
+import rise_of_duebel.physics.colliders.ColliderRectangle;
 import rise_of_duebel.utils.CooldownManager;
 
 import java.awt.event.KeyEvent;
@@ -53,7 +55,7 @@ public class ProgramController {
             // /temp/undead/Tiled_files/Undead_land.json
             // /map/kitchen.json
             // /map/overworld/Undead_land.json
-            Wrapper.getMapManager().importMap(new TileMap("/map/overworld/Undead_land.json", List.of("*"), List.of(), List.of(), List.of()) {
+            Wrapper.getMapManager().importMap(new TileMap("/map/overworld/Undead_land.json", List.of(), List.of(), List.of("*"), List.of()) {
                 @Override
                 public void loadCollider(GsonMap.Layer layer, GsonMap.ObjectCollider objCollider, Collider collider) {
 
@@ -85,6 +87,8 @@ public class ProgramController {
 
         this.player = Wrapper.getEntityManager().spawnPlayer("player", 270, 190);
         this.player.setShowHitbox(false);
+
+        new ColliderRectangle(BodyType.STATIC, 0, 500, 400, 100);
         GameScene.getInstance().getCameraRenderer().focusAtEntity(this.player);
     }
 

@@ -25,7 +25,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     private EntityDirection lastDirection = null;
     private PlayerInventory inventory;
 
-    private final double speed = 120.0;
+    private final double speed = 20.0;
     private boolean freeze = false;
 
     private List<Consumer<EntityPlayer>> onDirectionChange = new ArrayList<>();

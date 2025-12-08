@@ -16,7 +16,7 @@ public class ColliderPolygon extends Collider {
     public Vec2[] normals;
     private Vec2 center;
 
-    public static ColliderPolygon createCIPolygon(String id, BodyType type, double x, double y, double width, double height, double curvedInFactor) {
+    public static ColliderPolygon createCIPolygon(String id, BodyType type, double x, double y, double width, double height, double curvedInFactor, boolean gravity) {
         double offsetY = 0;
         var vertices = new Vec2[] {
             new Vec2(-width/2, -height/2 + curvedInFactor - offsetY), new Vec2(-width/2 + curvedInFactor, -height/2 - offsetY),
@@ -24,7 +24,7 @@ public class ColliderPolygon extends Collider {
             new Vec2(width/2, height/2 - curvedInFactor - offsetY), new Vec2(width/2 - curvedInFactor, height/2 - offsetY),
             new Vec2(-width/2 + curvedInFactor, height/2 - offsetY), new Vec2(-width/2, height/2 - curvedInFactor - offsetY)
         };
-        return new ColliderPolygon(id, type, x, y, vertices);
+        return new ColliderPolygon(id, type, x, y, vertices, gravity);
     }
 
     public ColliderPolygon(BodyType type, double x, double y, Vec2[] vertices) {
@@ -40,7 +40,7 @@ public class ColliderPolygon extends Collider {
     }
 
     public ColliderPolygon(String id, BodyType type, double x, double y, Vec2[] vertices, boolean gravity, ChildCollider footCollider) {
-        super(gravity, footCollider);
+        super(type == BodyType.STATIC ? false : gravity, footCollider);
         this.id = id;
         this.type = type;
         if (vertices.length <= 2) {
@@ -106,13 +106,22 @@ public class ColliderPolygon extends Collider {
 
     @Override
     public void move(double dt) {
-        if (this.vertices != null && !this.isDestroyed() && this.velocity.magnitude() > 0) {
-            for (int i = 0; i < this.vertices.length; i++) {
-                this.vertices[i].add(this.velocity.x * dt, this.velocity.y * dt);
+        if (this.vertices != null && !this.isDestroyed()) {
+            if (this.gravityEnabled) {
+                // TODO
+                //double ax = this.gravity + this.force.x * this.invMass;
+                double ay = this.gravityScale * this.gravity + this.force.y * this.invMass;
+                //this.velocity.x += ax * dt;
+                this.velocity.y += ay * dt;
             }
-            this.x += this.velocity.x * dt;
-            this.y += this.velocity.y * dt;
-            this.center.add(this.velocity.x * dt, this.velocity.y * dt);
+            if (this.velocity.magnitude() > 0) {
+                for (int i = 0; i < this.vertices.length; i++) {
+                    this.vertices[i].add(this.velocity.x * dt, this.velocity.y * dt);
+                }
+                this.x += this.velocity.x * dt;
+                this.y += this.velocity.y * dt;
+                this.center.add(this.velocity.x * dt, this.velocity.y * dt);
+            }
         }
     }
 

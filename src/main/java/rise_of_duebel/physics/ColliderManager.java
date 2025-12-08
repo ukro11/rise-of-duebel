@@ -2,6 +2,7 @@ package rise_of_duebel.physics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rise_of_duebel.Wrapper;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class ColliderManager {
         int steps = (int) Math.ceil(dt / maxSubDt);
         if (steps < 1) steps = 1;
 
-        double subDt = dt / steps;
+        double subDt = Wrapper.getTimer().getDeltaTime() / steps;
 
         for (int s = 0; s < steps; s++) {
             for (Collider c : colliders.values()) {

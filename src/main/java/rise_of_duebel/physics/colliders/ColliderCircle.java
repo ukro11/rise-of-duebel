@@ -25,7 +25,7 @@ public class ColliderCircle extends Collider {
     }
 
     public ColliderCircle(String id, BodyType type, double x, double y, double radius, boolean gravity, ChildCollider footCollider) {
-        super(gravity, footCollider);
+        super(type == BodyType.STATIC ? false : gravity, footCollider);
         this.id = id;
         this.type = type;
         this.x = x;
@@ -70,8 +70,12 @@ public class ColliderCircle extends Collider {
 
     @Override
     public void move(double dt) {
-        if (this.velocity != null && !this.isDestroyed() && this.velocity.magnitude() > 0) {
-            this.center.add(this.velocity.x * dt, this.velocity.y * dt);
+        if (this.velocity != null && !this.isDestroyed()) {
+            // TODO
+            if (this.gravityEnabled) this.velocity.y += this.gravity;
+            if (this.velocity.magnitude() > 0) {
+                this.center.add(this.velocity.x * dt, this.velocity.y * dt);
+            }
         }
     }
 

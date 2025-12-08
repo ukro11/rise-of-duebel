@@ -13,8 +13,9 @@ public class EntityManager {
     private final Map<String, Entity> entities = new HashMap<>();
 
     public EntityPlayer spawnPlayer(String id, double x, double y) {
-        ColliderPolygon collider = ColliderPolygon.createCIPolygon(id, BodyType.DYNAMIC, x, y, 12, 12, 4.5);
+        ColliderPolygon collider = ColliderPolygon.createCIPolygon(id, BodyType.DYNAMIC, x, y, 12, 12, 4.5, true);
         collider.setColliderClass("entity_player");
+        collider.setMass(20.0);
         EntityPlayer player = new EntityPlayer(collider, -64 + 13 / 2, -74, 192, 128);
         collider.setEntity(player);
         ObjectSpawner.objects.forEach(obj -> obj.onRegisterPlayer(player));

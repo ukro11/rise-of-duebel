@@ -129,8 +129,8 @@ public abstract class TileMap {
                 g.drawImage(quad.getQuadImage(), (int) quad.getX(), (int) quad.getY(), (int) quad.getWidth(), (int) quad.getHeight(), null);
             }
             g.dispose();
-            this.batchLayers.clear();
-            this.batchQuads.clear();
+            //this.batchLayers.clear();
+            //this.batchQuads.clear();
         }
 
         if (!this.batchLayersAfterPlayer.isEmpty()) {

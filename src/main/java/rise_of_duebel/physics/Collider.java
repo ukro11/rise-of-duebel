@@ -28,7 +28,11 @@ public abstract class Collider {
     protected double width;
     protected double height;
     protected Vec2 velocity = new Vec2();
-    protected double gravity = 0;
+    protected Vec2 force = new Vec2();
+    protected double mass;
+    protected double invMass;
+    protected double gravity = 9.81;
+    protected int gravityScale = 16;
     protected final boolean gravityEnabled;
     protected boolean grounded = false;
     protected Entity entity;
@@ -52,7 +56,7 @@ public abstract class Collider {
 
     public Collider(boolean gravity, ChildCollider foot) {
         this.gravityEnabled = gravity;
-        if (gravity) {
+        if (gravity && false) {
             this.children.add(foot == null ? this.createFootColider() : foot);
         }
     }
@@ -64,6 +68,15 @@ public abstract class Collider {
      */
     public void setLinearVelocity(double velocityX, double velocityY) {
         this.velocity.set(velocityX, velocityY);
+    }
+
+    public void setMass(double mass) {
+        this.mass = mass;
+        this.invMass = mass > 0 ? 1.0 / mass : 0.0;
+    }
+
+    public void applyForce(double fx, double fy) {
+        this.force.set(fx, fy);
     }
 
     public void setGravity(double gravity) {
@@ -178,17 +191,25 @@ public abstract class Collider {
     }
 
     public void update(double dt) {
-        if (this.type == BodyType.DYNAMIC && this.velocity.magnitude() > 0 && this.parent == null) {
+        if (this.type == BodyType.DYNAMIC && this.parent == null) {
             this.move(dt);
-            this.onMove.forEach(c -> c.accept(this));
-            this.children.forEach(child -> {
-                child.getCollider().setPosition(this.x + child.getOffsetX(), this.y + child.getOffsetY());
-            });
+            if (this.velocity.magnitude() > 0) {
+                this.onMove.forEach(c -> c.accept(this));
+                this.children.forEach(child -> {
+                    child.getCollider().setPosition(this.x + child.getOffsetX(), this.y + child.getOffsetY());
+                });
+            }
         }
         this.moveEntity();
     }
 
     public void move(double dt) {
+        if (this.gravityEnabled) {
+            //double ax = this.gravity + this.force.x * this.invMass;
+            double ay = this.gravityScale * this.gravity + this.force.y * this.invMass;
+            //this.velocity.x += ax * dt;
+            this.velocity.y += ay * dt;
+        }
         this.x += this.velocity.x * dt;
         this.y += this.velocity.y * dt;
     }
