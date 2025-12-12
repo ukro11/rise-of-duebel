@@ -11,7 +11,6 @@ import rise_of_duebel.event.services.process.EventLoadAssetsProcess;
 import rise_of_duebel.model.entity.Entity;
 import rise_of_duebel.model.entity.EntityDirection;
 import rise_of_duebel.physics.Collider;
-import rise_of_duebel.utils.Vec2;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;

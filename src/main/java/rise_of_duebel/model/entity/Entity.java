@@ -13,7 +13,6 @@ import rise_of_duebel.animation.IAnimationState;
 import rise_of_duebel.graphics.IOrderRenderer;
 import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.physics.Collider;
-import rise_of_duebel.utils.Vec2;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;

@@ -49,6 +49,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation 'ch.qos.logback:logback-classic:1.4.14'
     implementation "com.google.guava:guava:33.4.8-jre"
+    implementation 'org.dyn4j:dyn4j:4.1.4'
 }
 
 test {

@@ -13,7 +13,6 @@ import rise_of_duebel.physics.colliders.ColliderCircle;
 import rise_of_duebel.physics.colliders.ColliderPolygon;
 import rise_of_duebel.physics.colliders.ColliderRectangle;
 import rise_of_duebel.utils.CacheManager;
-import rise_of_duebel.utils.Vec2;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

@@ -35,7 +35,6 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
     private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
     private final ProgramController programController;
     private final DrawTool drawTool;
-    private final ListeningExecutorService physicsExecutor;
 
     private final AtomicBoolean watchPhysics;
     private final AtomicBoolean initializing;
@@ -55,8 +54,6 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         ViewController.instance = this;
         this.programController = new ProgramController(this);
         this.drawTool = new DrawTool();
-        //this.physicsExecutor = MoreExecutors.listeningDecorator(Executors.newScheduledThreadPool(2));
-        this.physicsExecutor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(2));
         this.watchPhysics = new AtomicBoolean(true);
         this.initializing = new AtomicBoolean(true);
 
@@ -90,7 +87,6 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
     private void startProgram() {
         try {
             this.setWatchPhyics(false);
-            this.startPhysicsEngine();
             this.startGameEngine();
 
         } catch (InterruptedException e) {
@@ -103,69 +99,43 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         this.setWatchPhyics(true);
         Wrapper.getProcessManager().processPostGame();
 
+        // TODO: https://github.com/dyn4j/dyn4j-samples/blob/master/src/main/java/org/dyn4j/samples/framework/SimulationFrame.java Line 305
+        this.setIgnoreRepaint(true);
         this.createBufferStrategy(3);
-        BufferStrategy bs = this.getBufferStrategy();
 
         while (true) {
+            Graphics2D g = (Graphics2D) this.getBufferStrategy().getDrawGraphics();
+
             Wrapper.getTimer().update();
             double dt = Wrapper.getTimer().getDeltaTime();
 
             this.programController.updateProgram(dt);
             if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
 
-            Graphics2D g = (Graphics2D) bs.getDrawGraphics();
             this.drawTool.setGraphics2D(g);
             if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(this.drawTool);
+
             g.dispose();
-            bs.show();
+
+            BufferStrategy strategy = this.getBufferStrategy();
+            if (!strategy.contentsLost()) {
+                strategy.show();
+            }
+
             Toolkit.getDefaultToolkit().sync();
 
             Wrapper.getTimer().updateFrames();
         }
     }
 
-    private void startPhysicsEngine() {
-        var physicService = this.physicsExecutor.submit(() -> {
-            while (true) {
-                if (this.watchPhysics.get()) {
-                    Wrapper.getPhysicsTimer().update(true);
-
-                    double dt = Wrapper.getPhysicsTimer().getDeltaTime();
-
-                    Wrapper.getColliderManager().updateColliders(dt);
-                    if (Scene.getCurrentScene() instanceof GameScene) GameScene.getInstance().updatePhysics(dt);
-
-                    Wrapper.getPhysicsTimer().updateFrames();
-                } else {
-                    Thread.sleep(100);
-                }
-            }
-        });
-
-        Futures.addCallback(physicService, new FutureCallback<Object>() {
-            @Override
-            public void onSuccess(Object result) {}
-            @Override
-            public void onFailure(Throwable t) {
-                logger.error("Exception in thread \"{}\" {}", Thread.currentThread().getName(), t.getClass().getName());
-                t.printStackTrace();
-            }
-        }, this.physicsExecutor);
-    }
-
     private void shutdown() {
         this.programController.shutdown();
-        this.physicsExecutor.shutdown();
         Wrapper.getProcessManager().shutdown();
         try {
-            if (!this.physicsExecutor.awaitTermination(800, TimeUnit.MILLISECONDS)) {
-                this.physicsExecutor.shutdownNow();
-            }
             if (!Wrapper.getProcessManager().getServicesExecutor().awaitTermination(800, TimeUnit.MILLISECONDS)) {
                 Wrapper.getProcessManager().getServicesExecutor().shutdownNow();
             }
         } catch (InterruptedException e) {
-            this.physicsExecutor.shutdownNow();
             Wrapper.getProcessManager().getServicesExecutor().shutdownNow();
             Thread.currentThread().interrupt();
         }

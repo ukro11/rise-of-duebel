@@ -5,7 +5,6 @@ import rise_of_duebel.animation.IAnimationState;
 import rise_of_duebel.model.entity.player.EntityPlayer;
 import rise_of_duebel.model.sound.SoundManager;
 import rise_of_duebel.physics.Collider;
-import rise_of_duebel.utils.Vec2;
 
 public abstract class EntityItem<T extends Enum<T> & IAnimationState> extends Entity<T> {
 

@@ -7,7 +7,6 @@ import rise_of_duebel.event.events.CameraMoveEvent;
 import rise_of_duebel.model.entity.Entity;
 import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.utils.MathUtils;
-import rise_of_duebel.utils.Vec2;
 
 import java.awt.*;
 import java.time.Instant;

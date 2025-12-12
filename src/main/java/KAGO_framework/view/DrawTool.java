@@ -1,7 +1,6 @@
 package KAGO_framework.view;
 
 import rise_of_duebel.graphics.FrameworkGraphics;
-import rise_of_duebel.utils.Vec2;
 
 import javax.swing.*;
 import java.awt.*;
