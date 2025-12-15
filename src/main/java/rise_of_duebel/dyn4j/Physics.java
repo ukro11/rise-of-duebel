@@ -1,19 +1,23 @@
 package rise_of_duebel.dyn4j;
 
 import KAGO_framework.control.ViewController;
+import org.dyn4j.dynamics.TimeStep;
 import org.dyn4j.dynamics.contact.ContactConstraint;
 import org.dyn4j.geometry.AABB;
 import org.dyn4j.geometry.Geometry;
 import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.ContactCollisionData;
+import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.World;
 import org.dyn4j.world.listener.ContactListenerAdapter;
+import org.dyn4j.world.listener.StepListenerAdapter;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.utils.input.BooleanStateKeyboardInputHandler;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 public final class Physics {
 
@@ -66,6 +70,26 @@ public final class Physics {
         this.character.setUserData(ColliderData.CHARACTER);
         this.character.setAtRestDetectionEnabled(false);
         this.world.addBody(character);
+
+        this.world.addStepListener(new StepListenerAdapter<>() {
+            @Override
+            public void begin(TimeStep step, PhysicsWorld<ColliderBody, ?> world) {
+                super.begin(step, world);
+
+                boolean isGround = false;
+                List<ContactConstraint<ColliderBody>> contacts = world.getContacts(character);
+                for (ContactConstraint<ColliderBody> cc : contacts) {
+                    if (is(cc.getOtherBody(character), ColliderData.FLOOR, ColliderData.ONE_WAY_PLATFORM) && cc.isEnabled()) {
+                        isGround = true;
+                    }
+                }
+
+                // only clear it
+                if (!isGround) {
+                    onGround = false;
+                }
+            }
+        });
 
         this.world.addContactListener(new ContactListenerAdapter<ColliderBody>() {
             @Override
@@ -145,43 +169,7 @@ public final class Physics {
         }
     }
 
-    /**
-     * Sets the isOnGround flag if the given contact constraint is between
-     * the character body and a floor or one-way platform.
-     * @param contactConstraint
-     */
-    private void trackIsOnGround(ContactConstraint<ColliderBody> contactConstraint) {
-        ColliderBody b1 = contactConstraint.getBody1();
-        ColliderBody b2 = contactConstraint.getBody2();
-
-        if (is(b1, ColliderData.CHARACTER) &&
-                is(b2, ColliderData.FLOOR, ColliderData.ONE_WAY_PLATFORM) &&
-                contactConstraint.isEnabled()) {
-            this.onGround = true;
-
-        } else if (is(b1, ColliderData.FLOOR, ColliderData.ONE_WAY_PLATFORM) &&
-                is(b2, ColliderData.CHARACTER) &&
-                contactConstraint.isEnabled()) {
-            this.onGround = true;
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.dyn4j.samples.framework.SimulationFrame#reset()
-     */
-    @Override
-    public void reset() {
-        super.reset();
-        this.onGround = false;
-    }
-
-    /* (non-Javadoc)
-     * @see org.dyn4j.samples.framework.SimulationFrame#handleEvents()
-     */
-    @Override
-    protected void handleEvents() {
-        super.handleEvents();
-
+    public void handleEvents() {
         // apply a torque based on key input
         if (this.left.isActive()) {
             character.applyTorque(Math.PI / 2);
@@ -204,5 +192,30 @@ public final class Physics {
         } else {
             character.setColor(WHEEL_OFF_COLOR);
         }
+    }
+
+    /**
+     * Sets the isOnGround flag if the given contact constraint is between
+     * the character body and a floor or one-way platform.
+     * @param contactConstraint
+     */
+    private void trackIsOnGround(ContactConstraint<ColliderBody> contactConstraint) {
+        ColliderBody b1 = contactConstraint.getBody1();
+        ColliderBody b2 = contactConstraint.getBody2();
+
+        if (is(b1, ColliderData.CHARACTER) &&
+                is(b2, ColliderData.FLOOR, ColliderData.ONE_WAY_PLATFORM) &&
+                contactConstraint.isEnabled()) {
+            this.onGround = true;
+
+        } else if (is(b1, ColliderData.FLOOR, ColliderData.ONE_WAY_PLATFORM) &&
+                is(b2, ColliderData.CHARACTER) &&
+                contactConstraint.isEnabled()) {
+            this.onGround = true;
+        }
+    }
+
+    public World<ColliderBody> getWorld() {
+        return this.world;
     }
 }

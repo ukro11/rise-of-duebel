@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rise_of_duebel.ProgramController;
 import rise_of_duebel.Wrapper;
+import rise_of_duebel.dyn4j.Physics;
 import rise_of_duebel.event.events.KeyPressedEvent;
 import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.model.scene.LoadingScene;
@@ -46,6 +47,8 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
     private final static java.util.List<Integer> currentlyPressedMouseButtons = new ArrayList<>();
 
     private static ViewController instance;
+
+    private long last;
 
     /**
      * Erzeugt ein Objekt zur Kontrolle des Programmflusses.
@@ -101,7 +104,15 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
 
         // TODO: https://github.com/dyn4j/dyn4j-samples/blob/master/src/main/java/org/dyn4j/samples/framework/SimulationFrame.java Line 305
         this.setIgnoreRepaint(true);
-        this.createBufferStrategy(3);
+        this.createBufferStrategy(2);
+
+        this.requestFocus();
+        this.setVisible(true);
+
+        Physics physics = new Physics();
+
+        this.last = System.nanoTime();
+        double NANO_TO_BASE = 1.0e9;
 
         while (true) {
             Graphics2D g = (Graphics2D) this.getBufferStrategy().getDrawGraphics();
@@ -109,11 +120,22 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
             Wrapper.getTimer().update();
             double dt = Wrapper.getTimer().getDeltaTime();
 
+            /*long time = System.nanoTime();
+            // get the elapsed time from the last iteration
+            long diff = time - this.last;
+            // set the last time
+            this.last = time;
+            // convert from nanoseconds to seconds
+            double elapsedTime = (double)diff / NANO_TO_BASE;*/
+
             this.programController.updateProgram(dt);
             if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
 
             this.drawTool.setGraphics2D(g);
             if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(this.drawTool);
+
+            physics.getWorld().update(dt);
+            physics.handleEvents();
 
             g.dispose();
 

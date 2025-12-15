@@ -22,6 +22,8 @@ public class MathUtils {
         return Math.max(min, Math.min(value, max));
     }
 
+    public static double lerp(double a, double b, double t) { return a + (b - a) * t; }
+
     public static int random(int min, int max) {
         return min + (int) (Math.random() * (max - min + 1));
     }

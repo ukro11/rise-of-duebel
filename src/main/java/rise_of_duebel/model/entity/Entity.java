@@ -4,12 +4,14 @@ import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
 import KAGO_framework.control.ViewController;
 import KAGO_framework.view.DrawTool;
+import org.dyn4j.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rise_of_duebel.ProgramController;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.animation.AnimationRenderer;
 import rise_of_duebel.animation.IAnimationState;
+import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.graphics.IOrderRenderer;
 import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.physics.Collider;
@@ -27,46 +29,25 @@ public abstract class Entity<T extends Enum<T> & IAnimationState> implements Dra
     protected final Logger logger = LoggerFactory.getLogger(Entity.class);
 
     protected final String id;
-    protected final Collider body;
-    protected double bodyOffsetX;
-    protected double bodyOffsetY;
+    protected final ColliderBody body;
+    protected final World<ColliderBody> world;
     private double x;
     private double y;
     protected double width;
     protected double height;
-    protected Vec2 highestPoint;
-    protected Vec2 highestPointOffset;
     protected boolean showHitbox;
-    protected Vec2 offset = new Vec2();
 
     protected AnimationRenderer<T> renderer;
 
-    public Entity(double x, double y, double width, double height) {
-        this(null, x, y, width, height);
-    }
-
-    public Entity(Collider body, double x, double y, double width, double height) {
+    public Entity(World<ColliderBody> world, ColliderBody body, double x, double y, double width, double height) {
         this.viewController = ViewController.getInstance();
         this.programController = this.viewController.getProgramController();
 
-        this.id = UUID.randomUUID().toString();
+        this.id = String.format("ENTITY_%s", UUID.randomUUID());
+        this.world = world;
         this.body = body;
         this.width = width;
         this.height = height;
-
-        if (this.body != null) {
-            this.body.setEntity(this);
-            this.bodyOffsetX = x;
-            this.bodyOffsetY = y;
-            this.x = body.getX() + this.bodyOffsetX;
-            this.y = body.getY() + this.bodyOffsetY;
-
-        } else {
-            this.x = x;
-            this.y = y;
-        }
-        this.highestPoint = new Vec2(body.getX() + this.bodyOffsetX, body.getY() + this.bodyOffsetY);
-        this.highestPointOffset = new Vec2();
         this.showHitbox = false;
 
         GameScene.getInstance().getRenderer().register(this);
@@ -101,18 +82,6 @@ public abstract class Entity<T extends Enum<T> & IAnimationState> implements Dra
             if (!this.renderer.isRunning()) this.renderer.start();
             this.renderer.update(dt);
             this.highestPoint.set(this.getX() + this.highestPointOffset.x, this.getY() + this.highestPointOffset.y);
-        }
-    }
-
-    protected void exitOnWrongRegistration() {
-        try {
-            var stacktraces = Thread.currentThread().getStackTrace();
-            if (Arrays.stream(stacktraces).filter(stackTrace -> stackTrace.getClassName().equals(EntityManager.class.getName())).findFirst().orElse(null) == null) {
-                throw new RuntimeException(String.format("To create an entity %s use \"Wrapper.getEntityManager().spawnPlayer(...)\"", this.getClass().getSimpleName()));
-            }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            System.exit(-1);
         }
     }
 

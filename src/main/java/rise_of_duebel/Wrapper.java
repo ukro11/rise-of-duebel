@@ -9,13 +9,11 @@ import rise_of_duebel.model.GameHandlerModel;
 import rise_of_duebel.model.entity.EntityManager;
 import rise_of_duebel.model.entity.player.EntityPlayer;
 import rise_of_duebel.model.sound.SoundConstants;
-import rise_of_duebel.physics.ColliderManager;
 import rise_of_duebel.utils.TimerUtils;
 
 public class Wrapper {
 
     private final static EventManager eventManager = new EventManager();
-    private final static ColliderManager colliderManager = new ColliderManager();
     private final static EntityManager entityManager = new EntityManager();
     private final static EventProcessingQueue processManager = new EventProcessingQueue();
     private final static TooltipManager tooltipManager = new TooltipManager();
@@ -27,10 +25,6 @@ public class Wrapper {
 
     public static EventManager getEventManager() {
         return eventManager;
-    }
-
-    public static ColliderManager getColliderManager() {
-        return colliderManager;
     }
 
     public static EntityManager getEntityManager() {

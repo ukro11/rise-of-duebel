@@ -1,5 +1,6 @@
 package KAGO_framework.view;
 
+import org.dyn4j.geometry.Vector2;
 import rise_of_duebel.graphics.FrameworkGraphics;
 
 import javax.swing.*;
@@ -214,11 +215,11 @@ public class DrawTool {
         frameworkGraphics.getGraphics2D().draw(getPolygon(eckpunkte));
     }
 
-    public void drawPolygon(Vec2... eckpunkte) {
+    public void drawPolygon(Vector2... eckpunkte) {
         frameworkGraphics.getGraphics2D().draw(getPolygon(List.of(eckpunkte)));
     }
 
-    public void drawPolygon(List<Vec2> eckpunkte) {
+    public void drawPolygon(List<Vector2> eckpunkte) {
         frameworkGraphics.getGraphics2D().draw(getPolygon(eckpunkte));
     }
 
@@ -231,7 +232,7 @@ public class DrawTool {
         frameworkGraphics.getGraphics2D().fill(getPolygon(eckpunkte));
     }
 
-    public void drawFilledPolygon (Vec2 ... eckpunkte) {
+    public void drawFilledPolygon (Vector2 ... eckpunkte) {
         frameworkGraphics.getGraphics2D().fill(getPolygon(List.of(eckpunkte)));
     }
 
@@ -254,7 +255,7 @@ public class DrawTool {
         return p;
     }
 
-    private Polygon getPolygon(List<Vec2> eckPunkte) {
+    private Polygon getPolygon(List<Vector2> eckPunkte) {
         //garantiert das eine gerade anzahl an ecken vorhanden ist und das es mehr als 3 ecken sind
         assert eckPunkte.size() % 2 == 0 && eckPunkte.size() >= 3;
         assert this.frameworkGraphics  != null;
