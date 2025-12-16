@@ -1,6 +1,7 @@
 package rise_of_duebel.graphics;
 
 import KAGO_framework.view.DrawTool;
+import org.dyn4j.geometry.Vector2;
 import rise_of_duebel.Config;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.event.events.CameraMoveEvent;
@@ -20,10 +21,10 @@ public class CameraRenderer {
     private boolean smooth = false;
     private double zoom = 1.0;
     private double angle = 0;
-    private Vec2 offset = new Vec2();
-    private Vec2 prevScale;
+    private Vector2 offset = new Vector2();
+    private Vector2 prevScale;
     private Entity focusEntity;
-    private Vec2 cameraMax = new Vec2(10000, 10000);
+    private Vector2 cameraMax = new Vector2(10000, 10000);
 
     private Map.Entry<Instant, Double> currentShake;
     private double shakeElapsed = 0.0;
@@ -53,14 +54,14 @@ public class CameraRenderer {
         return this;
     }
 
-    public CameraRenderer offset(Vec2 offset) {
+    public CameraRenderer offset(Vector2 offset) {
         this.offset = offset;
         return this;
     }
 
     public void attach(DrawTool drawTool) {
         if (this.prevScale == null) {
-            this.prevScale = new Vec2();
+            this.prevScale = new Vector2();
             this.prevScale.set(drawTool.getGraphics2D().getTransform().getScaleX(), drawTool.getGraphics2D().getTransform().getScaleY());
         }
         drawTool.push();
@@ -130,7 +131,7 @@ public class CameraRenderer {
     private void focusSmooth(double x, double y, double dt) {
         double camX = x * this.zoom - Config.WINDOW_WIDTH / 2 + this.offset.x;
         double camY = y * this.zoom - Config.WINDOW_HEIGHT / 2 + this.offset.y;
-        Vec2 velocity = new Vec2(camX - this.x, camY - this.y);
+        Vector2 velocity = new Vector2(camX - this.x, camY - this.y);
         //camX = MathUtils.clamp(camX, 0, this.cameraMax.x * this.zoom);
         //camY = MathUtils.clamp(camY, 0, this.cameraMax.y * this.zoom);
 
@@ -191,6 +192,18 @@ public class CameraRenderer {
                 this.y = MathUtils.clamp(this.y + shakeOffsetY, 0, Config.WINDOW_HEIGHT);
             }
         }
+    }
+
+    public final Vector2 toWorldCoordinates(double width, double height, Point p) {
+        if (p != null) {
+            Vector2 v = new Vector2();
+            // convert the screen space point to world space
+            v.x =  (p.getX() - width * 0.5 - this.offset.x) / this.zoom;
+            v.y = -(p.getY() - height * 0.5 + this.offset.y) / this.zoom;
+            return v;
+        }
+
+        return null;
     }
 
     public double getX() {

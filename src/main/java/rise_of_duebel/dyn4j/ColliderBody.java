@@ -24,6 +24,7 @@
  */
 package rise_of_duebel.dyn4j;
 
+import KAGO_framework.view.DrawTool;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.geometry.Convex;
@@ -41,10 +42,7 @@ public class ColliderBody extends Body {
      * Default constructor.
      */
     public ColliderBody() {
-        this.color = new Color(
-                (float)Math.random() * 0.5f + 0.5f,
-                (float)Math.random() * 0.5f + 0.5f,
-                (float)Math.random() * 0.5f + 0.5f);
+        this.color = PhysicsRenderer.getRandomColor();
     }
 
     /**
@@ -62,7 +60,7 @@ public class ColliderBody extends Body {
      * @param g the graphics object to render to
      * @param scale the scaling factor
      */
-    public void render(Graphics2D g, double scale) {
+    public void render(DrawTool g, double scale) {
         this.render(g, scale, this.color);
     }
 
@@ -70,15 +68,16 @@ public class ColliderBody extends Body {
      * Draws the body.
      * <p>
      * Only coded for polygons and circles.
-     * @param g the graphics object to render to
+     * @param drawTool the graphics object to render to
      * @param scale the scaling factor
      * @param color the color to render the body
      */
-    public void render(Graphics2D g, double scale, Color color) {
+    public void render(DrawTool drawTool, double scale, Color color) {
         // point radius
         final int pr = 4;
 
         // save the original transform
+        Graphics2D g = drawTool.getGraphics2D();
         AffineTransform ot = g.getTransform();
 
         // transform the coordinate system from world coordinates to local coordinates
@@ -143,5 +142,13 @@ public class ColliderBody extends Body {
      */
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public double getX() {
+        return this.getTransform().getTranslationX();
+    }
+
+    public double getY() {
+        return this.getTransform().getTranslationY();
     }
 }

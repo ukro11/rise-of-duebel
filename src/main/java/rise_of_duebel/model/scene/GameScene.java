@@ -3,7 +3,10 @@ package rise_of_duebel.model.scene;
 import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
 import KAGO_framework.view.DrawTool;
+import org.dyn4j.geometry.Geometry;
+import org.dyn4j.geometry.MassType;
 import rise_of_duebel.Wrapper;
+import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.graphics.CameraRenderer;
 import rise_of_duebel.graphics.OrderRenderer;
 import rise_of_duebel.graphics.map.generation.GeneratedMap;
@@ -27,6 +30,8 @@ public class GameScene extends Scene {
 
     private GeneratedMap generatedMap = new GeneratedMap();
 
+    private ColliderBody platform;
+
     public static GameScene getInstance() {
         return GameScene.instance;
     }
@@ -40,6 +45,13 @@ public class GameScene extends Scene {
                 .zoom(4)
                 .smooth();
         this.renderer = new OrderRenderer();
+
+        this.platform = new ColliderBody(Color.RED);
+        this.platform.addFixture(Geometry.createRectangle(1000.0, 10));
+        this.platform.setMass(MassType.INFINITE);
+        this.platform.translate(270, 290);
+        this.platform.setUserData("GROUND_PLATFORM_1");
+        Wrapper.getEntityManager().getWorld().addBody(this.platform);
     }
 
     @Override
@@ -57,13 +69,15 @@ public class GameScene extends Scene {
     }
 
     private void drawAllHitboxes(DrawTool drawTool) {
-        Wrapper.getColliderManager().getColliders().values().forEach(r -> {
-            r.drawHitbox(drawTool);
-        });
+        this.platform.render(drawTool, 1);
     }
 
     public void drawGame(DrawTool drawTool) {
         this.cameraRenderer.attach(drawTool);
+
+        drawTool.setCurrentColor(new Color(116, 117, 210));
+        drawTool.drawFilledRectangle(-2000, -1000, 4000, 2000);
+        drawTool.resetColor();
 
         drawTool.push();
         Wrapper.getMapManager().draw(drawTool);

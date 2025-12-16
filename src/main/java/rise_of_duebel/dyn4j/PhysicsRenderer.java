@@ -100,11 +100,8 @@ public final class PhysicsRenderer {
                 radius2 * scale,
                 radius2 * scale);
 
-        // fill the shape
-        g.setColor(color);
-        g.fill(c);
         // draw the outline
-        g.setColor(getOutlineColor(color));
+        g.setColor(color);
         g.draw(c);
 
         // draw a line so that rotation is visible
@@ -135,11 +132,8 @@ public final class PhysicsRenderer {
         }
         p.closePath();
 
-        // fill the shape
-        g.setColor(color);
-        g.fill(p);
         // draw the outline
-        g.setColor(getOutlineColor(color));
+        g.setColor(color);
         g.draw(p);
 
         // draw a line from the center to the first point
@@ -166,7 +160,7 @@ public final class PhysicsRenderer {
                 vertices[1].y * scale);
 
         // draw the outline
-        g.setColor(getOutlineColor(color));
+        g.setColor(color);
         g.draw(l);
     }
 
@@ -218,10 +212,6 @@ public final class PhysicsRenderer {
 
         // set the color
         g.setColor(color);
-        // fill the shape
-        g.fill(path);
-        // set the color
-        g.setColor(getOutlineColor(color));
         // draw the shape
         g.draw(path);
 
@@ -254,11 +244,8 @@ public final class PhysicsRenderer {
                 width * scale,
                 height * scale);
 
-        // fill the shape
-        g.setColor(color);
-        g.fill(c);
         // draw the outline
-        g.setColor(getOutlineColor(color));
+        g.setColor(color);
         g.draw(c);
 
         // re-instate the old transform
@@ -296,11 +283,8 @@ public final class PhysicsRenderer {
                 Math.toDegrees(2.0 * theta2),
                 Arc2D.PIE);
 
-        // fill the shape
-        g.setColor(color);
-        g.fill(a);
         // draw the outline
-        g.setColor(getOutlineColor(color));
+        g.setColor(color);
         g.draw(a);
 
         // re-instate the old transform
@@ -339,11 +323,8 @@ public final class PhysicsRenderer {
                 -180.0,
                 Arc2D.PIE);
 
-        // fill the shape
-        g.setColor(color);
-        g.fill(a);
         // draw the outline
-        g.setColor(getOutlineColor(color));
+        g.setColor(color);
         g.draw(a);
 
         // re-instate the old transform

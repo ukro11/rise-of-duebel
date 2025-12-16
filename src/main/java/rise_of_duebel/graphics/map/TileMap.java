@@ -4,14 +4,10 @@ import KAGO_framework.view.DrawTool;
 import com.google.gson.Gson;
 import rise_of_duebel.Config;
 import rise_of_duebel.Wrapper;
+import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.graphics.CameraRenderer;
 import rise_of_duebel.graphics.IOrderRenderer;
 import rise_of_duebel.model.scene.GameScene;
-import rise_of_duebel.physics.BodyType;
-import rise_of_duebel.physics.Collider;
-import rise_of_duebel.physics.colliders.ColliderCircle;
-import rise_of_duebel.physics.colliders.ColliderPolygon;
-import rise_of_duebel.physics.colliders.ColliderRectangle;
 import rise_of_duebel.utils.CacheManager;
 
 import java.awt.*;
@@ -71,7 +67,7 @@ public abstract class TileMap {
      * @param objCollider Das Tilemap-Collider-Object (gibt Zugriff auf die Properties)
      * @param collider Der erstellte Collider vom Framework
      */
-    public abstract void loadCollider(GsonMap.Layer layer, GsonMap.ObjectCollider objCollider, Collider collider);
+    public abstract void loadCollider(GsonMap.Layer layer, GsonMap.ObjectCollider objCollider, ColliderBody collider);
 
     private void load() {
         for (GsonMap.Layer layer : this.map.getLayers()) {
@@ -84,7 +80,7 @@ public abstract class TileMap {
             } else if (layer.getType().equals("objectgroup")) {
                 for (GsonMap.ObjectCollider o : layer.getObjects()) {
                     if (!o.isVisible()) continue;
-                    Collider collider = null;
+                    /*Collider collider = null;
 
                     if (o.getPolygon() != null) {
                         Vec2[] vertices = new Vec2[o.getPolygon().size()];
@@ -111,9 +107,9 @@ public abstract class TileMap {
 
                     } else {
                         collider.setColliderClass("map");
-                    }
+                    }*/
 
-                    this.loadCollider(layer, o, collider);
+                    this.loadCollider(layer, o, null);
                 }
             }
         }

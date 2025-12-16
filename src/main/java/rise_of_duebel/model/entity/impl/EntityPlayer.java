@@ -1,4 +1,4 @@
-package rise_of_duebel.model.entity.player;
+package rise_of_duebel.model.entity.impl;
 
 import KAGO_framework.control.ViewController;
 import KAGO_framework.view.DrawTool;
@@ -17,7 +17,6 @@ import rise_of_duebel.animation.AnimationRenderer;
 import rise_of_duebel.animation.entity.EntityState;
 import rise_of_duebel.animation.states.CharacterAnimationState;
 import rise_of_duebel.dyn4j.ColliderBody;
-import rise_of_duebel.dyn4j.ColliderData;
 import rise_of_duebel.dyn4j.PhysicsUtils;
 import rise_of_duebel.event.services.EventProcessCallback;
 import rise_of_duebel.event.services.process.EventLoadAssetsProcess;
@@ -35,23 +34,24 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     private EntityDirection direction = EntityDirection.RIGHT;
     private EntityDirection lastDirection = null;
-    private PlayerInventory inventory;
 
     private boolean freeze = false;
     private boolean onGround = false;
 
-    private final static double MOVE_SPEED = 6.0;
-    private final static double JUMP_FORCE = 12.0;
-    private final static double AIR_CONTROL = 0.6;
+    private final static double MOVE_SPEED = 60.0;
+    private final static double JUMP_FORCE = -1000.0;
+    private final static double AIR_CONTROL = 0.01;
 
     private List<Consumer<EntityPlayer>> onDirectionChange = new ArrayList<>();
 
     public EntityPlayer(World<ColliderBody> world, double x, double y, double width, double height) {
         super(world, new ColliderBody(), x, y, width, height);
         this.body.addFixture(Geometry.createCapsule(11.0, 13.0));
-        this.body.setMass(MassType.INFINITE);
+        this.body.setMass(MassType.FIXED_ANGULAR_VELOCITY);
         this.body.translate(x, y);
         this.body.setUserData(this.id);
+        this.body.setAngularVelocity(0.0);
+        this.body.setAtRestDetectionEnabled(true);
         this.world.addBody(this.body);
 
         Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<AnimationRenderer>("Loading animations", () -> new AnimationRenderer(
@@ -63,7 +63,6 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
                 setRenderer(data);
             }
         }));
-        this.inventory = new PlayerInventory(this);
 
         this.world.addStepListener(new StepListenerAdapter<>() {
             @Override
@@ -101,7 +100,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     @Override
     public void update(double dt) {
         super.update(dt);
-        if (!this.world.containsBody(this.body) && this.renderer != null) {
+        if (this.renderer != null) {
             // EntityPlayer.IDLE_STATES.contains(this.renderer.getCurrentAnimation().getState())
             if (this.freeze && !this.isWalking()) return;
 
@@ -113,25 +112,28 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     }
 
     private void onMove() {
+        double SPEED = MOVE_SPEED;
         if (!this.viewController.getDrawFrame().isFocused() || this.freeze) {
             // ONLY LOCAL PLAYER
-            this.body.setLinearVelocity(0, 0);
-            return;
+            SPEED = 0;
         }
 
         double targetSpeed = 0;
         Vector2 vel = this.body.getLinearVelocity();
 
-        if (ViewController.isKeyDown(KeyEvent.VK_A)) targetSpeed -= MOVE_SPEED;
-        if (ViewController.isKeyDown(KeyEvent.VK_D)) targetSpeed += MOVE_SPEED;
+        if (ViewController.isKeyDown(KeyEvent.VK_A)) targetSpeed -= SPEED;
+        if (ViewController.isKeyDown(KeyEvent.VK_D)) targetSpeed += SPEED;
 
         double control = this.onGround ? 1.0 : AIR_CONTROL;
-        double newX = MathUtils.lerp(vel.x, targetSpeed, control);
+        double newX = MathUtils.lerp(vel.x, this.onGround ? targetSpeed : targetSpeed * 0.8, control);
 
         this.body.setLinearVelocity(newX, vel.y);
+        this.setX(this.body.getX());
+        this.setY(this.body.getY());
 
         if (ViewController.isKeyDown(KeyEvent.VK_SPACE) && this.onGround) {
-            this.body.applyImpulse(new Vector2(0, JUMP_FORCE));
+            this.body.applyImpulse(new Vector2(0, JUMP_FORCE * 8));
+            this.onGround = false;
         }
     }
 
@@ -216,10 +218,6 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     public void freeze(boolean flag) {
         this.freeze = flag;
-    }
-
-    public PlayerInventory getInventory() {
-        return this.inventory;
     }
 
     public EntityDirection getDirection() {

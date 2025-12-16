@@ -3,15 +3,10 @@ package KAGO_framework.control;
 import KAGO_framework.Config;
 import KAGO_framework.view.DrawFrame;
 import KAGO_framework.view.DrawTool;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rise_of_duebel.ProgramController;
 import rise_of_duebel.Wrapper;
-import rise_of_duebel.dyn4j.Physics;
 import rise_of_duebel.event.events.KeyPressedEvent;
 import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.model.scene.LoadingScene;
@@ -22,7 +17,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -48,8 +42,6 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
 
     private static ViewController instance;
 
-    private long last;
-
     /**
      * Erzeugt ein Objekt zur Kontrolle des Programmflusses.
      */
@@ -61,7 +53,12 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         this.initializing = new AtomicBoolean(true);
 
         this.programController.preStartProgram();
+        boolean wm = false;
         while (this.initializing.get()) {
+            if (!wm) {
+                logger.info("Initializing...");
+                wm = true;
+            }
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
@@ -103,16 +100,9 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         Wrapper.getProcessManager().processPostGame();
 
         // TODO: https://github.com/dyn4j/dyn4j-samples/blob/master/src/main/java/org/dyn4j/samples/framework/SimulationFrame.java Line 305
-        this.setIgnoreRepaint(true);
-        this.createBufferStrategy(2);
+        this.createBufferStrategy(3);
 
         this.requestFocus();
-        this.setVisible(true);
-
-        Physics physics = new Physics();
-
-        this.last = System.nanoTime();
-        double NANO_TO_BASE = 1.0e9;
 
         while (true) {
             Graphics2D g = (Graphics2D) this.getBufferStrategy().getDrawGraphics();
@@ -120,22 +110,12 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
             Wrapper.getTimer().update();
             double dt = Wrapper.getTimer().getDeltaTime();
 
-            /*long time = System.nanoTime();
-            // get the elapsed time from the last iteration
-            long diff = time - this.last;
-            // set the last time
-            this.last = time;
-            // convert from nanoseconds to seconds
-            double elapsedTime = (double)diff / NANO_TO_BASE;*/
-
             this.programController.updateProgram(dt);
+            Wrapper.getEntityManager().updateWorld(dt);
             if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
 
             this.drawTool.setGraphics2D(g);
             if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(this.drawTool);
-
-            physics.getWorld().update(dt);
-            physics.handleEvents();
 
             g.dispose();
 
@@ -143,8 +123,6 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
             if (!strategy.contentsLost()) {
                 strategy.show();
             }
-
-            Toolkit.getDefaultToolkit().sync();
 
             Wrapper.getTimer().updateFrames();
         }

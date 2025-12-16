@@ -1,18 +1,18 @@
 package rise_of_duebel.event.events.collider;
 
+import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.event.Event;
-import rise_of_duebel.physics.Collider;
 
 public class ColliderDestroyEvent extends Event {
 
-    private Collider collider;
+    private ColliderBody collider;
 
-    public ColliderDestroyEvent(Collider collider) {
+    public ColliderDestroyEvent(ColliderBody collider) {
         super("collider_destroy");
         this.collider = collider;
     }
 
-    public Collider getCollider() {
+    public ColliderBody getCollider() {
         return collider;
     }
 }

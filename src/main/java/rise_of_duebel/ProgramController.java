@@ -4,13 +4,14 @@ import KAGO_framework.control.ViewController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rise_of_duebel.animation.tween.Tween;
+import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.event.events.KeyPressedEvent;
 import rise_of_duebel.event.services.EventProcessCallback;
 import rise_of_duebel.event.services.process.EventLoadAssetsProcess;
 import rise_of_duebel.graphics.map.GsonMap;
 import rise_of_duebel.graphics.map.TileMap;
 import rise_of_duebel.model.debug.impl.InfoComponent;
-import rise_of_duebel.model.entity.player.EntityPlayer;
+import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.utils.CooldownManager;
 
@@ -48,25 +49,25 @@ public class ProgramController {
      * nach Erstellen des Fensters, usw. erst aufgerufen.
      */
     public void preStartProgram() {
-        /*Wrapper.getProcessManager().queue(new EventLoadAssetsProcess("Loading map", () -> {
+        /*Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<>("Loading map", () -> {
             // /temp/undead/Tiled_files/Undead_land.json
             // /map/kitchen.json
             // /map/overworld/Undead_land.json
             Wrapper.getMapManager().importMap(new TileMap("/map/overworld/Undead_land.json", List.of(), List.of(), List.of("*"), List.of()) {
                 @Override
-                public void loadCollider(GsonMap.Layer layer, GsonMap.ObjectCollider objCollider, Collider collider) {
+                public void loadCollider(GsonMap.Layer layer, GsonMap.ObjectCollider objCollider, ColliderBody collider) {
 
                 }
             });
             Wrapper.getMapManager().showMap(0);
 
-        }, new EventProcessCallback() {
+        }, new EventProcessCallback<>() {
             @Override
             public void onSuccess(Object data) {
                 viewController.continueStart();
             }
-        }));
-        */
+        }));*/
+        viewController.continueStart();
     }
 
     /***
@@ -83,9 +84,8 @@ public class ProgramController {
         }
         GameScene.getInstance().getVisuals().add(new InfoComponent());
 
-        this.player = Wrapper.getEntityManager().spawnPlayer("player", 270, 190);
-        this.player.setShowHitbox(false);
-
+        this.player = Wrapper.getEntityManager().spawnPlayer(270, 190);
+        this.player.setShowHitbox(true);
 
         GameScene.getInstance().getCameraRenderer().focusAtEntity(this.player);
     }

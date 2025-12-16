@@ -14,11 +14,9 @@ import rise_of_duebel.animation.IAnimationState;
 import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.graphics.IOrderRenderer;
 import rise_of_duebel.model.scene.GameScene;
-import rise_of_duebel.physics.Collider;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -46,6 +44,8 @@ public abstract class Entity<T extends Enum<T> & IAnimationState> implements Dra
         this.id = String.format("ENTITY_%s", UUID.randomUUID());
         this.world = world;
         this.body = body;
+        this.x = x;
+        this.y = y;
         this.width = width;
         this.height = height;
         this.showHitbox = false;
@@ -69,39 +69,22 @@ public abstract class Entity<T extends Enum<T> & IAnimationState> implements Dra
 
     protected void drawHitbox(DrawTool drawTool) {
         if (this.showHitbox && this.body != null) {
-            drawTool.setCurrentColor(this.getBody().getHitboxColor());
-            drawTool.drawFilledCircle(this.highestPoint.x, this.highestPoint.y, 1);
-            this.body.drawHitbox(drawTool);
+            drawTool.setCurrentColor(this.getBody().getColor());
+            this.body.render(drawTool, 1);
         }
     }
 
     @Override
     public void update(double dt) {
-        if (!Wrapper.getEntityManager().getEntities().containsKey(this.id)) this.logger.warn("Entity with id {} is not registered and important features will not work for the entity", this.id);
         if (this.renderer != null) {
             if (!this.renderer.isRunning()) this.renderer.start();
             this.renderer.update(dt);
-            this.highestPoint.set(this.getX() + this.highestPointOffset.x, this.getY() + this.highestPointOffset.y);
         }
-    }
-
-    public void destroy() {
-        GameScene.getInstance().getRenderer().unregister(this);
-        Wrapper.getEntityManager().unregister(this);
-        this.body.destroy();
     }
 
     @Override
     public double zIndex() {
-        return this.highestPoint.y;
-    }
-
-    public void setHighestPointOffset(Vec2 offset) {
-        this.highestPointOffset.set(offset);
-    }
-
-    public Vec2 getHighestPoint() {
-        return highestPoint;
+        return this.y;
     }
 
     public AnimationRenderer<T> getRenderer() {
@@ -120,7 +103,7 @@ public abstract class Entity<T extends Enum<T> & IAnimationState> implements Dra
         this.showHitbox = showHitbox;
     }
 
-    public Collider getBody() {
+    public ColliderBody getBody() {
         return body;
     }
 
@@ -129,11 +112,11 @@ public abstract class Entity<T extends Enum<T> & IAnimationState> implements Dra
     }
 
     public double getX() {
-        return this.x + this.offset.x;
+        return this.x;
     }
 
     public double getY() {
-        return this.y + this.offset.y;
+        return this.y;
     }
 
     public void setX(double x) {
@@ -150,14 +133,6 @@ public abstract class Entity<T extends Enum<T> & IAnimationState> implements Dra
 
     public double getHeight() {
         return this.height;
-    }
-
-    public double getBodyOffsetX() {
-        return bodyOffsetX;
-    }
-
-    public double getBodyOffsetY() {
-        return bodyOffsetY;
     }
 
     @Override

@@ -2,44 +2,41 @@ package rise_of_duebel.model.entity.mobs;
 
 import KAGO_framework.model.abitur.datenstrukturen.AbiList;
 import KAGO_framework.view.DrawTool;
+import org.dyn4j.world.World;
 import rise_of_duebel.animation.entity.IEntityAnimationState;
+import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.model.entity.Entity;
 import rise_of_duebel.model.entity.mobs.ai.Goal;
-import rise_of_duebel.physics.Collider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class EntityMob<T extends Enum<T> & IEntityAnimationState> extends Entity<T> {
 
-    private final AbiList<Goal> goals;
+    private final List<Goal> goals;
     private MobType type;
 
-    public EntityMob(MobType type, Collider body, double x, double y, double width, double height) {
-        super(body, x, y, width, height);
-        this.goals = new AbiList<>();
+    public EntityMob(World<ColliderBody> world, MobType type, ColliderBody body, double x, double y, double width, double height) {
+        super(world, body, x, y, width, height);
+        this.goals = new ArrayList<>();
         this.type = type;
     }
 
     @Override
     public void update(double dt) {
         super.update(dt);
-        var goal = this.goals.getContent();
-        for (int i = 0; i < this.goals.size(); i++) {
-            this.iterateGoal(dt, goal);
-            this.goals.next();
-            goal = this.goals.getContent();
-        }
-    }
+        for (Goal goal : this.goals) {
+            if (goal.trigger()) {
+                if (!goal.started) {
+                    goal.started = true;
+                    goal.start();
+                }
+                goal.update(dt);
 
-    private void iterateGoal(double dt, Goal goal) {
-        if (goal.trigger()) {
-            if (!goal.started) {
-                goal.started = true;
-                goal.start();
+            } else if (goal.started) {
+                goal.stop();
+                goal.started = false;
             }
-            goal.update(dt);
-
-        } else if (goal.started) {
-            goal.stop();
-            goal.started = false;
         }
     }
 
