@@ -1,15 +1,12 @@
 package rise_of_duebel.model.entity;
 
-import org.dyn4j.geometry.Geometry;
-import org.dyn4j.geometry.MassType;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.World;
 import rise_of_duebel.dyn4j.ColliderBody;
-import rise_of_duebel.graphics.spawner.ObjectSpawner;
+import rise_of_duebel.graphics.level.spawner.ObjectSpawner;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.GameScene;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +17,7 @@ public class EntityManager {
 
     public EntityManager() {
         this.world = new World<ColliderBody>();
-        this.world.setGravity(0, 30);
+        this.world.setGravity(PhysicsWorld.EARTH_GRAVITY.getNegative());
         this.entities = new HashMap<>();
     }
 
@@ -37,7 +34,8 @@ public class EntityManager {
     }
 
     public void updateWorld(double dt) {
-        this.world.update(dt);
+        //this.world.update(dt);
+        this.world.step(1);
     }
 
     public Map<String, Entity<?>> getEntities() {

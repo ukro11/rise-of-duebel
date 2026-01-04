@@ -104,28 +104,35 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
 
         this.requestFocus();
 
-        while (true) {
-            Graphics2D g = (Graphics2D) this.getBufferStrategy().getDrawGraphics();
+        var t = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    Graphics2D g = (Graphics2D) getBufferStrategy().getDrawGraphics();
 
-            Wrapper.getTimer().update();
-            double dt = Wrapper.getTimer().getDeltaTime();
+                    Wrapper.getTimer().update();
+                    double dt = Wrapper.getTimer().getDeltaTime();
 
-            this.programController.updateProgram(dt);
-            Wrapper.getEntityManager().updateWorld(dt);
-            if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
+                    programController.updateProgram(dt);
+                    Wrapper.getEntityManager().updateWorld(dt);
+                    if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
 
-            this.drawTool.setGraphics2D(g);
-            if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(this.drawTool);
+                    drawTool.setGraphics2D(g);
+                    if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(drawTool);
 
-            g.dispose();
+                    g.dispose();
 
-            BufferStrategy strategy = this.getBufferStrategy();
-            if (!strategy.contentsLost()) {
-                strategy.show();
+                    BufferStrategy strategy = getBufferStrategy();
+                    if (!strategy.contentsLost()) {
+                        strategy.show();
+                    }
+
+                    Wrapper.getTimer().updateFrames();
+                }
             }
-
-            Wrapper.getTimer().updateFrames();
-        }
+        };
+        t.setDaemon(true);
+        t.start();
     }
 
     private void shutdown() {

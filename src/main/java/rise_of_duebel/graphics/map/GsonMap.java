@@ -220,6 +220,8 @@ public class GsonMap {
         }
 
         public List<Property> getProperties() { return this.properties; }
+
+        public Property getProperty(String name) { return this.properties == null ? null : this.properties.stream().filter(p -> p.name.equals(name)).findFirst().orElse(null); }
     }
 
     public class Polygon {

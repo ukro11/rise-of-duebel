@@ -24,6 +24,7 @@ public class CameraRenderer {
     private Vector2 offset = new Vector2();
     private Vector2 prevScale;
     private Entity focusEntity;
+    private Vector2 focusPoint;
     private Vector2 cameraMax = new Vector2(10000, 10000);
 
     private Map.Entry<Instant, Double> currentShake;
@@ -139,15 +140,8 @@ public class CameraRenderer {
         this.y = smoothDamp(this.y, camY, velocity.y, 0.1, 100_000, dt * 5);
     }
 
-    public void focusAt(double x, double y, double dt) {
-        if (this.focusEntity == null) {
-            if (this.smooth) {
-                this.focusSmooth(x, y, dt);
-
-            } else {
-                this.focus(x, y, dt);
-            }
-        }
+    public void focusAt(double x, double y) {
+        this.focusPoint = new Vector2(x, y);
     }
 
     public void focusAtEntity(Entity entity) {
@@ -159,13 +153,16 @@ public class CameraRenderer {
     }
 
     public void update(double dt) {
-        if (this.focusEntity != null) {
-            if (this.smooth) {
-                this.focusSmooth(this.focusEntity.getBody().getX(), this.focusEntity.getBody().getY(), dt);
+        Vector2 pos = null;
+        if (this.focusEntity != null) pos = this.focusEntity.getBody().getPosition();
+        else if (this.focusPoint != null) pos = this.focusPoint;
+        else pos = new Vector2();
 
-            } else {
-                this.focus(this.focusEntity.getBody().getX(), this.focusEntity.getBody().getY(), dt);
-            }
+        if (this.smooth) {
+            this.focusSmooth(pos.x, pos.y, dt);
+
+        } else {
+            this.focus(pos.x, pos.y, dt);
         }
         if (this.queue.size() > 0) {
             if (this.currentShake == null) {

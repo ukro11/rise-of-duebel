@@ -1,6 +1,5 @@
 package rise_of_duebel.model.entity.mobs;
 
-import KAGO_framework.model.abitur.datenstrukturen.AbiList;
 import KAGO_framework.view.DrawTool;
 import org.dyn4j.world.World;
 import rise_of_duebel.animation.entity.IEntityAnimationState;

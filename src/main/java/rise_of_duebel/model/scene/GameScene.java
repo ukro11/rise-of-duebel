@@ -3,14 +3,11 @@ package rise_of_duebel.model.scene;
 import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
 import KAGO_framework.view.DrawTool;
-import org.dyn4j.geometry.Geometry;
-import org.dyn4j.geometry.MassType;
+import org.dyn4j.geometry.Vector2;
 import rise_of_duebel.Wrapper;
-import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.graphics.CameraRenderer;
 import rise_of_duebel.graphics.OrderRenderer;
-import rise_of_duebel.graphics.map.generation.GeneratedMap;
-import rise_of_duebel.graphics.spawner.ObjectSpawner;
+import rise_of_duebel.graphics.level.spawner.ObjectSpawner;
 import rise_of_duebel.model.sound.SoundManager;
 
 import java.awt.*;
@@ -25,12 +22,9 @@ public class GameScene extends Scene {
     private List<Interactable> interactables;
     private List<Drawable> drawables;
     private OrderRenderer renderer;
+    private Color background = Color.decode("#4d222c");
 
     private static GameScene instance = new GameScene();
-
-    private GeneratedMap generatedMap = new GeneratedMap();
-
-    private ColliderBody platform;
 
     public static GameScene getInstance() {
         return GameScene.instance;
@@ -42,16 +36,10 @@ public class GameScene extends Scene {
         this.interactables = new ArrayList<>();
         this.cameraRenderer = CameraRenderer
                 .create(0, 0)
-                .zoom(4)
+                .zoom(2)
+                .offset(new Vector2(0, -150))
                 .smooth();
         this.renderer = new OrderRenderer();
-
-        this.platform = new ColliderBody(Color.RED);
-        this.platform.addFixture(Geometry.createRectangle(1000.0, 10));
-        this.platform.setMass(MassType.INFINITE);
-        this.platform.translate(270, 290);
-        this.platform.setUserData("GROUND_PLATFORM_1");
-        Wrapper.getEntityManager().getWorld().addBody(this.platform);
     }
 
     @Override
@@ -64,25 +52,23 @@ public class GameScene extends Scene {
         }
         Wrapper.getTooltipManager().update(dt);
         Wrapper.getGameHandler().update(dt);
-        //this.generatedMap.update(dt);
         super.update(dt);
     }
 
-    private void drawAllHitboxes(DrawTool drawTool) {
-        this.platform.render(drawTool, 1);
+    public void setBackground(Color color) {
+        this.background = color;
     }
+
+    private void drawAllHitboxes(DrawTool drawTool) {}
 
     public void drawGame(DrawTool drawTool) {
         this.cameraRenderer.attach(drawTool);
 
-        drawTool.setCurrentColor(new Color(116, 117, 210));
+        drawTool.setCurrentColor(this.background);
         drawTool.drawFilledRectangle(-2000, -1000, 4000, 2000);
         drawTool.resetColor();
 
-        drawTool.push();
         Wrapper.getMapManager().draw(drawTool);
-        //this.generatedMap.draw(drawTool);
-        drawTool.pop();
 
         GameScene.getInstance().getRenderer().draw(drawTool);
         this.getDrawables().forEach(d -> d.draw(drawTool));
@@ -100,8 +86,8 @@ public class GameScene extends Scene {
         Wrapper.getGameHandler().draw(drawTool);
         Wrapper.getTooltipManager().draw(drawTool);
         super.draw(drawTool);
-        drawTool.setCurrentColor(new Color(157, 196, 94), 50);
-        drawTool.drawFilledRectangle(0, 0, 4000, 4000);
+        //drawTool.setCurrentColor(new Color(157, 196, 94), 50);
+        //drawTool.drawFilledRectangle(0, 0, 4000, 4000);
         drawTool.resetColor();
     }
 

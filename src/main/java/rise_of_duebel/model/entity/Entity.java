@@ -8,7 +8,6 @@ import org.dyn4j.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rise_of_duebel.ProgramController;
-import rise_of_duebel.Wrapper;
 import rise_of_duebel.animation.AnimationRenderer;
 import rise_of_duebel.animation.IAnimationState;
 import rise_of_duebel.dyn4j.ColliderBody;
@@ -18,7 +17,6 @@ import rise_of_duebel.model.scene.GameScene;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
-import java.util.UUID;
 
 public abstract class Entity<T extends Enum<T> & IAnimationState> implements Drawable, Interactable, IOrderRenderer {
 
@@ -26,7 +24,7 @@ public abstract class Entity<T extends Enum<T> & IAnimationState> implements Dra
     protected ProgramController programController;
     protected final Logger logger = LoggerFactory.getLogger(Entity.class);
 
-    protected final String id;
+    protected String id;
     protected final ColliderBody body;
     protected final World<ColliderBody> world;
     private double x;
@@ -41,7 +39,6 @@ public abstract class Entity<T extends Enum<T> & IAnimationState> implements Dra
         this.viewController = ViewController.getInstance();
         this.programController = this.viewController.getProgramController();
 
-        this.id = String.format("ENTITY_%s", UUID.randomUUID());
         this.world = world;
         this.body = body;
         this.x = x;
