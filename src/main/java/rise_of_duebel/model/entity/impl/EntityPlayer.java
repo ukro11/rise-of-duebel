@@ -1,16 +1,18 @@
 package rise_of_duebel.model.entity.impl;
 
 import KAGO_framework.control.ViewController;
+import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.view.DrawTool;
+import org.dyn4j.collision.CategoryFilter;
+import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.TimeStep;
 import org.dyn4j.dynamics.contact.ContactConstraint;
 import org.dyn4j.geometry.Geometry;
 import org.dyn4j.geometry.MassType;
+import org.dyn4j.geometry.Transform;
 import org.dyn4j.geometry.Vector2;
-import org.dyn4j.world.ContactCollisionData;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.World;
-import org.dyn4j.world.listener.ContactListenerAdapter;
 import org.dyn4j.world.listener.StepListenerAdapter;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.animation.AnimationRenderer;
@@ -22,12 +24,13 @@ import rise_of_duebel.event.services.EventProcessCallback;
 import rise_of_duebel.event.services.process.EventLoadAssetsProcess;
 import rise_of_duebel.model.entity.Entity;
 import rise_of_duebel.model.entity.EntityDirection;
+import rise_of_duebel.utils.CooldownManager;
 import rise_of_duebel.utils.MathUtils;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class EntityPlayer extends Entity<CharacterAnimationState> {
@@ -36,23 +39,49 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     private EntityDirection lastDirection = null;
 
     private boolean freeze = false;
+    private boolean freezePermanent = false;
+    private CooldownManager freezeCooldown;
+    private Queue<Double> freezeQueue;
+
     private boolean onGround = false;
 
-    private final static double MOVE_SPEED = 60.0;
-    private final static double JUMP_FORCE = -1000.0;
-    private final static double AIR_CONTROL = 0.01;
+    private final static double MOVE_SPEED = 45.0;
+    private final static double JUMP_FORCE = -2420.0; // 120
+    private final static double AIR_CONTROL = 0.5;
 
     private List<Consumer<EntityPlayer>> onDirectionChange = new ArrayList<>();
 
     public EntityPlayer(World<ColliderBody> world, double x, double y, double width, double height) {
-        super(world, new ColliderBody(), x, y, width, height);
-        this.body.addFixture(Geometry.createCapsule(11.0, 13.0));
+        super(world, new ColliderBody(Color.GREEN), x, y, width, height);
+        this.id = String.format("ENTITY_PLAYER_%s", UUID.randomUUID());
+
+        double colliderWidth = 8.0;
+        double colliderHeight = 10.0;
+        var fixture = this.body.addFixture(Geometry.createCapsule(colliderWidth, colliderHeight));
+        fixture.setUserData(this.id);
+        fixture.setFriction(0.0);
+        fixture.setFilter(new CategoryFilter(ColliderBody.MASK_ENTITY_PLAYER, ColliderBody.FILTER_DEFAULT));
+
+        var center = this.getBody().getLocalCenter();
+        var footVertices = new Vector2[] {
+            new Vector2(center.x - 1, colliderHeight / 2 - 2),
+            new Vector2(center.x + 1, colliderHeight / 2 - 2),
+            new Vector2(center.x + 1, colliderHeight / 2),
+            new Vector2(center.x - 1, 0 + colliderHeight / 2),
+        };
+        var foot = this.body.addFixture(Geometry.createPolygon(footVertices));
+        foot.setUserData(String.format("FOOT_%s", this.id));
+        foot.setSensor(true);
+
         this.body.setMass(MassType.FIXED_ANGULAR_VELOCITY);
         this.body.translate(x, y);
         this.body.setUserData(this.id);
         this.body.setAngularVelocity(0.0);
-        this.body.setAtRestDetectionEnabled(true);
+        this.body.setAngularDamping(0.0);
+        this.body.setAtRestDetectionEnabled(false);
         this.world.addBody(this.body);
+
+        this.freezeQueue = new Queue<>();
 
         Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<AnimationRenderer>("Loading animations", () -> new AnimationRenderer(
                 "/graphic/character/player/player.png", 9, 12, 192, 128,
@@ -69,30 +98,19 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
             public void begin(TimeStep step, PhysicsWorld<ColliderBody, ?> world) {
                 super.begin(step, world);
 
-                boolean isGround = false;
+                boolean s = false;
                 List<ContactConstraint<ColliderBody>> contacts = world.getContacts(body);
                 for (ContactConstraint<ColliderBody> cc : contacts) {
-                    if (PhysicsUtils.isGround(cc.getOtherBody(body)) && cc.isEnabled()) {
-                        isGround = true;
+                    if (PhysicsUtils.isGround(cc.getOtherBody(body)) && PhysicsUtils.is(body.getFixture(1), cc.getFixture1(), cc.getFixture2()) && cc.isEnabled()) {
+                        s = true;
+                        onGround = true;
                     }
                 }
 
                 // only clear it
-                if (!isGround) {
+                if (!s) {
                     onGround = false;
                 }
-            }
-        });
-
-        this.world.addContactListener(new ContactListenerAdapter<ColliderBody>() {
-            @Override
-            public void collision(ContactCollisionData<ColliderBody> collision) {
-                ContactConstraint<ColliderBody> cc = collision.getContactConstraint();
-
-                // track on the on-ground status
-                trackIsOnGround(cc);
-
-                super.collision(collision);
             }
         });
     }
@@ -100,15 +118,35 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     @Override
     public void update(double dt) {
         super.update(dt);
+        if (!this.freezePermanent) {
+            if (!this.freezeQueue.isEmpty() && this.freezeCooldown == null) {
+                this.freeze = true;
+                this.freezeCooldown = new CooldownManager(this.freezeQueue.front());
+                this.freezeQueue.dequeue();
+                this.freezeCooldown.use();
+            }
+            if (this.freezeCooldown != null && this.freezeCooldown.use()) {
+                this.freeze = false;
+                this.freezeCooldown = null;
+            }
+        }
         if (this.renderer != null) {
             // EntityPlayer.IDLE_STATES.contains(this.renderer.getCurrentAnimation().getState())
             if (this.freeze && !this.isWalking()) return;
-
             this.onMove();
-            if (this.body.getLinearVelocity().getMagnitude() == 0) {
-                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.IDLE));
-            }
         }
+    }
+
+    public void freezeInfinity(boolean flag) {
+        this.freezePermanent = true;
+        this.freezeCooldown = null;
+        while (!this.freezeQueue.isEmpty()) this.freezeQueue.dequeue();
+        this.freeze = flag;
+    }
+
+    public void freeze(double time) {
+        this.freezePermanent = false;
+        this.freezeQueue.enqueue(time);
     }
 
     private void onMove() {
@@ -125,16 +163,31 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         if (ViewController.isKeyDown(KeyEvent.VK_D)) targetSpeed += SPEED;
 
         double control = this.onGround ? 1.0 : AIR_CONTROL;
-        double newX = MathUtils.lerp(vel.x, this.onGround ? targetSpeed : targetSpeed * 0.8, control);
+        double newX = MathUtils.lerp(vel.x, targetSpeed, control);
 
         this.body.setLinearVelocity(newX, vel.y);
-        this.setX(this.body.getX());
-        this.setY(this.body.getY());
+        this.setX(Math.floor(this.body.getX()));
+        this.setY(Math.floor(this.body.getY()));
 
         if (ViewController.isKeyDown(KeyEvent.VK_SPACE) && this.onGround) {
-            this.body.applyImpulse(new Vector2(0, JUMP_FORCE * 8));
+            // JUMP_FORCE * this.body.getMass().getMass()
+            //this.body.applyImpulse(new Vector2(0, JUMP_FORCE * this.body.getMass().getMass()));
+
+            this.body.setLinearVelocity(vel.x, JUMP_FORCE);
             this.onGround = false;
+            this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.IDLE));
         }
+
+        if (this.onGround) {
+            if (this.body.getLinearVelocity().x == 0) {
+                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.IDLE));
+
+            } else {
+                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
+            }
+        }
+
+        this.body.setGravityScale(8);
     }
 
     @Override
@@ -142,7 +195,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         if (this.renderer != null && this.renderer.getCurrentFrame() != null) {
             drawTool.push();
             if (this.direction == EntityDirection.LEFT) {
-                double centerX = this.getX() + 58;
+                double centerX = this.getX();
                 double centerY = this.getY() + this.height / 2;
 
                 drawTool.getGraphics2D().translate(centerX, centerY);
@@ -152,25 +205,13 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
             drawTool.getGraphics2D().drawImage(
                 this.renderer.getCurrentFrame(),
-                (int) this.getX(),
-                (int) this.getY(),
+                (int) this.getX() - 58,
+                (int) this.getY() - (int) this.height / 2 - 13 + 2,
                 (int) this.width,
                 (int) this.height,
                 null
             );
             drawTool.pop();
-        }
-    }
-
-    private void trackIsOnGround(ContactConstraint<ColliderBody> contactConstraint) {
-        ColliderBody b1 = contactConstraint.getBody1();
-        ColliderBody b2 = contactConstraint.getBody2();
-
-        if (PhysicsUtils.is(b1, this.id) && PhysicsUtils.isGround(b2) && contactConstraint.isEnabled()) {
-            this.onGround = true;
-
-        } else if (PhysicsUtils.isGround(b1) && PhysicsUtils.is(b2, this.id) && contactConstraint.isEnabled()) {
-            this.onGround = true;
         }
     }
 
@@ -208,16 +249,50 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         return anim.getDirection() == direction && anim.getState() == state;
     }
 
+    public void setPosition(double x, double y) {
+        Transform t = this.body.getTransform().copy();
+        t.setTranslation(x, y);
+        this.body.setTransform(t);
+    }
+
+    public static boolean isPlayer(ColliderBody c) {
+        return c.getUserData().startsWith("ENTITY_PLAYER");
+    }
+
+    public static boolean isPlayer(BodyFixture c) {
+        return ((String) c.getUserData()).startsWith("ENTITY_PLAYER");
+    }
+
+    public static boolean containsPlayer(ColliderBody... c) {
+        return Arrays.stream(c).anyMatch(_c -> _c.getUserData().startsWith("ENTITY_PLAYER"));
+    }
+
+    public static boolean containsPlayer(BodyFixture... c) {
+        return Arrays.stream(c).anyMatch(_c -> ((String) _c.getUserData()).startsWith("ENTITY_PLAYER"));
+    }
+
+    public boolean is(ColliderBody collider) {
+        return this.body.getUserData().equals(collider.getUserData());
+    }
+
+    public boolean is(BodyFixture collider) {
+        return this.body.getUserData().equals(collider.getUserData());
+    }
+
+    public boolean is(ColliderBody... colliders) {
+        return Arrays.stream(colliders).anyMatch(c -> this.body.getUserData().equals(c.getUserData()));
+    }
+
+    public boolean is(BodyFixture... colliders) {
+        return Arrays.stream(colliders).anyMatch(c -> this.body.getUserData().equals(c.getUserData()));
+    }
+
     private boolean isWalking() {
         return this.isCurrentAnimation(EntityState.WALKING);
     }
 
     private boolean isWalking(EntityDirection direction) {
         return this.isCurrentAnimation(direction, EntityState.WALKING);
-    }
-
-    public void freeze(boolean flag) {
-        this.freeze = flag;
     }
 
     public EntityDirection getDirection() {

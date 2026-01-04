@@ -4,7 +4,7 @@ import KAGO_framework.view.DrawTool;
 import com.google.gson.Gson;
 import rise_of_duebel.Config;
 import rise_of_duebel.Wrapper;
-import rise_of_duebel.dyn4j.ColliderBody;
+import rise_of_duebel.dyn4j.WorldCollider;
 import rise_of_duebel.graphics.CameraRenderer;
 import rise_of_duebel.graphics.IOrderRenderer;
 import rise_of_duebel.model.scene.GameScene;
@@ -17,23 +17,25 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
 public abstract class TileMap {
 
-    private GsonMap map;
+    protected GsonMap map;
+    protected List<WorldCollider> colliders;
     private Path directory;
     private String fileName;
-    private final HashMap<GsonMap.Tileset, Batch> batches;
-    private final List<String> batchLayers;
-    private final List<String> batchLayersAfterPlayer;
-    private final List<String> staticLayers;
-    private final List<String> staticLayersAfterPlayer;
-    private final List<Quad> batchQuads;
-    private final List<Quad> batchQuadsAfterPlayer;
-    private final List<Quad> staticQuads;
-    private final List<Quad> staticQuadsAfterPlayer;
+    protected final HashMap<GsonMap.Tileset, Batch> batches;
+    protected final List<String> batchLayers;
+    protected final List<String> batchLayersAfterPlayer;
+    protected final List<String> staticLayers;
+    protected final List<String> staticLayersAfterPlayer;
+    protected final List<Quad> batchQuads;
+    protected final List<Quad> batchQuadsAfterPlayer;
+    protected final List<Quad> staticQuads;
+    protected final List<Quad> staticQuadsAfterPlayer;
 
     private BufferedImage batchImage;
     private BufferedImage batchImageAfterPlayer;
@@ -42,6 +44,7 @@ public abstract class TileMap {
 
     public TileMap(String fileName, List<String> staticLayers, List<String> staticLayersAfterPlayer, List<String> batchLayers, List<String> batchLayersAfterPlayer) {
         String[] f = fileName.split("/");
+        this.colliders = new ArrayList<>();
         this.directory = Path.of(fileName).getParent();
         this.fileName = f[f.length - 1];
         this.staticLayers = staticLayers;
@@ -65,9 +68,8 @@ public abstract class TileMap {
      * Callback, wird aufgerufen, wenn die geladene Map einen Collider laden will
      * @param layer Der Layer von Tilemap, der den Collider lädt
      * @param objCollider Das Tilemap-Collider-Object (gibt Zugriff auf die Properties)
-     * @param collider Der erstellte Collider vom Framework
      */
-    public abstract void loadCollider(GsonMap.Layer layer, GsonMap.ObjectCollider objCollider, ColliderBody collider);
+    public abstract void loadCollider(GsonMap.Layer layer, GsonMap.ObjectCollider objCollider);
 
     private void load() {
         for (GsonMap.Layer layer : this.map.getLayers()) {
@@ -109,9 +111,10 @@ public abstract class TileMap {
                         collider.setColliderClass("map");
                     }*/
 
-                    this.loadCollider(layer, o, null);
+                    this.loadCollider(layer, o);
                 }
             }
+            this.colliders.sort(Comparator.comparing(WorldCollider::getZIndex));
         }
 
         int mapWidthPx = this.map.getWidth() * this.map.getTileWidth();
@@ -147,6 +150,7 @@ public abstract class TileMap {
         for (int y = 0; y < chunk.getHeight(); y++) {
             for (int x = 0; x < chunk.getWidth(); x++) {
                 int index = y * chunk.getWidth() + x;
+                System.out.println("ERR");
                 long gid = chunk.getData().get(index);
                 if (gid > 0) {
                     GsonMap.Tileset currentTileset = this.findTilesetForGid(gid);

@@ -35,7 +35,7 @@ public class Wrapper {
 
     public static TooltipManager getTooltipManager() { return tooltipManager; }
 
-    public static EntityPlayer getLocalPlayer() { return ViewController.getInstance().getProgramController().player; }
+    public static EntityPlayer getLocalPlayer() { return getProgramController().player; }
 
     public static SoundConstants getSoundConstants() { return soundConstants; }
 
@@ -46,4 +46,8 @@ public class Wrapper {
     public static GameHandlerModel getGameHandler() { return gameHandlerModel; }
 
     public static MapManager getMapManager() { return mapManager; }
+
+    public static ViewController getViewController() { return ViewController.getInstance(); }
+
+    public static ProgramController getProgramController() { return ViewController.getInstance().getProgramController(); }
 }

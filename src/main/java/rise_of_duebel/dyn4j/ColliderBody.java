@@ -27,13 +27,27 @@ package rise_of_duebel.dyn4j;
 import KAGO_framework.view.DrawTool;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
-import org.dyn4j.geometry.Convex;
+import org.dyn4j.geometry.Polygon;
+import org.dyn4j.geometry.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 
 public class ColliderBody extends Body {
+
+    public static final long MASK_ALL = -1L;
+    public static final long MASK_ENTITY = 1L << 0;
+    public static final long MASK_ENTITY_PLAYER = 1L << 1;
+    public static final long MASK_PLATFORM = 1L << 2;
+    public static final long MASK_PLATFORM_MOVING = 1L << 3;
+
+    public static final long FILTER_DEFAULT = MASK_ALL;
+    public static final long FILTER_PLATFORM = MASK_ALL & ~MASK_PLATFORM_MOVING;
+    public static final long FILTER_MOVING_PLATFORM = MASK_ALL & ~MASK_PLATFORM;
+    private static final Logger log = LoggerFactory.getLogger(ColliderBody.class);
 
     /** The color of the object */
     protected Color color;
@@ -42,7 +56,7 @@ public class ColliderBody extends Body {
      * Default constructor.
      */
     public ColliderBody() {
-        this.color = PhysicsRenderer.getRandomColor();
+        this(PhysicsRenderer.getRandomColor());
     }
 
     /**
@@ -144,11 +158,62 @@ public class ColliderBody extends Body {
         this.color = color;
     }
 
+    public void setUserData(String userData) {
+        super.setUserData(userData);
+    }
+
+    public String getUserData() {
+        return (String) super.getUserData();
+    }
+
+    /*public void setPosition(Vector2 vec) {
+        this.getTransform().setTranslationX(vec.x);
+        this.getTransform().setTranslationX(vec.y);
+    }*/
+
+    public Vector2 getPosition() {
+        BodyFixture fixture = this.getFixture();
+        Convex shape = fixture.getShape();
+        if (shape instanceof Polygon) {
+            // LEFT-TOP
+            return ((Polygon) shape).getVertices()[0].copy().add(this.getTransform().getTranslationX(), this.getTransform().getTranslationY());
+
+        } else {
+            // KA
+            return new Vector2(this.getTransform().getTranslationX(), this.getTransform().getTranslationY());
+        }
+    }
+
     public double getX() {
-        return this.getTransform().getTranslationX();
+        return this.getPosition().x;
     }
 
     public double getY() {
-        return this.getTransform().getTranslationY();
+        return this.getPosition().y;
+    }
+
+    public Vector2 getSize() {
+        BodyFixture fixture = this.getFixture();
+        Convex shape = fixture.getShape();
+        if (shape instanceof Ellipse) {
+            return new Vector2(((Ellipse) shape).getWidth(), ((Ellipse) shape).getHeight());
+
+        } else {
+            // Funktioniert vielleicht nicht bei allen shape
+            AABB aabb = ((Polygon) shape).createAABB(this.getTransform());
+            return new Vector2(aabb.getWidth(), aabb.getHeight());
+        }
+    }
+
+    public double getWidth() {
+        return this.getSize().x;
+    }
+
+    public double getHeight() {
+        return this.getSize().y;
+    }
+
+    public BodyFixture getFixture() {
+        return this.fixtures.get(0);
     }
 }

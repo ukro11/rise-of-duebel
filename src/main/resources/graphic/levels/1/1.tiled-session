@@ -1,0 +1,42 @@
+{
+    "activeFile": "level1.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "B-C-D-E_Kitchen_01.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "level1.tmx": {
+            "scale": 11,
+            "selectedLayer": 6,
+            "viewCenter": {
+                "x": 127.27272727272728,
+                "y": 461.5909090909091
+            }
+        },
+        "temp.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "temp.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/1",
+    "last.imagePath": "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/map/sprites",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "openFiles": [
+        "level1.tmx"
+    ],
+    "project": "1.tiled-project",
+    "property.type": "int",
+    "recentFiles": [
+        "level1.tmx",
+        "temp.tsx",
+        "temp.json",
+        "B-C-D-E_Kitchen_01.json"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
