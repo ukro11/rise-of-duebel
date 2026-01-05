@@ -1,7 +1,7 @@
 package rise_of_duebel.event.events;
 
 import rise_of_duebel.event.Event;
-import rise_of_duebel.graphics.CameraRenderer;
+import rise_of_duebel.graphics.camera.CameraRenderer;
 
 public class CameraMoveEvent extends Event {
 

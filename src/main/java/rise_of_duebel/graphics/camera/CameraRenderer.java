@@ -1,7 +1,9 @@
-package rise_of_duebel.graphics;
+package rise_of_duebel.graphics.camera;
 
+import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.view.DrawTool;
 import org.dyn4j.geometry.Vector2;
+import org.dyn4j.geometry.Vector3;
 import rise_of_duebel.Config;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.event.events.CameraMoveEvent;
@@ -10,30 +12,26 @@ import rise_of_duebel.model.scene.GameScene;
 import rise_of_duebel.utils.MathUtils;
 
 import java.awt.*;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CameraRenderer {
 
-    private double x;
-    private double y;
+    private Vector2 pos = new Vector2();
     private boolean smooth = false;
     private double zoom = 1.0;
     private double angle = 0;
+    private double angleOffset = 0;
     private Vector2 offset = new Vector2();
     private Vector2 prevScale;
-    private Entity focusEntity;
-    private Vector2 focusPoint;
     private Vector2 cameraMax = new Vector2(10000, 10000);
 
-    private Map.Entry<Instant, Double> currentShake;
-    private double shakeElapsed = 0.0;
-    private Map<Instant, Double> queue = new HashMap<>();
+    private Entity focusEntity;
+    private Vector2 focusPoint;
+
+    private Queue<CameraEffect> effectQueue;
 
     private CameraRenderer(double startX, double startY) {
-        this.x = startX;
-        this.y = startY;
+        this.pos.set(startX, startY);
+        this.effectQueue = new Queue<>();
     }
 
     public static CameraRenderer create(double startX, double startY) {
@@ -60,15 +58,19 @@ public class CameraRenderer {
         return this;
     }
 
+    public void shake(CameraShake shake) {
+        this.effectQueue.enqueue(shake);
+    }
+
     public void attach(DrawTool drawTool) {
         if (this.prevScale == null) {
             this.prevScale = new Vector2();
             this.prevScale.set(drawTool.getGraphics2D().getTransform().getScaleX(), drawTool.getGraphics2D().getTransform().getScaleY());
         }
         drawTool.push();
-        drawTool.getGraphics2D().translate(-Math.floor(this.x), -Math.floor(this.y));
+        drawTool.getGraphics2D().translate(-Math.floor(this.pos.x), -Math.floor(this.pos.y));
         drawTool.getGraphics2D().scale(this.zoom, this.zoom);
-        drawTool.getGraphics2D().rotate(Math.toRadians(this.angle));
+        drawTool.getGraphics2D().rotate(Math.toRadians(this.angle + this.angleOffset));
     }
 
     public void detach(DrawTool drawTool) {
@@ -81,10 +83,6 @@ public class CameraRenderer {
         drawTool.drawLine(0, Config.WINDOW_HEIGHT / 2, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT / 2);
         drawTool.drawLine(Config.WINDOW_WIDTH / 2, 0, Config.WINDOW_WIDTH / 2, Config.WINDOW_HEIGHT);
         drawTool.resetColor();
-    }
-
-    public void shake(double duration) {
-        this.queue.put(Instant.now(), duration);
     }
 
     private double smoothDamp(double current, double target, double currentVelocity, double smoothTime, double maxSpeed, double deltaTime) {
@@ -110,34 +108,49 @@ public class CameraRenderer {
     public void focusNoLimit(double x, double y, double dt) {
         double camX = x * this.zoom - Config.WINDOW_WIDTH / 2 + this.offset.x;
         double camY = y * this.zoom - Config.WINDOW_HEIGHT / 2 + this.offset.y;
-        double diffX = camX - this.x;
-        double diffY = camY - this.y;
-        double tempX = this.x + diffX;
-        double tempY = this.y + diffY;
-        this.x = tempX;
-        this.y = tempY;
+        double diffX = camX - this.pos.x;
+        double diffY = camY - this.pos.y;
+        double tempX = this.pos.x + diffX;
+        double tempY = this.pos.y + diffY;
+        this.pos.x = tempX;
+        this.pos.y = tempY;
     }
 
     private void focus(double x, double y, double dt) {
         double camX = x * this.zoom - Config.WINDOW_WIDTH / 2 + this.offset.x;
         double camY = y * this.zoom - Config.WINDOW_HEIGHT / 2 + this.offset.y;
-        double diffX = camX - this.x;
-        double diffY = camY - this.y;
-        double tempX = this.x + diffX;
-        double tempY = this.y + diffY;
-        this.x = MathUtils.clamp(tempX, 0, this.cameraMax.x * this.zoom);
-        this.y = MathUtils.clamp(tempY, 0, this.cameraMax.y * this.zoom);
+        double diffX = camX - this.pos.x;
+        double diffY = camY - this.pos.y;
+        double tempX = this.pos.x + diffX;
+        double tempY = this.pos.y + diffY;
+
+        CameraEffect effect = this.effectQueue.front();
+        Vector3 effectVec = null;
+        if (effect != null) {
+            effectVec = effect.initiate(this, dt);
+            this.angleOffset = effectVec.z;
+            if (effect.isFinished()) this.effectQueue.dequeue();
+        }
+
+        this.pos.x = MathUtils.clamp(tempX, 0, this.cameraMax.x * this.zoom) + effectVec.x;
+        this.pos.y = MathUtils.clamp(tempY, 0, this.cameraMax.y * this.zoom) + effectVec.y;
     }
 
     private void focusSmooth(double x, double y, double dt) {
         double camX = x * this.zoom - Config.WINDOW_WIDTH / 2 + this.offset.x;
         double camY = y * this.zoom - Config.WINDOW_HEIGHT / 2 + this.offset.y;
-        Vector2 velocity = new Vector2(camX - this.x, camY - this.y);
-        //camX = MathUtils.clamp(camX, 0, this.cameraMax.x * this.zoom);
-        //camY = MathUtils.clamp(camY, 0, this.cameraMax.y * this.zoom);
+        Vector2 velocity = new Vector2(camX - this.pos.x, camY - this.pos.y);
 
-        this.x = smoothDamp(this.x, camX, velocity.x, 0.1, 100_000, dt * 5);
-        this.y = smoothDamp(this.y, camY, velocity.y, 0.1, 100_000, dt * 5);
+        CameraEffect effect = this.effectQueue.front();
+        Vector3 effectVec = new Vector3();
+        if (effect != null) {
+            effectVec = effect.initiate(this, dt);
+            this.angleOffset = effectVec.z;
+            if (effect.isFinished()) this.effectQueue.dequeue();
+        }
+
+        this.pos.x = smoothDamp(this.pos.x, camX, velocity.x, 0.1, 100_000, dt * 5) + effectVec.x;
+        this.pos.y = smoothDamp(this.pos.y, camY, velocity.y, 0.1, 100_000, dt * 5) + effectVec.y;
     }
 
     public void focusAt(double x, double y) {
@@ -146,10 +159,6 @@ public class CameraRenderer {
 
     public void focusAtEntity(Entity entity) {
         this.focusEntity = entity;
-    }
-
-    public Map.Entry<Instant, Double> get() {
-        return this.queue.entrySet().stream().findFirst().get();
     }
 
     public void update(double dt) {
@@ -163,31 +172,6 @@ public class CameraRenderer {
 
         } else {
             this.focus(pos.x, pos.y, dt);
-        }
-        if (this.queue.size() > 0) {
-            if (this.currentShake == null) {
-                this.currentShake = this.get();
-                this.shakeElapsed = this.currentShake.getValue();
-            }
-
-            this.shakeElapsed = Math.max(this.shakeElapsed - dt, 0);
-
-            if (this.shakeElapsed == 0) {
-                this.queue.remove(this.currentShake.getKey());
-                this.currentShake = null;
-                this.shakeElapsed = 0;
-
-            } else {
-                double shakeProgress = this.shakeElapsed / this.currentShake.getValue();
-
-                double shakeMagnitude = Math.max(0.5, Math.min(1.5, shakeProgress));
-
-                double shakeOffsetX = (Math.random() - 0.5) * shakeMagnitude * 10;
-                double shakeOffsetY = (Math.random() - 0.5) * shakeMagnitude * 10;
-
-                this.x = MathUtils.clamp(this.x + shakeOffsetX, 0, Config.WINDOW_WIDTH);
-                this.y = MathUtils.clamp(this.y + shakeOffsetY, 0, Config.WINDOW_HEIGHT);
-            }
         }
     }
 
@@ -204,11 +188,15 @@ public class CameraRenderer {
     }
 
     public double getX() {
-        return this.x;
+        return this.pos.x;
     }
 
     public double getY() {
-        return this.y;
+        return this.pos.y;
+    }
+
+    public Vector2 getPosition() {
+        return this.pos;
     }
 
     public double getWorldX() {

@@ -131,7 +131,6 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
             }
         }
         if (this.renderer != null) {
-            // EntityPlayer.IDLE_STATES.contains(this.renderer.getCurrentAnimation().getState())
             if (this.freeze && !this.isWalking()) return;
             this.onMove();
         }

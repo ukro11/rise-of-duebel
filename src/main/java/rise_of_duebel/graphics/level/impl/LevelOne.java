@@ -48,7 +48,7 @@ public class LevelOne extends LevelLoader {
                     if (!start && !TWEEN_COLLIDER_MOVING_UP.isRunning()) {
                         TWEEN_COLLIDER_MOVING_UP.animate();
                         TWEEN_COLLIDER_MOVING_UP.onFinish((t) -> {
-                            TWEEN_COLLIDER_MOVING_UP.redo(TWEEN_COLLIDER_MOVING_UP.getValueDouble(), TWEEN_START_COLLIDER_MOVING_UP, 0.5).delay(3);
+                            TWEEN_COLLIDER_MOVING_UP.redo(TWEEN_COLLIDER_MOVING_UP.getValueDouble(), TWEEN_START_COLLIDER_MOVING_UP, 0.5).delay(1);
                             TWEEN_COLLIDER_MOVING_UP.animate();
                         });
                         start = true;

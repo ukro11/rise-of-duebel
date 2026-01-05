@@ -5,8 +5,8 @@ import KAGO_framework.control.Interactable;
 import KAGO_framework.view.DrawTool;
 import org.dyn4j.geometry.Vector2;
 import rise_of_duebel.Wrapper;
-import rise_of_duebel.graphics.CameraRenderer;
 import rise_of_duebel.graphics.OrderRenderer;
+import rise_of_duebel.graphics.camera.CameraRenderer;
 import rise_of_duebel.graphics.level.spawner.ObjectSpawner;
 import rise_of_duebel.model.sound.SoundManager;
 

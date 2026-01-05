@@ -17,10 +17,12 @@ import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.dyn4j.PhysicsUtils;
 import rise_of_duebel.dyn4j.SensorWorldCollider;
 import rise_of_duebel.dyn4j.WorldCollider;
+import rise_of_duebel.graphics.camera.CameraShake;
 import rise_of_duebel.graphics.level.spawner.ObjectIdResolver;
 import rise_of_duebel.graphics.map.GsonMap;
 import rise_of_duebel.graphics.map.TileMap;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
+import rise_of_duebel.model.scene.GameScene;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -61,6 +63,7 @@ public class LevelMap extends TileMap {
 
                     } else {
                         if (reset) {
+                            GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));
                             loader.resetLevel();
                             Wrapper.getLocalPlayer().freeze(0.3);
                             Wrapper.getLocalPlayer().getBody().setLinearVelocity(0, 0);
