@@ -76,7 +76,7 @@ public class CameraShake implements CameraEffect {
         }
 
         double s = this.trauma * this.trauma;
-        this.shakeTime += dt;
+        this.shakeTime += dt * 10;
 
         double nX = smoothNoise(this.shakeTime, nxPhase, nxFreq);
         double nY = smoothNoise(this.shakeTime, nyPhase, nyFreq);

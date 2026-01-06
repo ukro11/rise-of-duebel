@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import rise_of_duebel.ProgramController;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.event.events.KeyPressedEvent;
-import rise_of_duebel.model.scene.GameScene;
-import rise_of_duebel.model.scene.LoadingScene;
 import rise_of_duebel.model.scene.Scene;
 
 import javax.swing.*;
@@ -41,6 +39,9 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
     private final static java.util.List<Integer> currentlyPressedMouseButtons = new ArrayList<>();
 
     private static ViewController instance;
+
+    private int screenWidth;
+    private int screenHeight;
 
     /**
      * Erzeugt ein Objekt zur Kontrolle des Programmflusses.
@@ -116,9 +117,11 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
                     programController.updateProgram(dt);
                     Wrapper.getEntityManager().updateWorld(dt);
                     if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
+                    Scene.updateAll(dt);
 
                     drawTool.setGraphics2D(g);
                     if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(drawTool);
+                    Scene.drawTransition(drawTool);
 
                     g.dispose();
 
@@ -161,20 +164,28 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         this.initializing.set(false);
     }
 
+    public int getScreenWidth() {
+        return this.screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return this.screenHeight;
+    }
+
     private void createWindow(){
         this.setBackground(Color.decode("#d0b99c"));
         logger.info("Creating Window...");
 
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = env.getDefaultScreenDevice();
-        int width = gd.getDisplayMode().getWidth();
-        int height = gd.getDisplayMode().getHeight();
-        int x = width / 2 - rise_of_duebel.Config.WINDOW_WIDTH / 2;
-        int y = height / 2 - rise_of_duebel.Config.WINDOW_HEIGHT / 2;
+        this.screenWidth = gd.getDisplayMode().getWidth();
+        this.screenHeight = gd.getDisplayMode().getHeight();
+        int x = this.screenWidth / 2 - rise_of_duebel.Config.WINDOW_WIDTH / 2;
+        int y = this.screenHeight / 2 - rise_of_duebel.Config.WINDOW_HEIGHT / 2;
         logger.info("Graphics Device: {}", gd.getIDstring());
 
         if (rise_of_duebel.Config.RUN_ENV == rise_of_duebel.Config.Environment.PRODUCTION) {
-            Scene.open(new LoadingScene());
+            //Scene.open(new LoadingScene());
         }
         this.drawFrame = new DrawFrame(rise_of_duebel.Config.WINDOW_TITLE, x, y, rise_of_duebel.Config.WINDOW_WIDTH, rise_of_duebel.Config.WINDOW_HEIGHT, this);
         this.drawFrame.setResizable(false);
@@ -226,7 +237,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         this.requestFocusInWindow();
 
         if (rise_of_duebel.Config.RUN_ENV == rise_of_duebel.Config.Environment.DEVELOPMENT) {
-            Scene.open(GameScene.getInstance());
+            Scene.showGameScene();
         }
     }
 

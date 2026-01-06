@@ -10,7 +10,7 @@ import org.dyn4j.world.World;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.dyn4j.WorldCollider;
-import rise_of_duebel.model.scene.GameScene;
+import rise_of_duebel.model.scene.impl.GameScene;
 
 public abstract class LevelLoader {
 

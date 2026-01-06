@@ -1,4 +1,4 @@
-package rise_of_duebel.model.scene;
+package rise_of_duebel.model.scene.impl;
 
 import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
@@ -8,6 +8,7 @@ import rise_of_duebel.Wrapper;
 import rise_of_duebel.graphics.OrderRenderer;
 import rise_of_duebel.graphics.camera.CameraRenderer;
 import rise_of_duebel.graphics.level.spawner.ObjectSpawner;
+import rise_of_duebel.model.scene.Scene;
 import rise_of_duebel.model.sound.SoundManager;
 
 import java.awt.*;

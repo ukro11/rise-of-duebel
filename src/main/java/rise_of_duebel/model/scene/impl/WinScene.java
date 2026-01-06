@@ -1,10 +1,11 @@
-package rise_of_duebel.model.scene;
+package rise_of_duebel.model.scene.impl;
 
 import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
 import KAGO_framework.view.DrawTool;
 import rise_of_duebel.Config;
 import rise_of_duebel.model.debug.VisualConstants;
+import rise_of_duebel.model.scene.Scene;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -36,12 +37,12 @@ public class WinScene extends Scene {
         drawTool.setCurrentColor(VisualConstants.TEXT_COLOR);
         drawTool.getGraphics2D().setFont(VisualConstants.getFont(VisualConstants.Fonts.PIXEL_FONT, 100));
 
-        drawTool.drawCenteredText("Gewonnen!!!".toUpperCase(), 0, 0, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        //drawTool.drawCenteredText("Gewonnen!!!".toUpperCase(), 0, 0, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
     }
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-            Scene.open(new LoadingScene());
+            //Scene.open(new LoadingScene());
         }
     }
 

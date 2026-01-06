@@ -50,4 +50,8 @@ public class Wrapper {
     public static ViewController getViewController() { return ViewController.getInstance(); }
 
     public static ProgramController getProgramController() { return ViewController.getInstance().getProgramController(); }
+
+    public static int getScreenWidth() { return ViewController.getInstance().getScreenWidth(); }
+
+    public static int getScreenHeight() { return ViewController.getInstance().getScreenHeight(); }
 }

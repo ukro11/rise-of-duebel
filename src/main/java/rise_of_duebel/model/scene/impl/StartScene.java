@@ -1,4 +1,4 @@
-package rise_of_duebel.model.scene;
+package rise_of_duebel.model.scene.impl;
 
 import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
@@ -6,6 +6,7 @@ import KAGO_framework.view.DrawTool;
 import rise_of_duebel.Config;
 import rise_of_duebel.model.KeyManagerModel;
 import rise_of_duebel.model.debug.VisualConstants;
+import rise_of_duebel.model.scene.Scene;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -52,7 +53,7 @@ public class StartScene extends Scene {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-            Scene.open(GameScene.getInstance());
+            //Scene.open(GameScene.getInstance());
         }
     }
 

@@ -5,7 +5,7 @@ import org.dyn4j.world.World;
 import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.graphics.level.spawner.ObjectSpawner;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
-import rise_of_duebel.model.scene.GameScene;
+import rise_of_duebel.model.scene.impl.GameScene;
 
 import java.util.HashMap;
 import java.util.Map;

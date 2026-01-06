@@ -1,8 +1,9 @@
 package rise_of_duebel.graphics;
 
+import KAGO_framework.model.abitur.datenstrukturen.Stack;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.util.Stack;
 
 public class FrameworkGraphics {
 
@@ -24,7 +25,8 @@ public class FrameworkGraphics {
         if (this.graphics2D == null) return;
 
         if (!this.stack.isEmpty()) {
-            this.stack.pop().apply(this.graphics2D);
+            this.stack.top().apply(this.graphics2D);
+            this.stack.pop();
         }
     }
 

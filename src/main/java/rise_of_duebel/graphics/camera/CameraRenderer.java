@@ -8,7 +8,7 @@ import rise_of_duebel.Config;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.event.events.CameraMoveEvent;
 import rise_of_duebel.model.entity.Entity;
-import rise_of_duebel.model.scene.GameScene;
+import rise_of_duebel.model.scene.impl.GameScene;
 import rise_of_duebel.utils.MathUtils;
 
 import java.awt.*;

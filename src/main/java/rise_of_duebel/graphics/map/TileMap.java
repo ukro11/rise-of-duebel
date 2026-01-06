@@ -7,7 +7,7 @@ import rise_of_duebel.Wrapper;
 import rise_of_duebel.dyn4j.WorldCollider;
 import rise_of_duebel.graphics.IOrderRenderer;
 import rise_of_duebel.graphics.camera.CameraRenderer;
-import rise_of_duebel.model.scene.GameScene;
+import rise_of_duebel.model.scene.impl.GameScene;
 import rise_of_duebel.utils.CacheManager;
 
 import java.awt.*;

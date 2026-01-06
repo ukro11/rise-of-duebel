@@ -11,7 +11,7 @@ import rise_of_duebel.graphics.level.LevelMap;
 import rise_of_duebel.graphics.level.impl.LevelOne;
 import rise_of_duebel.model.debug.impl.InfoComponent;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
-import rise_of_duebel.model.scene.GameScene;
+import rise_of_duebel.model.scene.impl.GameScene;
 import rise_of_duebel.utils.CooldownManager;
 
 import java.awt.event.KeyEvent;

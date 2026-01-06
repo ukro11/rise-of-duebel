@@ -16,6 +16,9 @@ import rise_of_duebel.graphics.level.LevelColors;
 import rise_of_duebel.graphics.level.LevelLoader;
 import rise_of_duebel.graphics.level.LevelMap;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
+import rise_of_duebel.model.scene.Scene;
+import rise_of_duebel.model.scene.impl.WinScene;
+import rise_of_duebel.model.scene.transitions.DefaultTransition;
 
 public class LevelOne extends LevelLoader {
 
@@ -65,6 +68,8 @@ public class LevelOne extends LevelLoader {
         this.TWEEN_COLLIDER_MOVING_UP = Tween.to(this.TWEEN_START_COLLIDER_MOVING_UP, this.moving.getHeight(), 0.3)
                 .ease((x) -> Easings.easeOutBounce(x))
                 .loop(false);
+
+        Scene.open(new WinScene(), new DefaultTransition());
     }
 
     @Override

@@ -22,7 +22,7 @@ import rise_of_duebel.graphics.level.spawner.ObjectIdResolver;
 import rise_of_duebel.graphics.map.GsonMap;
 import rise_of_duebel.graphics.map.TileMap;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
-import rise_of_duebel.model.scene.GameScene;
+import rise_of_duebel.model.scene.impl.GameScene;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

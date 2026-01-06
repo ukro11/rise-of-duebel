@@ -1,9 +1,11 @@
 package rise_of_duebel.model.scene;
 
 import KAGO_framework.control.ViewController;
+import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.view.DrawTool;
 import rise_of_duebel.ProgramController;
 import rise_of_duebel.model.debug.VisualModel;
+import rise_of_duebel.model.scene.impl.GameScene;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -14,6 +16,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class Scene {
 
     private static HashMap<String, Scene> scenes = new HashMap<>();
+
+    private static Queue<SceneSwitch> sceneSwitchQueue;
+    private static SceneSwitch transition;
+
     private static Scene last;
     private static Scene current;
     protected ViewController viewController;
@@ -27,15 +33,63 @@ public abstract class Scene {
         this.programController = this.viewController.getProgramController();
         this.id = id;
         this.visuals = new CopyOnWriteArrayList<>();
+        Scene.sceneSwitchQueue = new Queue<>();
         Scene.scenes.put(this.id, this);
     }
 
-    public static void open(Scene scene) {
+    public static void showGameScene() {
+        GameScene next = GameScene.getInstance();
         if (Scene.current != null) {
-            Scene.current.onClose(scene);
+            Scene.current.onClose(next);
         }
-        scene.onOpen(Scene.last);
-        Scene.current = scene;
+        next.onOpen(Scene.last);
+        Scene.current = next;
+    }
+
+    public static void open(Scene scene, SceneTransition sceneTransition) {
+        if (scene == null) return;
+
+        SceneSwitch sceneSwitch = new SceneSwitch(Scene.current, scene, sceneTransition);
+        if (Scene.transition == null) {
+            Scene.transition = sceneSwitch;
+            sceneTransition.in(Scene.current);
+
+        } else {
+            Scene.sceneSwitchQueue.enqueue(sceneSwitch);
+        }
+    }
+
+    public static void updateAll(double dt) {
+        if (Scene.transition != null) {
+            Scene last = Scene.transition.last();
+            Scene next = Scene.transition.next();
+            SceneTransition tr = Scene.transition.transition();
+
+            if (tr.swap()) {
+                if (Scene.current != next) {
+                    if (Scene.current != null) {
+                        Scene.current.onClose(next);
+                    }
+                    next.onOpen(Scene.last);
+                    Scene.current = next;
+                    tr.out(last, next);
+                }
+                if (tr.finished()) {
+                    Scene.transition = null;
+                }
+            }
+        } else {
+            if (!Scene.sceneSwitchQueue.isEmpty()) {
+                Scene.transition = Scene.sceneSwitchQueue.front();
+                Scene.sceneSwitchQueue.dequeue();
+            }
+        }
+    }
+
+    public static void drawTransition(DrawTool drawTool) {
+        if (Scene.transition != null) {
+            Scene.transition.transition().draw(drawTool);
+        }
     }
 
     public static void close() {

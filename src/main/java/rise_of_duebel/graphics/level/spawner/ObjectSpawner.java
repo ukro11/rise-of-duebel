@@ -9,7 +9,7 @@ import rise_of_duebel.animation.IAnimationState;
 import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.graphics.IOrderRenderer;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
-import rise_of_duebel.model.scene.GameScene;
+import rise_of_duebel.model.scene.impl.GameScene;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
