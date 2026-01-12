@@ -3,7 +3,7 @@ package rise_of_duebel;
 import KAGO_framework.control.ViewController;
 import rise_of_duebel.event.EventManager;
 import rise_of_duebel.event.services.EventProcessingQueue;
-import rise_of_duebel.graphics.map.MapManager;
+import rise_of_duebel.graphics.level.LevelManager;
 import rise_of_duebel.graphics.tooltip.TooltipManager;
 import rise_of_duebel.model.GameHandlerModel;
 import rise_of_duebel.model.entity.EntityManager;
@@ -21,7 +21,7 @@ public class Wrapper {
     private final static SoundConstants soundConstants = new SoundConstants();
     private final static TimerUtils timer = new TimerUtils();
     private final static TimerUtils physicsTimer = new TimerUtils();
-    private final static MapManager mapManager = new MapManager();
+    private final static LevelManager levelManager = new LevelManager(1);
 
     public static EventManager getEventManager() {
         return eventManager;
@@ -45,8 +45,6 @@ public class Wrapper {
 
     public static GameHandlerModel getGameHandler() { return gameHandlerModel; }
 
-    public static MapManager getMapManager() { return mapManager; }
-
     public static ViewController getViewController() { return ViewController.getInstance(); }
 
     public static ProgramController getProgramController() { return ViewController.getInstance().getProgramController(); }
@@ -54,4 +52,6 @@ public class Wrapper {
     public static int getScreenWidth() { return ViewController.getInstance().getScreenWidth(); }
 
     public static int getScreenHeight() { return ViewController.getInstance().getScreenHeight(); }
+
+    public static LevelManager getLevelManager() { return levelManager; }
 }

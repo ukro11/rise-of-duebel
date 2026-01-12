@@ -1,15 +1,13 @@
-package rise_of_duebel.model.scene.transitions;
+package rise_of_duebel.model.transitions;
 
 import KAGO_framework.view.DrawTool;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.animation.Easings;
 import rise_of_duebel.animation.tween.Tween;
-import rise_of_duebel.model.scene.Scene;
-import rise_of_duebel.model.scene.SceneTransition;
 
 import java.awt.*;
 
-public class DefaultTransition implements SceneTransition {
+public class DefaultTransition<T> implements Transition<T> {
 
     private Color textColor;
     private Color transitionColor;
@@ -40,7 +38,7 @@ public class DefaultTransition implements SceneTransition {
     }
 
     @Override
-    public void in(Scene before) {
+    public void in(T before) {
         this.TWEEN_UPPER_RECTANGLE.animate();
         this.TWEEN_LOWER_RECTANGLE.animate();
     }
@@ -56,7 +54,7 @@ public class DefaultTransition implements SceneTransition {
     }
 
     @Override
-    public void out(Scene before, Scene after) {
+    public void out(T before, T after) {
         this.TWEEN_UPPER_RECTANGLE.redo(this.TWEEN_UPPER_RECTANGLE.getValueDouble(), 0.0, 0.5).delay(0.5).ease((x) -> Easings.easeInElastic((double) x)).animate();
         this.TWEEN_LOWER_RECTANGLE.redo(this.TWEEN_LOWER_RECTANGLE.getValueDouble(), (double) Wrapper.getScreenHeight(), 0.5).delay(0.5).ease((x) -> Easings.easeInElastic((double) x)).animate();
         this.TWEEN_LOWER_RECTANGLE.onFinish(t -> this.outFinished = true);

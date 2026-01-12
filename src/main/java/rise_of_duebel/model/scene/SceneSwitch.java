@@ -1,6 +1,8 @@
 package rise_of_duebel.model.scene;
 
-public record SceneSwitch(Scene last, Scene next, SceneTransition transition) {
+import rise_of_duebel.model.transitions.Transition;
+
+public record SceneSwitch(Scene last, Scene next, Transition<Scene> transition) {
     @Override
     public Scene last() {
         return this.last;
@@ -12,7 +14,7 @@ public record SceneSwitch(Scene last, Scene next, SceneTransition transition) {
     }
 
     @Override
-    public SceneTransition transition() {
+    public Transition<Scene> transition() {
         return this.transition;
     }
 }

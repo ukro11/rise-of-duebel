@@ -5,17 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rise_of_duebel.animation.tween.Tween;
 import rise_of_duebel.event.events.KeyPressedEvent;
-import rise_of_duebel.event.services.EventProcessCallback;
-import rise_of_duebel.event.services.process.EventLoadAssetsProcess;
-import rise_of_duebel.graphics.level.LevelMap;
-import rise_of_duebel.graphics.level.impl.LevelOne;
 import rise_of_duebel.model.debug.impl.InfoComponent;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
 import rise_of_duebel.utils.CooldownManager;
 
 import java.awt.event.KeyEvent;
-import java.util.List;
 
 /**
  * Ein Objekt der Klasse ProgramController dient dazu das Programm zu steuern.
@@ -48,20 +43,7 @@ public class ProgramController {
      * nach Erstellen des Fensters, usw. erst aufgerufen.
      */
     public void preStartProgram() {
-        Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<>("Loading map", () -> {
-            // /temp/undead/Tiled_files/Undead_land.json
-            // /map/kitchen.json
-            // /map/overworld/Undead_land.json
-            Wrapper.getMapManager().importMap(new LevelMap("/levels/1/level1.json", LevelOne.class, List.of(), List.of(), List.of("*"), List.of()));
-            Wrapper.getMapManager().showMap(0);
-
-        }, new EventProcessCallback<>() {
-            @Override
-            public void onSuccess(Object data) {
-                viewController.continueStart();
-            }
-        }));
-        viewController.continueStart();
+        this.viewController.continueStart();
     }
 
     /***
@@ -79,7 +61,11 @@ public class ProgramController {
         GameScene.getInstance().getVisuals().add(new InfoComponent());
 
         //GameScene.getInstance().getCameraRenderer().focusAtEntity(this.player);
+        this.player = Wrapper.getEntityManager().spawnPlayer(0, 0);
+        this.player.setShowHitbox(true);
         GameScene.getInstance().getCameraRenderer().focusAt(375, 475);
+
+        Wrapper.getLevelManager().loadStartLevel();
     }
 
     /***
@@ -94,9 +80,5 @@ public class ProgramController {
     public void updateProgram(double dt){
         CooldownManager.update(dt);
         Tween.updateAll(dt);
-    }
-
-    public void setPlayer(EntityPlayer player) {
-        this.player = player;
     }
 }

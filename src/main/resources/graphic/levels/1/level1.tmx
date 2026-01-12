@@ -3,7 +3,6 @@
  <editorsettings>
   <export target="level1.json" format="json"/>
  </editorsettings>
- <objectgroup id="11" name="CAMERA"/>
  <objectgroup color="#ffff00" id="7" name="LOWEST">
   <object id="9" x="257" y="655" width="25" height="7"/>
  </objectgroup>

@@ -16,11 +16,8 @@ import rise_of_duebel.graphics.level.LevelColors;
 import rise_of_duebel.graphics.level.LevelLoader;
 import rise_of_duebel.graphics.level.LevelMap;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
-import rise_of_duebel.model.scene.Scene;
-import rise_of_duebel.model.scene.impl.WinScene;
-import rise_of_duebel.model.scene.transitions.DefaultTransition;
 
-public class LevelOne extends LevelLoader {
+public class Level1 extends LevelLoader {
 
     private WorldCollider moving;
     private WorldCollider sensor;
@@ -30,8 +27,8 @@ public class LevelOne extends LevelLoader {
     private Vector2 TWEEN_SAVED_VALUE_COLLIDER_MOVING_UP;
     private boolean start = false;
 
-    public LevelOne(LevelMap map) {
-        super("level1.json", new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc"), map);
+    public Level1(LevelMap map) {
+        super("level1.json", LevelColors.createDefault(), map);
         this.moving = this.map.getColliderByLayer("MOVING", 0);
         this.sensor = this.moving.getSensorByIndex(0);
         BodyFixture sensorFixture = this.sensor.getFixture();
@@ -62,14 +59,17 @@ public class LevelOne extends LevelLoader {
     }
 
     @Override
+    public void enterPortal() {
+
+    }
+
+    @Override
     public void resetLevel() {
         this.start = false;
         this.TWEEN_COLLIDER_MOVING_UP.stop();
         this.TWEEN_COLLIDER_MOVING_UP = Tween.to(this.TWEEN_START_COLLIDER_MOVING_UP, this.moving.getHeight(), 0.3)
                 .ease((x) -> Easings.easeOutBounce(x))
                 .loop(false);
-
-        Scene.open(new WinScene(), new DefaultTransition());
     }
 
     @Override

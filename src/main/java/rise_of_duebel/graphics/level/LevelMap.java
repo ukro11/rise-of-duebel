@@ -41,6 +41,9 @@ public class LevelMap extends TileMap {
     private final LevelLoader loader;
     private boolean reset = false;
 
+    private StepListenerAdapter<ColliderBody> stepListener;
+    private ContactListenerAdapter<ColliderBody> contactListener;
+
     public LevelMap(String fileName, Class<? extends LevelLoader> cloader, List<String> staticLayers, List<String> staticLayersAfterPlayer, List<String> batchLayers, List<String> batchLayersAfterPlayer) {
         super(fileName, staticLayers, staticLayersAfterPlayer, batchLayers, batchLayersAfterPlayer);
         try {
@@ -51,43 +54,82 @@ public class LevelMap extends TileMap {
                 throw new RuntimeException(String.format("Levels needs these layers: %s, Got these layers: %s", String.join(", ", this.NEEDED_LAYERS), String.join(", ", m)));
             }
 
-            WorldCollider lowest = this.getColliderByLayer("LOWEST");
-            this.loader = cloader.getConstructor(LevelMap.class).newInstance(this);
-            Wrapper.getEntityManager().getWorld().addStepListener(new StepListenerAdapter<>() {
-                @Override
-                public void begin(TimeStep step, PhysicsWorld<ColliderBody, ?> world) {
-                    super.begin(step, world);
-                    if (lowest.getY() < Wrapper.getLocalPlayer().getY()) {
-                        Wrapper.getLocalPlayer().setPosition(spawnLocation.x, spawnLocation.y);
-                        reset = true;
+            if (cloader != null) {
+                this.loader = cloader.getConstructor(LevelMap.class).newInstance(this);
 
-                    } else {
-                        if (reset) {
-                            GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));
-                            loader.resetLevel();
-                            Wrapper.getLocalPlayer().freeze(0.3);
-                            Wrapper.getLocalPlayer().getBody().setLinearVelocity(0, 0);
-                            reset = false;
-                        }
-                    }
-                    loader.updateCollider(step, world);
-                }
-            });
-            Wrapper.getEntityManager().getWorld().addContactListener(new ContactListenerAdapter<>() {
-                @Override
-                public void collision(ContactCollisionData<ColliderBody> data) {
-                    BodyFixture f1 = data.getFixture1();
-                    BodyFixture f2 = data.getFixture2();
-                    if (f1.getUserData() == null || f2.getUserData() == null) return;
-                    if (EntityPlayer.containsPlayer(f1, f2) && PhysicsUtils.contains("PORTAL", f1, f2)) {
-                        log.info("PORTAL");
-                    }
-                }
-            });
+            } else {
+                this.loader = new LevelLoader(this.getFileName(), LevelColors.createDefault(), this) {
+                    @Override
+                    public void updateCollider(TimeStep step, PhysicsWorld<ColliderBody, ?> world) {}
+                    @Override
+                    public void enterPortal() {}
+                    @Override
+                    public void resetLevel() {}
+                };
+            }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  InstantiationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void onActive() {
+        Wrapper.getLocalPlayer().setPosition(this.spawnLocation.x, this.spawnLocation.y);
+
+        WorldCollider lowest = this.getColliderByLayer("LOWEST");
+        this.stepListener = new StepListenerAdapter<ColliderBody>() {
+            @Override
+            public void begin(TimeStep step, PhysicsWorld<ColliderBody, ?> world) {
+                super.begin(step, world);
+                if (lowest.getY() < Wrapper.getLocalPlayer().getY()) {
+                    Wrapper.getLocalPlayer().setPosition(spawnLocation.x, spawnLocation.y);
+                    reset = true;
+
+                } else {
+                    if (reset) {
+                        GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));
+                        loader.resetLevel();
+                        Wrapper.getLocalPlayer().freeze(0.3);
+                        Wrapper.getLocalPlayer().getBody().setLinearVelocity(0, 0);
+                        reset = false;
+                    }
+                }
+                loader.updateCollider(step, world);
+            }
+        };
+
+        Wrapper.getEntityManager().getWorld().addStepListener(this.stepListener);
+
+        this.contactListener = new ContactListenerAdapter<ColliderBody>() {
+            @Override
+            public void collision(ContactCollisionData<ColliderBody> data) {
+                BodyFixture f1 = data.getFixture1();
+                BodyFixture f2 = data.getFixture2();
+                if (f1.getUserData() == null || f2.getUserData() == null) return;
+                if (EntityPlayer.containsPlayer(f1, f2) && PhysicsUtils.contains("PORTAL", f1, f2)) {
+                    loader.enterPortal();
+                    Wrapper.getLevelManager().nextLevel(String.format("PORTAL-%d", Wrapper.getLevelManager().getIndex()));
+                }
+            }
+        };
+
+        Wrapper.getEntityManager().getWorld().addContactListener(this.contactListener);
+        this.colliders.forEach(c -> {
+            if (this.loader != null) {
+                this.loader.loadCollider(c, c.getFixture());
+            }
+            Wrapper.getEntityManager().getWorld().addBody(c);
+        });
+    }
+
+    public void onHide() {
+        Wrapper.getEntityManager().getWorld().removeStepListener(this.stepListener);
+        Wrapper.getEntityManager().getWorld().removeContactListener(this.contactListener);
+        this.removeAll();
+    }
+
+    private void removeAll() {
+        colliders.forEach(c -> Wrapper.getEntityManager().getWorld().removeBody(c));
     }
 
     @Override
@@ -131,9 +173,6 @@ public class LevelMap extends TileMap {
 
         if (layer.getName().equalsIgnoreCase("SPAWN")) {
             this.spawnLocation = new Vector2(o.getX(), o.getY());
-            var player = Wrapper.getEntityManager().spawnPlayer(o.getX(), o.getY());
-            player.setShowHitbox(true);
-            Wrapper.getProgramController().setPlayer(player);
         }
 
         if (layer.getObjects().size() == 1 && wc.getUserData().isEmpty()) {
@@ -159,7 +198,6 @@ public class LevelMap extends TileMap {
         }
 
         this.colliders.add(wc);
-        Wrapper.getEntityManager().getWorld().addBody(wc);
     }
 
     private void drawCollider(DrawTool drawTool) {
@@ -182,6 +220,9 @@ public class LevelMap extends TileMap {
     public void draw(DrawTool drawTool) {
         if (!this.staticQuads.isEmpty()) super.draw(drawTool);
         this.drawCollider(drawTool);
+        if (this.loader != null) {
+            this.loader.draw(drawTool);
+        }
     }
 
     @Override
@@ -239,5 +280,9 @@ public class LevelMap extends TileMap {
 
     public WorldCollider getColliderByLayer(String layer, int index) {
         return this.getCollidersByLayer(layer).get(index);
+    }
+
+    public LevelLoader getLoader() {
+        return this.loader;
     }
 }

@@ -35,7 +35,11 @@ public class EntityManager {
 
     public void updateWorld(double dt) {
         //this.world.update(dt);
-        this.world.step(1);
+        try {
+            this.world.step(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Map<String, Entity<?>> getEntities() {
