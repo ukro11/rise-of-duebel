@@ -27,8 +27,8 @@
                  "type":"",
                  "visible":true,
                  "width":25,
-                 "x":206,
-                 "y":600
+                 "x":206.667,
+                 "y":660.833
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -49,7 +49,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":705,
+                 "width":705.833333333333,
                  "x":-500,
                  "y":480
                 }, 
@@ -93,31 +93,31 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1058,
-                 "x":428,
+                 "width":1058.167,
+                 "x":428.833,
                  "y":480
                 }, 
                 {
-                 "height":48,
+                 "height":48.6666666666667,
                  "id":18,
                  "name":"DA$WORLD_PLATFORM_3",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":26,
-                 "x":205,
-                 "y":431
+                 "width":26.4597645851374,
+                 "x":205.871788703935,
+                 "y":431.033933095994
                 }, 
                 {
-                 "height":95,
+                 "height":95.1667,
                  "id":19,
                  "name":"DA$WORLD_PLATFORM_4",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":26,
-                 "x":291,
-                 "y":384
+                 "width":26.4598,
+                 "x":291.7701,
+                 "y":384.16665
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -144,9 +144,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":26,
-                 "x":401,
-                 "y":354
+                 "width":26.6663333333333,
+                 "x":401.666333333333,
+                 "y":354.833666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -160,15 +160,15 @@
          "name":"SENSOR",
          "objects":[
                 {
-                 "height":199,
+                 "height":197.5,
                  "id":13,
                  "name":"SENSOR_MOVING-PLATFORM-1_1",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":109,
-                 "x":319,
-                 "y":281
+                 "width":110.648414758871,
+                 "x":318.35158524113,
+                 "y":281.166666666667
                 }],
          "opacity":1,
          "type":"objectgroup",

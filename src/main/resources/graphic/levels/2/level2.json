@@ -27,8 +27,8 @@
                  "type":"",
                  "visible":true,
                  "width":25,
-                 "x":377,
-                 "y":600
+                 "x":377.666666666667,
+                 "y":676.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -93,8 +93,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":988,
-                 "x":498,
+                 "width":988.666666666667,
+                 "x":498.333333333333,
                  "y":480
                 }],
          "opacity":1,
@@ -110,7 +110,7 @@
          "name":"MOVING",
          "objects":[
                 {
-                 "height":326,
+                 "height":125,
                  "id":12,
                  "name":"DA$MOVING_PLATFORM_1",
                  "properties":[
@@ -122,9 +122,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":121,
-                 "x":377,
-                 "y":480
+                 "width":117.333333333333,
+                 "x":378.333333333333,
+                 "y":480.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
