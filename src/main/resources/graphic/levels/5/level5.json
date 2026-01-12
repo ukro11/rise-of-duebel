@@ -27,8 +27,8 @@
                  "type":"",
                  "visible":true,
                  "width":25,
-                 "x":262,
-                 "y":651
+                 "x":262.000333333333,
+                 "y":651.166333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -49,9 +49,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":764,
-                 "x":-502,
-                 "y":480
+                 "width":764.087,
+                 "x":-502.666666666667,
+                 "y":480.666666666667
                 }, 
                 {
                  "height":281,
@@ -93,8 +93,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1164,
-                 "x":322,
+                 "width":1164.17,
+                 "x":322.833,
                  "y":480
                 }],
          "opacity":1,
@@ -110,7 +110,7 @@
          "name":"MOVING",
          "objects":[
                 {
-                 "height":28,
+                 "height":28.3278,
                  "id":12,
                  "name":"DA$MOVING_PLATFORM_1",
                  "properties":[
@@ -122,9 +122,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":78,
-                 "x":416,
-                 "y":481
+                 "width":78.7786,
+                 "x":416.254333333333,
+                 "y":481.756
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -138,15 +138,15 @@
          "name":"SENSOR",
          "objects":[
                 {
-                 "height":197,
+                 "height":197.5,
                  "id":13,
                  "name":"SENSOR_MOVING-PLATFORM-1_1",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":109,
-                 "x":406,
-                 "y":420
+                 "width":109.333,
+                 "x":406.447,
+                 "y":420.268
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -169,7 +169,7 @@
                  "visible":true,
                  "width":43,
                  "x":624,
-                 "y":414
+                 "y":414.5
                 }],
          "opacity":1,
          "type":"objectgroup",
