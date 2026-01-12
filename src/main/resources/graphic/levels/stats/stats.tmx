@@ -4,7 +4,7 @@
   <export target="stats.json" format="json"/>
  </editorsettings>
  <objectgroup id="11" name="TEXT">
-  <object id="18" x="30" y="281" width="703" height="200"/>
+  <object id="18" x="30" y="280" width="703" height="200"/>
  </objectgroup>
  <objectgroup color="#ffff00" id="7" name="LOWEST">
   <object id="9" x="257" y="655" width="25" height="7"/>
