@@ -9,6 +9,8 @@ import rise_of_duebel.event.services.EventProcessCallback;
 import rise_of_duebel.event.services.process.EventLoadAssetsProcess;
 import rise_of_duebel.graphics.level.LevelMap;
 import rise_of_duebel.graphics.level.impl.LevelOne;
+import rise_of_duebel.graphics.level.impl.LevelThree;
+import rise_of_duebel.graphics.level.impl.LevelTwo;
 import rise_of_duebel.model.debug.impl.InfoComponent;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
@@ -52,8 +54,12 @@ public class ProgramController {
             // /temp/undead/Tiled_files/Undead_land.json
             // /map/kitchen.json
             // /map/overworld/Undead_land.json
-            Wrapper.getMapManager().importMap(new LevelMap("/levels/1/level1.json", LevelOne.class, List.of(), List.of(), List.of("*"), List.of()));
-            Wrapper.getMapManager().showMap(0);
+            //Wrapper.getMapManager().importMap(new LevelMap("/levels/1/level1.json", LevelOne.class, List.of(), List.of(), List.of("*"), List.of()));
+            //Wrapper.getMapManager().showMap(0);
+            //Wrapper.getMapManager().importMap(new LevelMap("/levels/2/level2.json", LevelTwo.class, List.of(), List.of(), List.of("*"), List.of()));
+            //Wrapper.getMapManager().showMap(1);
+            Wrapper.getMapManager().importMap(new LevelMap("/levels/3/level3.json", LevelThree.class, List.of(), List.of(), List.of("*"), List.of()));
+            Wrapper.getMapManager().showMap(2);
 
         }, new EventProcessCallback<>() {
             @Override
