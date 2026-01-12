@@ -141,4 +141,32 @@ public class Queue<ContentType> {
 			return head.getContent();
 		}
 	}
+
+	/**
+	 * Man kann auf das hinterste Element in der Schlange zugreifen.
+	 *
+	 * @return der Content vom hintersten Objekt in der Schlange
+	 */
+	public ContentType tail() {
+		if (this.isEmpty()) {
+			return null;
+		} else {
+			return tail.getContent();
+		}
+	}
+
+	/**
+	 * Man kann prüfen, ob ein Objekt in der Schlange enthalten ist
+	 *
+	 * @param pContent Der Content, der überprüft werden soll, ob der enthalten ist
+	 * @return true oder false halt
+	 */
+	public boolean contains(ContentType pContent) {
+		if (pContent == null) return false;
+		QueueNode nodeA = this.head;
+		while (nodeA.getNext() != null && !nodeA.getContent().equals(pContent)) {
+			nodeA = nodeA.getNext();
+		}
+		return nodeA.getContent().equals(pContent);
+	}
 }

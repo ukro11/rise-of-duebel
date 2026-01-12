@@ -53,6 +53,7 @@ public class GameScene extends Scene {
         }
         Wrapper.getTooltipManager().update(dt);
         Wrapper.getGameHandler().update(dt);
+        Wrapper.getLevelManager().update(dt);
         super.update(dt);
     }
 
@@ -69,14 +70,14 @@ public class GameScene extends Scene {
         drawTool.drawFilledRectangle(-2000, -1000, 4000, 2000);
         drawTool.resetColor();
 
-        Wrapper.getMapManager().draw(drawTool);
+        Wrapper.getLevelManager().draw(drawTool);
 
         GameScene.getInstance().getRenderer().draw(drawTool);
         this.getDrawables().forEach(d -> d.draw(drawTool));
 
         this.drawAllHitboxes(drawTool);
 
-        Wrapper.getMapManager().drawAfterPlayer(drawTool);
+        Wrapper.getLevelManager().drawAfterPlayer(drawTool);
 
         this.cameraRenderer.detach(drawTool);
     }
@@ -86,6 +87,7 @@ public class GameScene extends Scene {
         GameScene.getInstance().drawGame(drawTool);
         Wrapper.getGameHandler().draw(drawTool);
         Wrapper.getTooltipManager().draw(drawTool);
+        Wrapper.getLevelManager().drawTransition(drawTool);
         super.draw(drawTool);
         //drawTool.setCurrentColor(new Color(157, 196, 94), 50);
         //drawTool.drawFilledRectangle(0, 0, 4000, 4000);

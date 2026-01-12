@@ -1,4 +1,4 @@
-package rise_of_duebel.model.scene;
+package rise_of_duebel.model.transitions;
 
 import KAGO_framework.view.DrawTool;
 
@@ -6,12 +6,12 @@ import KAGO_framework.view.DrawTool;
  * @author Mark
  * @version 1.0
  */
-public interface SceneTransition {
+public interface Transition<T> {
     /***
      * Wird gecallt, wenn Transition beginnen soll (one time call)
      * @param before Szene, die jetzt geschlossen werden soll
      */
-    void in(Scene before);
+    void in(T before);
 
     /***
      * @return Ob die in-Animation schon fertig ist und die Szene schon gewechselt werden soll
@@ -32,7 +32,7 @@ public interface SceneTransition {
      * @param before Szene, die jetzt geschlossen werden soll
      * @param after Szene, die jetzt geöffnet wird
      */
-    void out(Scene before, Scene after);
+    void out(T before, T after);
 
     /***
      * Normale Draw Function (Transition Draw)

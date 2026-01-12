@@ -8,6 +8,10 @@ public record LevelColors(Color background, Color world, Color moving) {
 
     public LevelColors(String background, String world, String moving, String portal) { this(Color.decode(background), Color.decode(world), Color.decode(moving)); }
 
+    public static LevelColors createDefault() {
+        return new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc");
+    }
+
     @Override
     public Color background() {
         return this.background;

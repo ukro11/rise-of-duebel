@@ -6,6 +6,7 @@ import KAGO_framework.view.DrawTool;
 import rise_of_duebel.ProgramController;
 import rise_of_duebel.model.debug.VisualModel;
 import rise_of_duebel.model.scene.impl.GameScene;
+import rise_of_duebel.model.transitions.Transition;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -46,7 +47,7 @@ public abstract class Scene {
         Scene.current = next;
     }
 
-    public static void open(Scene scene, SceneTransition sceneTransition) {
+    public static void open(Scene scene, Transition sceneTransition) {
         if (scene == null) return;
 
         SceneSwitch sceneSwitch = new SceneSwitch(Scene.current, scene, sceneTransition);
@@ -63,7 +64,7 @@ public abstract class Scene {
         if (Scene.transition != null) {
             Scene last = Scene.transition.last();
             Scene next = Scene.transition.next();
-            SceneTransition tr = Scene.transition.transition();
+            Transition tr = Scene.transition.transition();
 
             if (tr.swap()) {
                 if (Scene.current != next) {

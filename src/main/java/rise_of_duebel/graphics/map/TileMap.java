@@ -20,11 +20,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class TileMap {
 
     protected GsonMap map;
-    protected List<WorldCollider> colliders;
+    protected CopyOnWriteArrayList<WorldCollider> colliders;
     private Path directory;
     private String fileName;
     protected final HashMap<GsonMap.Tileset, Batch> batches;
@@ -44,7 +45,7 @@ public abstract class TileMap {
 
     public TileMap(String fileName, List<String> staticLayers, List<String> staticLayersAfterPlayer, List<String> batchLayers, List<String> batchLayersAfterPlayer) {
         String[] f = fileName.split("/");
-        this.colliders = new ArrayList<>();
+        this.colliders = new CopyOnWriteArrayList<>();
         this.directory = Path.of(fileName).getParent();
         this.fileName = f[f.length - 1];
         this.staticLayers = staticLayers;
@@ -62,6 +63,10 @@ public abstract class TileMap {
         this.batchQuadsAfterPlayer = new ArrayList<>();
         this.camera = GameScene.getInstance().getCameraRenderer();
         this.load();
+    }
+
+    public static boolean mapExists(String filename) {
+        return TileMap.class.getResourceAsStream("/graphic" + filename) != null;
     }
 
     /***
@@ -82,35 +87,6 @@ public abstract class TileMap {
             } else if (layer.getType().equals("objectgroup")) {
                 for (GsonMap.ObjectCollider o : layer.getObjects()) {
                     if (!o.isVisible()) continue;
-                    /*Collider collider = null;
-
-                    if (o.getPolygon() != null) {
-                        Vec2[] vertices = new Vec2[o.getPolygon().size()];
-                        for (int i = 0; i < vertices.length; i++) {
-                            var v = o.getPolygon().get(i);
-                            vertices[i] = new Vec2(v.getX(), v.getY());
-                        }
-                        collider = new ColliderPolygon(String.format("polygon-%s-%d", layer.getName(), layer.getObjects().indexOf(o) + 1), BodyType.STATIC, o.getX(), o.getY(), vertices);
-
-                    } else if (o.isEllipse()) {
-                        var radius = o.getWidth() / 2;
-                        collider = new ColliderCircle(
-                            String.format("circle-%s-%d", layer.getName(), layer.getObjects().indexOf(o) + 1),
-                            BodyType.STATIC, o.getX(), o.getY(), radius
-                        );
-
-                    } else {
-                        collider = new ColliderRectangle(String.format("rectangle-%s-%d", layer.getName(), layer.getObjects().indexOf(o) + 1), BodyType.STATIC, o.getX(), o.getY(), o.getWidth(), o.getHeight());
-                    }
-
-                    if (layer.getName().equals("sensor")) {
-                        collider.setSensor(true);
-                        collider.setColliderClass("map_sensor");
-
-                    } else {
-                        collider.setColliderClass("map");
-                    }*/
-
                     this.loadCollider(layer, o);
                 }
             }
@@ -150,7 +126,6 @@ public abstract class TileMap {
         for (int y = 0; y < chunk.getHeight(); y++) {
             for (int x = 0; x < chunk.getWidth(); x++) {
                 int index = y * chunk.getWidth() + x;
-                System.out.println("ERR");
                 long gid = chunk.getData().get(index);
                 if (gid > 0) {
                     GsonMap.Tileset currentTileset = this.findTilesetForGid(gid);
