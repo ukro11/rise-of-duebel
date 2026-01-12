@@ -24,9 +24,9 @@
  */
 package rise_of_duebel.dyn4j;
 
+import org.dyn4j.geometry.*;
 import org.dyn4j.geometry.Polygon;
 import org.dyn4j.geometry.Shape;
-import org.dyn4j.geometry.*;
 
 import java.awt.*;
 import java.awt.geom.*;
