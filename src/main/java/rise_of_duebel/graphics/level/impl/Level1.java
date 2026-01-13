@@ -7,6 +7,7 @@ import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.ContactCollisionData;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.listener.ContactListenerAdapter;
+import rise_of_duebel.Wrapper;
 import rise_of_duebel.animation.Easings;
 import rise_of_duebel.animation.tween.Tween;
 import rise_of_duebel.dyn4j.ColliderBody;

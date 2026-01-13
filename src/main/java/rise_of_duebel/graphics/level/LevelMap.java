@@ -83,8 +83,8 @@ public class LevelMap extends TileMap {
                 super.begin(step, world);
                 if (lowest.getY() < Wrapper.getLocalPlayer().getY()) {
                     Wrapper.getLocalPlayer().setPosition(spawnLocation.x, spawnLocation.y);
+                    Wrapper.getUserProfile().addDeath();
                     reset = true;
-
                 } else {
                     if (reset) {
                         GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));

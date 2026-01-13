@@ -9,6 +9,7 @@ import rise_of_duebel.model.GameHandlerModel;
 import rise_of_duebel.model.entity.EntityManager;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.sound.SoundConstants;
+import rise_of_duebel.model.user.UserProfile;
 import rise_of_duebel.utils.TimerUtils;
 
 public class Wrapper {
@@ -22,6 +23,11 @@ public class Wrapper {
     private final static TimerUtils timer = new TimerUtils();
     private final static TimerUtils physicsTimer = new TimerUtils();
     private final static LevelManager levelManager = new LevelManager(1);
+    private final static UserProfile userProfile = new UserProfile();
+
+    public static UserProfile getUserProfile(){
+        return userProfile;
+    }
 
     public static EventManager getEventManager() {
         return eventManager;

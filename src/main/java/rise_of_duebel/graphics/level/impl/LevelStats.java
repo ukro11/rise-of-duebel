@@ -19,13 +19,13 @@ import java.awt.*;
 
 public class LevelStats extends LevelLoader {
 
-    private Color TEXT_COLOR = Color.decode("#b29f99");
-    private Color TEXT_OUTLINE_COLOR = Color.decode("#554544");
-    private Font font;
+    private final Color TEXT_COLOR = Color.decode("#b29f99");
+    private final Color TEXT_OUTLINE_COLOR = Color.decode("#554544");
+    private final Font font;
 
-    private double maxDistance = 100;
+    private final double maxDistance = 100;
 
-    private WorldCollider textCollider;
+    private final WorldCollider textCollider;
 
     public LevelStats(LevelMap map) {
         super("stats.json", new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc"), map);
@@ -65,6 +65,21 @@ public class LevelStats extends LevelLoader {
             this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
             this.textCollider.getY() + drawTool.getFontHeight() + 30
         );
+        drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
+        String text2 = "DEATHS:" + Wrapper.getUserProfile().getDeaths();
+        drawTool.drawText(
+                text2,
+                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
+                this.textCollider.getY() + drawTool.getFontHeight() + 60
+        );
+        drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
+        String text3 = "TIME:" + Wrapper.getUserProfile().getTime();
+        drawTool.drawText(
+                text3,
+                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
+                this.textCollider.getY() + drawTool.getFontHeight() + 90
+        );
+
 
         drawTool.pop();
     }

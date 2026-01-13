@@ -49,4 +49,8 @@ public class EntityManager {
     public World<ColliderBody> getWorld() {
         return this.world;
     }
+
+    public boolean playerDown() {
+        return false;
+    }
 }

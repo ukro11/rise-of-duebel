@@ -4,6 +4,7 @@ import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.view.DrawTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rise_of_duebel.Wrapper;
 import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.graphics.map.TileMap;
 import rise_of_duebel.model.transitions.DefaultTransition;
@@ -118,13 +119,21 @@ public class LevelManager {
         if (this.transition == null) {
             this.transition = levelSwitch;
             transition.in(this.current);
-
         } else if (!this.transition.id().equals(id)) {
             if (!this.levelSwitchQueue.isEmpty() && !this.levelSwitchQueue.front().id().equals(id) && !this.levelSwitchQueue.tail().id().equals(id)) {
                 log.info("QUEUE");
                 this.levelSwitchQueue.enqueue(levelSwitch);
             }
         }
+        if (!(this.next.getLoader() instanceof LevelStats)) {
+            Wrapper.getUserProfile().resetDeaths();
+            Wrapper.getUserProfile().resetTime();
+            Wrapper.getUserProfile().resumeTime();
+        }
+        if (this.next.getLoader() instanceof LevelStats) {
+            Wrapper.getUserProfile().pauseTime();
+        }
+
     }
 
     public void nextLevel(String id) {

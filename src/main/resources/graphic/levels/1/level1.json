@@ -3,17 +3,6 @@
  "infinite":false,
  "layers":[
         {
-         "draworder":"topdown",
-         "id":11,
-         "name":"CAMERA",
-         "objects":[],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
          "color":"#ffff00",
          "draworder":"topdown",
          "id":7,
@@ -28,7 +17,7 @@
                  "visible":true,
                  "width":25,
                  "x":257,
-                 "y":655
+                 "y":600
                 }],
          "opacity":1,
          "type":"objectgroup",

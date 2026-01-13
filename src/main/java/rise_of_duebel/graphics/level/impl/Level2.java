@@ -18,9 +18,9 @@ import rise_of_duebel.graphics.level.LevelMap;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.Scene;
 import rise_of_duebel.model.scene.impl.WinScene;
-import rise_of_duebel.model.scene.transitions.DefaultTransition;
+import rise_of_duebel.model.transitions.DefaultTransition;
 
-public class LevelTwo extends LevelLoader {
+public class Level2 extends LevelLoader {
 
     private WorldCollider moving;
     private WorldCollider sensor;
@@ -30,7 +30,7 @@ public class LevelTwo extends LevelLoader {
     private Vector2 TWEEN_SAVED_VALUE_COLLIDER_MOVING_RIGHT;
     private boolean start = false;
 
-    public LevelTwo(LevelMap map) {
+    public Level2(LevelMap map) {
         super("level2.json", new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc"), map);
         this.moving = this.map.getColliderByLayer("MOVING", 0);
         this.sensor = this.moving.getSensorByIndex(0);
@@ -68,12 +68,15 @@ public class LevelTwo extends LevelLoader {
         this.TWEEN_COLLIDER_MOVING_RIGHT = Tween.to(this.TWEEN_START_COLLIDER_MOVING_RIGHT, this.moving.getWidth(), 0.3)
                 .ease((x) -> Easings.easeOutBounce(x))
                 .loop(false);
-
-        Scene.open(new WinScene(), new DefaultTransition());
     }
 
     @Override
     public void updateCollider(TimeStep step, PhysicsWorld<ColliderBody, ?> world) {
         moving.getTransform().setTranslation(TWEEN_SAVED_VALUE_COLLIDER_MOVING_RIGHT.x + TWEEN_COLLIDER_MOVING_RIGHT.getValueDouble(), TWEEN_SAVED_VALUE_COLLIDER_MOVING_RIGHT.y);
+    }
+
+    @Override
+    public void enterPortal() {
+
     }
 }

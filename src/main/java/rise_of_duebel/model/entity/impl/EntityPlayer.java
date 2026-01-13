@@ -51,6 +51,8 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     private List<Consumer<EntityPlayer>> onDirectionChange = new ArrayList<>();
 
+
+
     public EntityPlayer(World<ColliderBody> world, double x, double y, double width, double height) {
         super(world, new ColliderBody(Color.GREEN), x, y, width, height);
         this.id = String.format("ENTITY_PLAYER_%s", UUID.randomUUID());
