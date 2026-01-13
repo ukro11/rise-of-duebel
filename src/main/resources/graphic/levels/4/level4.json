@@ -27,8 +27,8 @@
                  "type":"",
                  "visible":true,
                  "width":25,
-                 "x":206.667,
-                 "y":660.833
+                 "x":206,
+                 "y":660
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -49,7 +49,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":958.086953268822,
+                 "width":958,
                  "x":-500,
                  "y":480
                 }, 
@@ -93,20 +93,20 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1058.17,
-                 "x":428.833,
+                 "width":1058,
+                 "x":428,
                  "y":480
                 }, 
                 {
-                 "height":27.7539079301392,
+                 "height":27,
                  "id":18,
                  "name":"DA$WORLD_PLATFORM_3",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":78.5721436393675,
-                 "x":260.091347415624,
-                 "y":452.082294784045
+                 "width":78,
+                 "x":260,
+                 "y":452
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -121,7 +121,7 @@
          "name":"MOVING",
          "objects":[
                 {
-                 "height":28.3278262921879,
+                 "height":28,
                  "id":12,
                  "name":"DA$MOVING_PLATFORM_1",
                  "properties":[
@@ -133,9 +133,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":78.7786436393674,
-                 "x":418.921251357092,
-                 "y":451.256173707812
+                 "width":78,
+                 "x":418,
+                 "y":451
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -149,15 +149,15 @@
          "name":"SENSOR",
          "objects":[
                 {
-                 "height":197.5,
+                 "height":105,
                  "id":13,
                  "name":"SENSOR_MOVING-PLATFORM-1_1",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":109.333,
-                 "x":411.94738706632,
-                 "y":393.76771984895
+                 "width":109,
+                 "x":410,
+                 "y":378
                 }],
          "opacity":1,
          "type":"objectgroup",

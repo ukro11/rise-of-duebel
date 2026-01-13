@@ -45,7 +45,7 @@ public class LevelStats extends LevelLoader {
     @Override
     public void draw(DrawTool drawTool) {
         double dx = Wrapper.getLocalPlayer().getX() - (this.textCollider.getX() + this.textCollider.getWidth() / 2);
-        double t = Easings.easeOutElastic(MathUtils.clamp(Math.abs(dx) / this.maxDistance, 0.0, 1.0));
+        double t = Easings.easeOutElastic(MathUtils.clamp(Math.abs(dx) / this.maxDistance, 0.0, 0.6));
         double dir = Math.signum(dx);
         Color target = (dx < 0) ? Color.RED : Color.GREEN;
         double maxOffsetPx = 100.0;
@@ -62,14 +62,21 @@ public class LevelStats extends LevelLoader {
             this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
             this.textCollider.getY() + drawTool.getFontHeight() + 30
         );
-
-        drawTool.setCurrentColor(this.TEXT_COLOR);
-        String text2 = "KILLS:  " + Wrapper.getLevelManager().getIndex();
+        drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
+        String text2 = "DEATHS:" + Wrapper.getUserProfile().getDeaths();
         drawTool.drawText(
                 text2,
-                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text2)) / 2,
-                this.textCollider.getY() + drawTool.getFontHeight() + 50
+                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
+                this.textCollider.getY() + drawTool.getFontHeight() + 60
         );
+        drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
+        String text3 = "TIME:" + Wrapper.getUserProfile().getTime();
+        drawTool.drawText(
+                text3,
+                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
+                this.textCollider.getY() + drawTool.getFontHeight() + 90
+        );
+
 
         drawTool.pop();
     }
