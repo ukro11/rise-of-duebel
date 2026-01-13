@@ -45,8 +45,8 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     private boolean onGround = false;
 
-    private final static double MOVE_SPEED = 45.0;
-    private final static double JUMP_FORCE = -2420.0; // 120
+    private final static double MOVE_SPEED = 245.0;
+    private final static double JUMP_FORCE = -360.0; // 120
     private final static double AIR_CONTROL = 0.5;
 
     private List<Consumer<EntityPlayer>> onDirectionChange = new ArrayList<>();
@@ -186,7 +186,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
             }
         }
 
-        this.body.setGravityScale(8);
+        //this.body.setGravityScale(16);
     }
 
     @Override

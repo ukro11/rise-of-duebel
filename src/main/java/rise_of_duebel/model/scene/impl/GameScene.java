@@ -52,7 +52,6 @@ public class GameScene extends Scene {
             spawner.update(dt);
         }
         Wrapper.getTooltipManager().update(dt);
-        Wrapper.getGameHandler().update(dt);
         Wrapper.getLevelManager().update(dt);
         super.update(dt);
     }
@@ -85,7 +84,6 @@ public class GameScene extends Scene {
     @Override
     public void draw(DrawTool drawTool) {
         GameScene.getInstance().drawGame(drawTool);
-        Wrapper.getGameHandler().draw(drawTool);
         Wrapper.getTooltipManager().draw(drawTool);
         Wrapper.getLevelManager().drawTransition(drawTool);
         super.draw(drawTool);

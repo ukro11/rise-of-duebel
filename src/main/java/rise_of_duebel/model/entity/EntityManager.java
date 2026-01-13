@@ -1,6 +1,6 @@
 package rise_of_duebel.model.entity;
 
-import org.dyn4j.world.PhysicsWorld;
+import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.World;
 import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.graphics.level.spawner.ObjectSpawner;
@@ -17,7 +17,7 @@ public class EntityManager {
 
     public EntityManager() {
         this.world = new World<ColliderBody>();
-        this.world.setGravity(PhysicsWorld.EARTH_GRAVITY.getNegative());
+        this.world.setGravity(new Vector2(0, 900));
         this.entities = new HashMap<>();
     }
 
@@ -34,9 +34,8 @@ public class EntityManager {
     }
 
     public void updateWorld(double dt) {
-        //this.world.update(dt);
         try {
-            this.world.step(1);
+            this.world.step(1, dt);
         } catch (Exception e) {
             e.printStackTrace();
         }

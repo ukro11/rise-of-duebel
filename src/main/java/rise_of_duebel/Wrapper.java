@@ -5,7 +5,6 @@ import rise_of_duebel.event.EventManager;
 import rise_of_duebel.event.services.EventProcessingQueue;
 import rise_of_duebel.graphics.level.LevelManager;
 import rise_of_duebel.graphics.tooltip.TooltipManager;
-import rise_of_duebel.model.GameHandlerModel;
 import rise_of_duebel.model.entity.EntityManager;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.sound.SoundConstants;
@@ -17,7 +16,6 @@ public class Wrapper {
     private final static EntityManager entityManager = new EntityManager();
     private final static EventProcessingQueue processManager = new EventProcessingQueue();
     private final static TooltipManager tooltipManager = new TooltipManager();
-    private final static GameHandlerModel gameHandlerModel = new GameHandlerModel();
     private final static SoundConstants soundConstants = new SoundConstants();
     private final static TimerUtils timer = new TimerUtils();
     private final static TimerUtils physicsTimer = new TimerUtils();
@@ -42,8 +40,6 @@ public class Wrapper {
     public static TimerUtils getTimer() { return timer; }
 
     public static TimerUtils getPhysicsTimer() { return physicsTimer; }
-
-    public static GameHandlerModel getGameHandler() { return gameHandlerModel; }
 
     public static ViewController getViewController() { return ViewController.getInstance(); }
 
