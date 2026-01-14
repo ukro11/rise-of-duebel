@@ -8,10 +8,12 @@ import rise_of_duebel.graphics.tooltip.TooltipManager;
 import rise_of_duebel.model.entity.EntityManager;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.sound.SoundConstants;
+import rise_of_duebel.model.user.UserProfile;
 import rise_of_duebel.utils.TimerUtils;
 
 public class Wrapper {
 
+    private final static UserProfile userProfile = new UserProfile();
     private final static EventManager eventManager = new EventManager();
     private final static EntityManager entityManager = new EntityManager();
     private final static EventProcessingQueue processManager = new EventProcessingQueue();
@@ -20,6 +22,10 @@ public class Wrapper {
     private final static TimerUtils timer = new TimerUtils();
     private final static TimerUtils physicsTimer = new TimerUtils();
     private final static LevelManager levelManager = new LevelManager(1);
+
+    public static UserProfile getUserProfile() {
+        return userProfile;
+    }
 
     public static EventManager getEventManager() {
         return eventManager;

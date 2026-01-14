@@ -18,11 +18,13 @@ import rise_of_duebel.dyn4j.PhysicsUtils;
 import rise_of_duebel.dyn4j.SensorWorldCollider;
 import rise_of_duebel.dyn4j.WorldCollider;
 import rise_of_duebel.graphics.camera.CameraShake;
+import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.graphics.level.spawner.ObjectIdResolver;
 import rise_of_duebel.graphics.map.GsonMap;
 import rise_of_duebel.graphics.map.TileMap;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
+import rise_of_duebel.model.user.UserProfile;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -114,6 +116,7 @@ public class LevelMap extends TileMap {
         };
 
         Wrapper.getEntityManager().getWorld().addContactListener(this.contactListener);
+        if (this.loader != null) this.loader.onActive();
         this.colliders.forEach(c -> {
             if (this.loader != null) {
                 this.loader.loadCollider(c, c.getFixture());

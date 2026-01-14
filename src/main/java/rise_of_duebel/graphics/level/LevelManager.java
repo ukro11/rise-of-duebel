@@ -4,6 +4,7 @@ import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.view.DrawTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rise_of_duebel.Wrapper;
 import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.graphics.map.TileMap;
 import rise_of_duebel.model.transitions.DefaultTransition;
@@ -86,6 +87,7 @@ public class LevelManager {
                 this.levelSwitchQueue.dequeue();
             }
         }
+        Wrapper.getUserProfile().update(dt);
     }
 
     public void drawTransition(DrawTool drawTool) {

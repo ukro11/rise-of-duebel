@@ -10,6 +10,7 @@ import org.dyn4j.world.World;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.dyn4j.WorldCollider;
+import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.model.scene.impl.GameScene;
 
 import java.io.File;
@@ -70,6 +71,11 @@ public abstract class LevelLoader {
     public abstract void enterPortal();
     public abstract void resetLevel();
 
+    public void onActive() {
+        if (!(this instanceof LevelStats)) {
+            Wrapper.getUserProfile().start();
+        }
+    }
     public void loadCollider(WorldCollider wc, BodyFixture fix) {}
     public void draw(DrawTool drawTool) {}
 

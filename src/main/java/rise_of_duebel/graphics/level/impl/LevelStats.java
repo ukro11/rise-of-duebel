@@ -12,6 +12,7 @@ import rise_of_duebel.graphics.level.LevelColors;
 import rise_of_duebel.graphics.level.LevelLoader;
 import rise_of_duebel.graphics.level.LevelMap;
 import rise_of_duebel.model.debug.VisualConstants;
+import rise_of_duebel.model.user.UserProfile;
 import rise_of_duebel.utils.ColorUtil;
 import rise_of_duebel.utils.MathUtils;
 
@@ -30,6 +31,11 @@ public class LevelStats extends LevelLoader {
         super("stats.json", new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc"), map);
         this.textCollider = this.map.getColliderByLayer("TEXT");
         this.font = VisualConstants.getFont(20);
+    }
+
+    @Override
+    public void onActive() {
+        Wrapper.getUserProfile().pause();
     }
 
     @Override
@@ -64,7 +70,7 @@ public class LevelStats extends LevelLoader {
         );
 
         drawTool.setCurrentColor(this.TEXT_COLOR);
-        String text2 = "KILLS:  0";
+        String text2 = "TIME:" + formatSecondsToMMSS((int) Wrapper.getUserProfile().getTime());
         drawTool.drawText(
                 text2,
                 this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text2)) / 2,
@@ -82,5 +88,11 @@ public class LevelStats extends LevelLoader {
     @Override
     public void resetLevel() {
         Wrapper.getLevelManager().previousLevel(String.format("STATS-%d", Wrapper.getLevelManager().getIndex()));
+    }
+
+    private String formatSecondsToMMSS(int totalSeconds) {
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 }
