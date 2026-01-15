@@ -12,6 +12,7 @@ import rise_of_duebel.graphics.level.LevelColors;
 import rise_of_duebel.graphics.level.LevelLoader;
 import rise_of_duebel.graphics.level.LevelMap;
 import rise_of_duebel.model.debug.VisualConstants;
+import rise_of_duebel.model.user.UserProfile;
 import rise_of_duebel.utils.ColorUtil;
 import rise_of_duebel.utils.MathUtils;
 
@@ -33,6 +34,11 @@ public class LevelStats extends LevelLoader {
     }
 
     @Override
+    public void onActive() {
+        Wrapper.getUserProfile().pause();
+    }
+
+    @Override
     public void loadCollider(WorldCollider wc, BodyFixture fix) {
         if (wc.getLayer().equals("TEXT")) {
             fix.setSensor(true);
@@ -45,7 +51,7 @@ public class LevelStats extends LevelLoader {
     @Override
     public void draw(DrawTool drawTool) {
         double dx = Wrapper.getLocalPlayer().getX() - (this.textCollider.getX() + this.textCollider.getWidth() / 2);
-        double t = Easings.easeOutElastic(MathUtils.clamp(Math.abs(dx) / this.maxDistance, 0.0, 0.6));
+        double t = Easings.easeOutElastic(MathUtils.clamp(Math.abs(dx) / this.maxDistance, 0.0, 1.0));
         double dir = Math.signum(dx);
         Color target = (dx < 0) ? Color.RED : Color.GREEN;
         double maxOffsetPx = 100.0;
@@ -70,7 +76,7 @@ public class LevelStats extends LevelLoader {
                 this.textCollider.getY() + drawTool.getFontHeight() + 60
         );
         drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
-        String text3 = "TIME:" + Wrapper.getUserProfile().getTime();
+        String text3 = "TIME:" + formatSecondsToMMSS((int) Wrapper.getUserProfile().getTime());
         drawTool.drawText(
                 text3,
                 this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
@@ -89,5 +95,10 @@ public class LevelStats extends LevelLoader {
     @Override
     public void resetLevel() {
         Wrapper.getLevelManager().previousLevel(String.format("STATS-%d", Wrapper.getLevelManager().getIndex()));
+    }
+    private String formatSecondsToMMSS(int totalSeconds) {
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 }

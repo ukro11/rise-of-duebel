@@ -1,29 +1,39 @@
 package rise_of_duebel.model.user;
 
-import rise_of_duebel.Wrapper;
-
-
 public class UserProfile {
 
-    private int deaths;
-    private double timePlayed;
     private double time;
-    private boolean paused;
+    private boolean run;
+    private int deaths;
 
-    public UserProfile() {
-        this.deaths = 0;
-        this.timePlayed = 0;
+    public UserProfile(){
         this.time = 0;
-        this.paused = false;
+        this.run = false;
+        this.deaths = 0;
     }
 
-    public void update(double dt) {
-        timePlayed = Wrapper.getTimer().getRunningTime();
-            if (!paused) {
-                time += dt;
-            }
+    public void update(double dt){
+       if (runTime()){
+        time += dt;
+       }
     }
 
+    public void start() {
+        this.time = 0;
+        this.run = true;
+    }
+
+    public void pause() {
+        this.run = false;
+    }
+
+    public boolean runTime(){
+        return this.run;
+    }
+
+    public double getTime() {
+        return time;
+    }
     public int getDeaths() {
         return deaths;
     }
@@ -34,22 +44,5 @@ public class UserProfile {
 
     public void resetDeaths() {
         deaths = 0;
-    }
-
-    public double getTimePlayed() {
-        return timePlayed;
-    }
-
-    public void pauseTime() {
-        paused = true;
-    }
-    public double getTime() {
-        return time;
-    }
-    public void resetTime() {
-        time = 0;
-    }
-    public void resumeTime() {
-        paused = false;
     }
 }
