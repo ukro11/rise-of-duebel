@@ -72,7 +72,6 @@ public class LevelMap extends TileMap {
             throw new RuntimeException(e);
         }
     }
-
     public void onActive() {
         Wrapper.getLocalPlayer().setPosition(this.spawnLocation.x, this.spawnLocation.y);
 
@@ -83,8 +82,8 @@ public class LevelMap extends TileMap {
                 super.begin(step, world);
                 if (lowest.getY() < Wrapper.getLocalPlayer().getY()) {
                     Wrapper.getLocalPlayer().setPosition(spawnLocation.x, spawnLocation.y);
-                    Wrapper.getUserProfile().addDeath();
                     reset = true;
+                    Wrapper.getUserProfile().addDeath();
                 } else {
                     if (reset) {
                         GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));
@@ -114,6 +113,7 @@ public class LevelMap extends TileMap {
         };
 
         Wrapper.getEntityManager().getWorld().addContactListener(this.contactListener);
+        if (this.loader != null) this.loader.onActive();
         this.colliders.forEach(c -> {
             if (this.loader != null) {
                 this.loader.loadCollider(c, c.getFixture());

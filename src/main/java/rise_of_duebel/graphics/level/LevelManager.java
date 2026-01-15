@@ -88,6 +88,7 @@ public class LevelManager {
                 this.levelSwitchQueue.dequeue();
             }
         }
+        Wrapper.getUserProfile().update(dt);
     }
 
     public void drawTransition(DrawTool drawTool) {
@@ -119,6 +120,7 @@ public class LevelManager {
         if (this.transition == null) {
             this.transition = levelSwitch;
             transition.in(this.current);
+
         } else if (!this.transition.id().equals(id)) {
             if (!this.levelSwitchQueue.isEmpty() && !this.levelSwitchQueue.front().id().equals(id) && !this.levelSwitchQueue.tail().id().equals(id)) {
                 log.info("QUEUE");
@@ -127,13 +129,7 @@ public class LevelManager {
         }
         if (!(this.next.getLoader() instanceof LevelStats)) {
             Wrapper.getUserProfile().resetDeaths();
-            Wrapper.getUserProfile().resetTime();
-            Wrapper.getUserProfile().resumeTime();
         }
-        if (this.next.getLoader() instanceof LevelStats) {
-            Wrapper.getUserProfile().pauseTime();
-        }
-
     }
 
     public void nextLevel(String id) {
