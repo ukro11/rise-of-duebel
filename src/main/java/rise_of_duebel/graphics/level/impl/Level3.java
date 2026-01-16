@@ -19,6 +19,9 @@ import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.Scene;
 import rise_of_duebel.model.scene.impl.WinScene;
 import rise_of_duebel.model.transitions.DefaultTransition;
+import rise_of_duebel.model.user.UserProfile;
+
+import java.util.List;
 
 public class Level3 extends LevelLoader {
 
@@ -30,8 +33,8 @@ public class Level3 extends LevelLoader {
     private Vector2 TWEEN_SAVED_VALUE_COLLIDER_MOVING_UP;
     private boolean start = false;
 
-    public Level3(LevelMap map) {
-        super("level3.json", new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc"), map);
+    public Level3(LevelMap map, List<UserProfile> userProfiles) {
+        super("level3.json", LevelColors.createDefault(), map, userProfiles);
         this.moving = this.map.getColliderByLayer("MOVING", 0);
         this.sensor = this.moving.getSensorByIndex(0);
         BodyFixture sensorFixture = this.sensor.getFixture();
