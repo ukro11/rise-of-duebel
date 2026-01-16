@@ -18,11 +18,14 @@ import rise_of_duebel.dyn4j.PhysicsUtils;
 import rise_of_duebel.dyn4j.SensorWorldCollider;
 import rise_of_duebel.dyn4j.WorldCollider;
 import rise_of_duebel.graphics.camera.CameraShake;
+import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.graphics.level.spawner.ObjectIdResolver;
 import rise_of_duebel.graphics.map.GsonMap;
 import rise_of_duebel.graphics.map.TileMap;
+import rise_of_duebel.model.entity.Entity;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
+import rise_of_duebel.model.user.UserProfile;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -54,11 +57,13 @@ public class LevelMap extends TileMap {
                 throw new RuntimeException(String.format("Levels needs these layers: %s, Got these layers: %s", String.join(", ", this.NEEDED_LAYERS), String.join(", ", m)));
             }
 
+            List<UserProfile> list = new ArrayList<>();
+            Wrapper.getEntityManager().getEntities().values().forEach(e -> list.add(new UserProfile((EntityPlayer) e)));
             if (cloader != null) {
-                this.loader = cloader.getConstructor(LevelMap.class).newInstance(this);
+                this.loader = cloader.getConstructor(LevelMap.class, List.class).newInstance(this, list);
 
             } else {
-                this.loader = new LevelLoader(this.getFileName(), LevelColors.createDefault(), this) {
+                this.loader = new LevelLoader(this.getFileName(), LevelColors.createDefault(), this, list) {
                     @Override
                     public void updateCollider(TimeStep step, PhysicsWorld<ColliderBody, ?> world) {}
                     @Override
@@ -83,7 +88,7 @@ public class LevelMap extends TileMap {
                 if (lowest.getY() < Wrapper.getLocalPlayer().getY()) {
                     Wrapper.getLocalPlayer().setPosition(spawnLocation.x, spawnLocation.y);
                     reset = true;
-                    Wrapper.getUserProfile().addDeath();
+                    loader.getUserProfiles().forEach(UserProfile::addDeath);
                 } else {
                     if (reset) {
                         GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));

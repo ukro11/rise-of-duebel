@@ -11,7 +11,9 @@ import rise_of_duebel.Wrapper;
 import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.dyn4j.WorldCollider;
 import rise_of_duebel.graphics.level.impl.LevelStats;
+import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
+import rise_of_duebel.model.user.UserProfile;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +28,7 @@ public abstract class LevelLoader {
     protected final LevelMap map;
     protected final LevelColors colors;
     protected final World<ColliderBody> world;
+    protected final List<UserProfile> userProfiles;
     private static List<Class<LevelLoader>> loaders = new ArrayList<>();
 
     static {
@@ -59,8 +62,9 @@ public abstract class LevelLoader {
         }
     }
 
-    public LevelLoader(String filename, LevelColors colors, LevelMap map) {
+    public LevelLoader(String filename, LevelColors colors, LevelMap map, List<UserProfile> userProfiles) {
         if (!map.getFileName().equals(filename)) throw new RuntimeException(String.format("The assigned level code does not match with the map:\nmap: %s\ncode:%s", map.getFileName(), filename));
+        this.userProfiles = userProfiles;
         this.colors = colors;
         this.map = map;
         this.world = Wrapper.getEntityManager().getWorld();
@@ -72,8 +76,9 @@ public abstract class LevelLoader {
     public abstract void resetLevel();
 
     public void onActive() {
-        if (!(this instanceof LevelStats)){
-            Wrapper.getUserProfile().start();
+        if (!(this instanceof LevelStats)) {
+            userProfiles.forEach(UserProfile::start);
+            // userProfiles.forEach(u -> u.start());
         }
     }
     public void loadCollider(WorldCollider wc, BodyFixture fix) {}
@@ -98,5 +103,13 @@ public abstract class LevelLoader {
             if (str == null || str.isEmpty() || str.isBlank()) return false;
             return Integer.parseInt(str) == index;
         }).findFirst().orElse(null);
+    }
+
+    public List<UserProfile> getUserProfiles() {
+        return userProfiles;
+    }
+
+    public UserProfile getUserProfile(EntityPlayer e) {
+        return this.userProfiles.stream().filter(p -> p.getPlayer().equals(e)).findFirst().orElse(null);
     }
 }

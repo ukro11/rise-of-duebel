@@ -26,6 +26,7 @@ public class LevelManager {
     private LevelMap current;
     private LevelMap next;
 
+
     private int index;
 
     public LevelManager(int levelStart) {
@@ -88,7 +89,7 @@ public class LevelManager {
                 this.levelSwitchQueue.dequeue();
             }
         }
-        Wrapper.getUserProfile().update(dt);
+        this.current.getLoader().getUserProfiles().forEach(u -> u.update(dt));
     }
 
     public void drawTransition(DrawTool drawTool) {

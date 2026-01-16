@@ -17,6 +17,7 @@ import rise_of_duebel.utils.ColorUtil;
 import rise_of_duebel.utils.MathUtils;
 
 import java.awt.*;
+import java.util.List;
 
 public class LevelStats extends LevelLoader {
 
@@ -27,16 +28,18 @@ public class LevelStats extends LevelLoader {
     private double maxDistance = 100;
 
     private WorldCollider textCollider;
+    private final UserProfile localUserProfile;
 
-    public LevelStats(LevelMap map) {
-        super("stats.json", new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc"), map);
+    public LevelStats(LevelMap map, List<UserProfile> userProfiles) {
+        super("stats.json", new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc"), map, userProfiles);
         this.textCollider = this.map.getColliderByLayer("TEXT");
         this.font = VisualConstants.getFont(20);
+        this.localUserProfile = this.getUserProfile(Wrapper.getLocalPlayer());
     }
 
     @Override
     public void onActive() {
-        Wrapper.getUserProfile().pause();
+        userProfiles.forEach(UserProfile::pause);
     }
 
     @Override
@@ -70,14 +73,14 @@ public class LevelStats extends LevelLoader {
             this.textCollider.getY() + drawTool.getFontHeight() + 30
         );
         drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
-        String text2 = "DEATHS:" + Wrapper.getUserProfile().getDeaths();
+        String text2 = "DEATHS:" + this.localUserProfile.getDeaths();
         drawTool.drawText(
                 text2,
                 this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
                 this.textCollider.getY() + drawTool.getFontHeight() + 60
         );
         drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
-        String text3 = "TIME:" + formatSecondsToMMSS((int) Wrapper.getUserProfile().getTime());
+        String text3 = "TIME:" + formatSecondsToMMSS((int)this.localUserProfile.getTime());
         drawTool.drawText(
                 text3,
                 this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,

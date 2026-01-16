@@ -23,11 +23,6 @@ public class Wrapper {
     private final static TimerUtils timer = new TimerUtils();
     private final static TimerUtils physicsTimer = new TimerUtils();
     private final static LevelManager levelManager = new LevelManager(1);
-    private final static UserProfile userProfile = new UserProfile();
-
-    public static UserProfile getUserProfile(){
-        return userProfile;
-    }
 
     public static EventManager getEventManager() {
         return eventManager;

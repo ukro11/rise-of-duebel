@@ -1,12 +1,16 @@
 package rise_of_duebel.model.user;
 
+import rise_of_duebel.model.entity.impl.EntityPlayer;
+
 public class UserProfile {
 
     private double time;
     private boolean run;
     private int deaths;
+    private final EntityPlayer player;
 
-    public UserProfile(){
+    public UserProfile(EntityPlayer player) {
+        this.player = player;
         this.time = 0;
         this.run = false;
         this.deaths = 0;
@@ -34,6 +38,7 @@ public class UserProfile {
     public double getTime() {
         return time;
     }
+
     public int getDeaths() {
         return deaths;
     }
@@ -44,5 +49,9 @@ public class UserProfile {
 
     public void resetDeaths() {
         deaths = 0;
+    }
+
+    public EntityPlayer getPlayer() {
+        return this.player;
     }
 }

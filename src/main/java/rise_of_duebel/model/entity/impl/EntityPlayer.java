@@ -24,6 +24,7 @@ import rise_of_duebel.event.services.EventProcessCallback;
 import rise_of_duebel.event.services.process.EventLoadAssetsProcess;
 import rise_of_duebel.model.entity.Entity;
 import rise_of_duebel.model.entity.EntityDirection;
+import rise_of_duebel.model.user.UserProfile;
 import rise_of_duebel.utils.CooldownManager;
 import rise_of_duebel.utils.MathUtils;
 
@@ -51,11 +52,12 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     private List<Consumer<EntityPlayer>> onDirectionChange = new ArrayList<>();
 
-
+    private final UserProfile userProfile;
 
     public EntityPlayer(World<ColliderBody> world, double x, double y, double width, double height) {
         super(world, new ColliderBody(Color.GREEN), x, y, width, height);
         this.id = String.format("ENTITY_PLAYER_%s", UUID.randomUUID());
+        this.userProfile = new UserProfile(this);
 
         double colliderWidth = 8.0;
         double colliderHeight = 10.0;
