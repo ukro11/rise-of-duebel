@@ -134,7 +134,7 @@ public class LevelManager {
             }
         }
         if (!(this.next.getLoader() instanceof LevelStats)) {
-            Wrapper.getUserProfile().resetDeaths();
+            this.current.getLoader().getUserProfiles().forEach(u -> u.resetDeaths());
         }
     }
 
