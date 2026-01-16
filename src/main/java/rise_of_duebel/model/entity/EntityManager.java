@@ -14,6 +14,7 @@ public class EntityManager {
 
     private final World<ColliderBody> world;
     private final Map<String, Entity<?>> entities;
+    private double accumulator;
 
     public EntityManager() {
         this.world = new World<ColliderBody>();
@@ -34,10 +35,16 @@ public class EntityManager {
     }
 
     public void updateWorld(double dt) {
-        try {
-            this.world.step(1, dt);
-        } catch (Exception e) {
-            e.printStackTrace();
+        double fixedDt = 1.0 / 400.0;
+        this.accumulator += dt;
+
+        while (accumulator >= fixedDt) {
+            try {
+                this.world.step(1, fixedDt);
+                accumulator -= fixedDt;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
