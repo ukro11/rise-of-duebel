@@ -142,7 +142,7 @@ public class AnimationRenderer<T extends Enum<T> & IAnimationState> {
             boolean lastIndex = animation.isReverse() ? this.currentIndex == 0 : this.currentIndex == size - 1;
             if (lastIndex) {
                 int max = animation.isReverse() ? size - 1 : 0;
-                if (this.getFinishRunnable() != null) this.getFinishRunnable().run();
+                if (this.getFinishRunnable() != null) this.onFinish.remove(this.currentAnimation.getState()).run();
                 if (animation.isLoop()) {
                     this.currentIndex = max;
                 }

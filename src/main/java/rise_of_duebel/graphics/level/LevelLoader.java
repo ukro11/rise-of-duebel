@@ -93,4 +93,8 @@ public abstract class LevelLoader {
             return Integer.parseInt(str) == index;
         }).findFirst().orElse(null);
     }
+
+    public LevelColors getColors() {
+        return this.colors;
+    }
 }

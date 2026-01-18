@@ -13,12 +13,14 @@ import org.dyn4j.world.listener.StepListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rise_of_duebel.Wrapper;
+import rise_of_duebel.animation.AnimationRenderer;
+import rise_of_duebel.animation.states.PortalAnimationState;
 import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.dyn4j.PhysicsUtils;
 import rise_of_duebel.dyn4j.SensorWorldCollider;
 import rise_of_duebel.dyn4j.WorldCollider;
 import rise_of_duebel.graphics.camera.CameraShake;
-import rise_of_duebel.graphics.level.spawner.ObjectIdResolver;
+import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.graphics.map.GsonMap;
 import rise_of_duebel.graphics.map.TileMap;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
@@ -36,10 +38,15 @@ public class LevelMap extends TileMap {
     private static List<String> NEEDED_LAYERS = List.of("SPAWN", "PORTAL", "WORLD", "LOWEST");
     private static List<String> SENSOR_LAYERS = List.of("SPAWN", "PORTAL", "LOWEST", "SENSOR");
 
+    private final LevelLoader loader;
     private List<WorldCollider> sensors;
     private Vector2 spawnLocation;
-    private final LevelLoader loader;
+    private Vector2 portalLocation;
+
+    private AnimationRenderer<PortalAnimationState> portalRenderer;
+
     private boolean reset = false;
+    private double portalCooldownSeconds = 0.0;
 
     private StepListenerAdapter<ColliderBody> stepListener;
     private ContactListenerAdapter<ColliderBody> contactListener;
@@ -53,6 +60,8 @@ public class LevelMap extends TileMap {
             if (!this.NEEDED_LAYERS.stream().allMatch(l -> m.contains(l.toUpperCase()))) {
                 throw new RuntimeException(String.format("Levels needs these layers: %s, Got these layers: %s", String.join(", ", this.NEEDED_LAYERS), String.join(", ", m)));
             }
+
+            this.portalRenderer = new AnimationRenderer("/graphic/levels/portal.png", 2, 12, 32, 32, PortalAnimationState.IDLE);
 
             if (cloader != null) {
                 this.loader = cloader.getConstructor(LevelMap.class).newInstance(this);
@@ -76,6 +85,8 @@ public class LevelMap extends TileMap {
     public void onActive() {
         Wrapper.getLocalPlayer().setPosition(this.spawnLocation.x, this.spawnLocation.y);
 
+        this.portalCooldownSeconds = 4.0;
+
         WorldCollider lowest = this.getColliderByLayer("LOWEST");
         this.stepListener = new StepListenerAdapter<ColliderBody>() {
             @Override
@@ -87,6 +98,7 @@ public class LevelMap extends TileMap {
 
                 } else {
                     if (reset) {
+                        portalRenderer.switchState(PortalAnimationState.IDLE);
                         GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));
                         loader.resetLevel();
                         Wrapper.getLocalPlayer().freeze(0.3);
@@ -106,9 +118,29 @@ public class LevelMap extends TileMap {
                 BodyFixture f1 = data.getFixture1();
                 BodyFixture f2 = data.getFixture2();
                 if (f1.getUserData() == null || f2.getUserData() == null) return;
-                if (EntityPlayer.containsPlayer(f1, f2) && PhysicsUtils.contains("PORTAL", f1, f2)) {
-                    loader.enterPortal();
-                    Wrapper.getLevelManager().nextLevel(String.format("PORTAL-%d", Wrapper.getLevelManager().getIndex()));
+                if (portalCooldownSeconds > 0.0) return;
+                if (EntityPlayer.containsPlayer(f1, f2) && PhysicsUtils.contains("PORTAL", f1, f2) &&
+                        !Wrapper.getLocalPlayer().isFreeze()) {
+                    if (loader instanceof LevelStats) {
+                        Wrapper.getLocalPlayer().freeze(0.3);
+                        Wrapper.getProgramController().focusDefault(-1);
+                        loader.enterPortal();
+                        Wrapper.getLevelManager().nextLevel(String.format("PORTAL-%d", Wrapper.getLevelManager().getIndex()));
+
+                    } else if (portalCooldownSeconds == 0) {
+                        Wrapper.getLocalPlayer().freeze(1.0);
+                        portalRenderer.switchState(PortalAnimationState.DISAPPEAR);
+                        Wrapper.getProgramController().focusPlayer(-1);
+                        Wrapper.getLocalPlayer().setVisible(false);
+                        portalRenderer.onFinish(() -> {
+                            loader.enterPortal();
+                            portalRenderer.switchState(PortalAnimationState.IDLE);
+                            Wrapper.getLevelManager().nextLevel(String.format("PORTAL-%d", Wrapper.getLevelManager().getIndex()), () -> {
+                                Wrapper.getLocalPlayer().setVisible(true);
+                                Wrapper.getProgramController().focusDefault(-1);
+                            });
+                        });
+                    }
                 }
             }
         };
@@ -175,6 +207,10 @@ public class LevelMap extends TileMap {
             this.spawnLocation = new Vector2(o.getX(), o.getY());
         }
 
+        if (layer.getName().equals("PORTAL")) {
+            this.portalLocation = new Vector2(o.getX(), o.getY());
+        }
+
         if (layer.getObjects().size() == 1 && wc.getUserData().isEmpty()) {
             wc.setUserData(layer.getName().toUpperCase());
         }
@@ -200,6 +236,18 @@ public class LevelMap extends TileMap {
         this.colliders.add(wc);
     }
 
+    public void update(double dt) {
+        if (this.portalCooldownSeconds > 0.0) {
+            this.portalCooldownSeconds -= dt;
+            if (this.portalCooldownSeconds < 0.0) this.portalCooldownSeconds = 0.0;
+        }
+
+        if (this.portalLocation != null && !this.getFileName().equals("stats.json")) {
+            if (!this.portalRenderer.isRunning()) this.portalRenderer.start();
+            this.portalRenderer.update(dt);
+        }
+    }
+
     private void drawCollider(DrawTool drawTool) {
         this.colliders.forEach(c -> {
             if (c.getUserData().startsWith("D$")) {
@@ -222,6 +270,18 @@ public class LevelMap extends TileMap {
         this.drawCollider(drawTool);
         if (this.loader != null) {
             this.loader.draw(drawTool);
+        }
+        if (this.portalLocation != null && !this.getFileName().equals("stats.json")) {
+            drawTool.push();
+            drawTool.getGraphics2D().drawImage(
+                    this.portalRenderer.getCurrentFrame(),
+                    (int) this.portalLocation.x - 32,
+                    (int) this.portalLocation.y,
+                    64,
+                    64,
+                    null
+            );
+            drawTool.pop();
         }
     }
 

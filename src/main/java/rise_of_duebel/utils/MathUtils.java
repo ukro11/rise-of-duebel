@@ -27,4 +27,11 @@ public class MathUtils {
     public static int random(int min, int max) {
         return min + (int) (Math.random() * (max - min + 1));
     }
+
+    public static boolean isHover(double x, double y, double width, double height, int mouseX, int mouseY) {
+        return mouseX >= x &&
+                mouseX <= x + width &&
+                mouseY >= y &&
+                mouseY <= y + height;
+    }
 }

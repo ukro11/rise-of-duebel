@@ -1,7 +1,7 @@
 package rise_of_duebel.dyn4j;
 
 import org.dyn4j.dynamics.BodyFixture;
-import rise_of_duebel.graphics.level.spawner.ObjectIdResolver;
+import rise_of_duebel.graphics.level.ObjectIdResolver;
 
 import java.util.Arrays;
 

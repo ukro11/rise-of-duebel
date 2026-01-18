@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.graphics.map.TileMap;
+import rise_of_duebel.model.scene.Scene;
+import rise_of_duebel.model.scene.impl.GameScene;
 import rise_of_duebel.model.transitions.DefaultTransition;
 import rise_of_duebel.model.transitions.Transition;
 
@@ -61,6 +63,10 @@ public class LevelManager {
     }
 
     public void update(double dt) {
+        if (this.current != null) {
+            this.current.update(dt);
+        }
+
         if (this.transition != null) {
             LevelMap last = this.transition.last();
             LevelMap next = this.transition.next();
@@ -74,6 +80,7 @@ public class LevelManager {
                     } else {
                         this.setPreviousLevel();
                     }
+                    if (this.transition.runnable() != null) this.transition.runnable().run();
                     tr.out(last, next);
                 }
                 if (tr.finished()) {
@@ -108,30 +115,42 @@ public class LevelManager {
         return null;
     }
 
-    private void initiateNewLevel(String id, LevelSwitch.LevelSwitchDirection direction, LevelMap level, Transition transition) {
+    private void initiateNewLevel(String id, LevelSwitch.LevelSwitchDirection direction, LevelMap level, Runnable runWhileTransition, Transition transition) {
         if (level == null) {
             log.warn("Cancelled level change because level is null");
             return;
         }
-        LevelSwitch levelSwitch = new LevelSwitch(id, direction, this.current, level, transition);
+        LevelSwitch levelSwitch = new LevelSwitch(id, direction, this.current, level, runWhileTransition, transition);
         if (this.transition == null) {
             this.transition = levelSwitch;
             transition.in(this.current);
 
         } else if (!this.transition.id().equals(id)) {
             if (!this.levelSwitchQueue.isEmpty() && !this.levelSwitchQueue.front().id().equals(id) && !this.levelSwitchQueue.tail().id().equals(id)) {
-                log.info("QUEUE");
                 this.levelSwitchQueue.enqueue(levelSwitch);
             }
         }
     }
 
     public void nextLevel(String id) {
-        this.nextLevel(id, new DefaultTransition());
+        this.nextLevel(id, null, new DefaultTransition());
     }
 
-    public void nextLevel(String id, Transition transition) {
-        this.initiateNewLevel(id, LevelSwitch.LevelSwitchDirection.NEXT, this.next, transition);
+    public void nextLevel(String id, Runnable runWhileTransition) {
+        this.nextLevel(id, runWhileTransition, new DefaultTransition());
+    }
+
+    public void nextLevel(String id, Runnable runWhileTransition, Transition transition) {
+        System.out.println(id);
+        if (Scene.getCurrentScene() != GameScene.getInstance()) return;
+        if (this.next != null && this.next.getLoader() instanceof LevelStats) {
+            LevelMap nnext = this.cache.getOrDefault(this.index + 1, this.getMapByIndex(this.index + 1));
+            if (nnext == null) {
+                //Scene.open(new WinScene(), new DefaultTransition());
+                //return;
+            }
+        }
+        this.initiateNewLevel(id, LevelSwitch.LevelSwitchDirection.NEXT, this.next, runWhileTransition, transition);
     }
 
     public void previousLevel(String id) {
@@ -139,7 +158,11 @@ public class LevelManager {
     }
 
     public void previousLevel(String id, Transition transition) {
-        this.initiateNewLevel(id, LevelSwitch.LevelSwitchDirection.PREVIOUS, this.previous, transition);
+        this.initiateNewLevel(id, LevelSwitch.LevelSwitchDirection.PREVIOUS, this.previous, null, transition);
+    }
+
+    public void previousLevel(String id, Runnable runWhileTransition, Transition transition) {
+        this.initiateNewLevel(id, LevelSwitch.LevelSwitchDirection.PREVIOUS, this.previous, runWhileTransition, transition);
     }
 
     private void setNextLevel() {
@@ -151,28 +174,35 @@ public class LevelManager {
         if (!(this.current.getLoader() instanceof LevelStats)) {
             this.index++;
         }
-        //Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<>("LevelManager loading next map", () -> {
-            if (!(this.current.getLoader() instanceof LevelStats)) {
-                this.next = this.getStatsMap();
+        if (!(this.current.getLoader() instanceof LevelStats)) {
+            this.next = this.getStatsMap();
 
-            } else {
-                this.next = this.cache.getOrDefault(this.index + 1, this.getMapByIndex(this.index + 1));
-            }
-        //}, new EventProcessCallback<>() {}));
+        } else {
+            this.next = this.cache.getOrDefault(this.index + 1, this.getMapByIndex(this.index + 1));
+        }
     }
 
     private void setPreviousLevel() {
         if (this.previous == null) return;
+
+        boolean wasStats = (this.current != null && this.current.getLoader() instanceof LevelStats);
+
         this.next = this.current;
+
         this.previous.getLoader().resetLevel();
         this.current.onHide();
+
         this.current = this.previous;
         this.current.onActive();
-        if (this.index != 1) {
+
+        if (!wasStats && this.index != 1) {
             this.index--;
-            //Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<>("LevelManager loading previous map", () -> {
-                this.previous = this.cache.getOrDefault(this.index - 1, this.getMapByIndex(this.index - 1));
-            //}, new EventProcessCallback<>() {}));
+        }
+
+        if (this.index > 1) {
+            this.previous = this.cache.getOrDefault(this.index - 1, this.getMapByIndex(this.index - 1));
+        } else {
+            this.previous = null;
         }
     }
 

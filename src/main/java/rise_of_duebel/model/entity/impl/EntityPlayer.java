@@ -42,6 +42,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     private boolean freezePermanent = false;
     private CooldownManager freezeCooldown;
     private Queue<Double> freezeQueue;
+    private boolean visible = true;
 
     private boolean onGround = false;
 
@@ -148,6 +149,10 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         this.freezeQueue.enqueue(time);
     }
 
+    public boolean isFreeze() {
+        return this.freeze;
+    }
+
     private void onMove() {
         double SPEED = MOVE_SPEED;
         if (!this.viewController.getDrawFrame().isFocused() || this.freeze) {
@@ -191,7 +196,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     @Override
     protected void drawEntity(DrawTool drawTool) {
-        if (this.renderer != null && this.renderer.getCurrentFrame() != null) {
+        if (this.renderer != null && this.renderer.getCurrentFrame() != null && this.isVisible()) {
             drawTool.push();
             if (this.direction == EntityDirection.LEFT) {
                 double centerX = this.getX();
@@ -252,6 +257,14 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         Transform t = this.body.getTransform().copy();
         t.setTranslation(x, y);
         this.body.setTransform(t);
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public boolean isVisible() {
+        return this.visible;
     }
 
     public static boolean isPlayer(ColliderBody c) {

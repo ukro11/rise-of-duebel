@@ -6,6 +6,7 @@ import rise_of_duebel.Wrapper;
 import rise_of_duebel.model.debug.VisualConstants;
 import rise_of_duebel.model.scene.Scene;
 import rise_of_duebel.model.sound.SoundManager;
+import rise_of_duebel.model.transitions.DefaultTransition;
 
 import java.awt.*;
 
@@ -70,7 +71,7 @@ public class LoadingScene extends Scene {
         super.draw(drawTool);
 
         if (loadingComplete) {
-            //Scene.open(new StartScene());
+            Scene.open(GameScene.getInstance(), new DefaultTransition());
         }
     }
 

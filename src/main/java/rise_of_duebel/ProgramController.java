@@ -1,10 +1,10 @@
 package rise_of_duebel;
 
 import KAGO_framework.control.ViewController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import rise_of_duebel.animation.tween.Tween;
 import rise_of_duebel.event.events.KeyPressedEvent;
+import rise_of_duebel.graphics.gui.Gui;
+import rise_of_duebel.graphics.gui.impl.GuiPause;
 import rise_of_duebel.model.debug.impl.InfoComponent;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
@@ -21,8 +21,6 @@ import java.awt.event.KeyEvent;
  * - Zusätzliche Methoden sind natürlich gar kein Problem
  */
 public class ProgramController {
-
-    private final Logger logger = LoggerFactory.getLogger(ProgramController.class);
 
     private final ViewController viewController;
     public EntityPlayer player;
@@ -60,12 +58,25 @@ public class ProgramController {
         }
         GameScene.getInstance().getVisuals().add(new InfoComponent());
 
-        //GameScene.getInstance().getCameraRenderer().focusAtEntity(this.player);
-        this.player = Wrapper.getEntityManager().spawnPlayer(0, 0);
-        this.player.setShowHitbox(true);
-        GameScene.getInstance().getCameraRenderer().focusAt(375, 475);
+        Gui.registerGui(new GuiPause());
 
+        this.player = Wrapper.getEntityManager().spawnPlayer(0, 0);
+        this.player.setShowHitbox(false);
+
+        this.focusDefault(-1);
         Wrapper.getLevelManager().loadStartLevel();
+    }
+
+    public void focusDefault(double zoom) {
+        if (zoom == -1) zoom = 2;
+        GameScene.getInstance().getCameraRenderer().zoom(zoom);
+        GameScene.getInstance().getCameraRenderer().focusAt(375, 475);
+    }
+
+    public void focusPlayer(double zoom) {
+        if (zoom == -1) zoom = 2;
+        GameScene.getInstance().getCameraRenderer().zoom(zoom);
+        GameScene.getInstance().getCameraRenderer().focusAtEntity(this.player);
     }
 
     /***

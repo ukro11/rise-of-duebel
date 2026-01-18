@@ -27,7 +27,7 @@ public class LevelStats extends LevelLoader {
     private WorldCollider textCollider;
 
     public LevelStats(LevelMap map) {
-        super("stats.json", new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc"), map);
+        super("stats.json", new LevelColors("#f4b13b", "#feab32", "#be7708", "#be7708", "#6603fc"), map);
         this.textCollider = this.map.getColliderByLayer("TEXT");
         this.font = VisualConstants.getFont(20);
     }
@@ -64,7 +64,7 @@ public class LevelStats extends LevelLoader {
         );
 
         drawTool.setCurrentColor(this.TEXT_COLOR);
-        String text2 = "KILLS:  0";
+        String text2 = "KILLS:  " + Wrapper.getLevelManager().getIndex();
         drawTool.drawText(
                 text2,
                 this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text2)) / 2,

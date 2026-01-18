@@ -1,4 +1,4 @@
-package rise_of_duebel.graphics.level.spawner;
+package rise_of_duebel.graphics.level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

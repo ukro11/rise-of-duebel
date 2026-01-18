@@ -7,7 +7,6 @@ import org.dyn4j.geometry.Vector2;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.graphics.OrderRenderer;
 import rise_of_duebel.graphics.camera.CameraRenderer;
-import rise_of_duebel.graphics.level.spawner.ObjectSpawner;
 import rise_of_duebel.model.scene.Scene;
 import rise_of_duebel.model.sound.SoundManager;
 
@@ -45,14 +44,13 @@ public class GameScene extends Scene {
 
     @Override
     public void update(double dt) {
-        this.cameraRenderer.update(dt);
-        Wrapper.getEntityManager().getEntities().values().forEach(e -> e.update(dt));
         this.getDrawables().forEach(d -> d.update(dt));
-        for (ObjectSpawner<?> spawner : ObjectSpawner.objects) {
-            spawner.update(dt);
+        if (this.currentGui == null || !this.currentGui.pauseGame()) {
+            this.cameraRenderer.update(dt);
+            Wrapper.getEntityManager().getEntities().values().forEach(e -> e.update(dt));
+            Wrapper.getTooltipManager().update(dt);
+            Wrapper.getLevelManager().update(dt);
         }
-        Wrapper.getTooltipManager().update(dt);
-        Wrapper.getLevelManager().update(dt);
         super.update(dt);
     }
 

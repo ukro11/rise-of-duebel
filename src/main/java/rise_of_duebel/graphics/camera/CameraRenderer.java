@@ -154,10 +154,12 @@ public class CameraRenderer {
     }
 
     public void focusAt(double x, double y) {
+        this.focusEntity = null;
         this.focusPoint = new Vector2(x, y);
     }
 
     public void focusAtEntity(Entity entity) {
+        this.focusPoint = null;
         this.focusEntity = entity;
     }
 

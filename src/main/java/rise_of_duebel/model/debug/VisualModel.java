@@ -10,6 +10,7 @@ public abstract class VisualModel implements Comparable<VisualModel> {
     protected ProgramController programController;
     protected String id;
     protected int zIndex;
+    protected boolean visible;
 
     public VisualModel(String id) {
         this(id, 0);
@@ -20,6 +21,7 @@ public abstract class VisualModel implements Comparable<VisualModel> {
         this.programController = this.viewController.getProgramController();
         this.id = id;
         this.zIndex = zIndex;
+        this.visible = false;
     }
 
     public String getId() {
@@ -28,6 +30,14 @@ public abstract class VisualModel implements Comparable<VisualModel> {
 
     public int zIndex() {
         return zIndex;
+    }
+
+    public boolean isVisible() {
+        return this.visible;
+    }
+
+    public void toggleVisible(boolean flag) {
+        this.visible = flag;
     }
 
     public abstract void draw(DrawTool drawTool);

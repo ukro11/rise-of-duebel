@@ -1,6 +1,6 @@
 package rise_of_duebel.dyn4j;
 
-import rise_of_duebel.graphics.level.spawner.ObjectIdResolver;
+import rise_of_duebel.graphics.level.ObjectIdResolver;
 import rise_of_duebel.graphics.map.GsonMap;
 
 import java.util.ArrayList;

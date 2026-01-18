@@ -3,7 +3,6 @@ package rise_of_duebel.model.entity;
 import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.World;
 import rise_of_duebel.dyn4j.ColliderBody;
-import rise_of_duebel.graphics.level.spawner.ObjectSpawner;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
 
@@ -24,7 +23,6 @@ public class EntityManager {
 
     public EntityPlayer spawnPlayer(double x, double y) {
         EntityPlayer player = new EntityPlayer(this.world, x, y, 192, 128);
-        ObjectSpawner.objects.forEach(obj -> obj.onRegisterPlayer(player));
         this.entities.put(player.id, player);
         return player;
     }

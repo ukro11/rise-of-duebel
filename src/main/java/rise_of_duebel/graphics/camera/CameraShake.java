@@ -12,7 +12,6 @@ public class CameraShake implements CameraEffect {
     // 0..1
     private double trauma;
     // wie schnell Shake verschwindet
-    private double traumaDecayPerSecond;
     private double maxShakeOffset;
     private double maxShakeAngle;
 
@@ -22,6 +21,7 @@ public class CameraShake implements CameraEffect {
 
     private double shakeTime = 0.0;
 
+    // ChatGPT Shake Expertise
     private final Random shakeRandom = new Random();
     private final double nxPhase = shakeRandom.nextDouble() * Math.PI * 2;
     private final double nyPhase = shakeRandom.nextDouble() * Math.PI * 2;
@@ -41,19 +41,17 @@ public class CameraShake implements CameraEffect {
 
         this.maxShakeOffset = type.getMaxOffsetPx();
         this.maxShakeAngle = type.getMaxAngleDeg();
-        this.traumaDecayPerSecond = type.getDecayPerSecond();
     }
 
     public CameraShake(double trauma, double duration) {
-        this(trauma, duration, 4.0, 3.5, 1.5);
+        this(trauma, duration, 4.0, 3.5);
     }
 
-    public CameraShake(double trauma, double duration, double maxOffsetPx, double maxAngleDeg, double decayPerSecond) {
+    public CameraShake(double trauma, double duration, double maxOffsetPx, double maxAngleDeg) {
         this.trauma = MathUtils.clamp(this.trauma + trauma, 0.0, 1.0);
         this.shakeDuration = duration;
         this.maxShakeOffset = maxOffsetPx;
         this.maxShakeAngle = maxAngleDeg;
-        this.traumaDecayPerSecond = decayPerSecond;
     }
 
     private double smoothNoise(double t, double phase, double freq) {
@@ -65,18 +63,18 @@ public class CameraShake implements CameraEffect {
 
     @Override
     public Vector3 initiate(CameraRenderer camera, double dt) {
-        if (this.shakeDuration > 0.0) {
-            this.shakeDuration -= dt;
-
-        } else {
-            if (this.trauma > 0.0) {
-                this.trauma = Math.max(0.0,
-                        this.trauma - this.traumaDecayPerSecond * dt);
-            }
+        this.shakeDuration -= dt;
+        if (this.shakeDuration <= 0.0) {
+            this.trauma = 0.0;
+            this.shakeOffsetX = 0.0;
+            this.shakeOffsetY = 0.0;
+            this.shakeAngle = 0.0;
+            return new Vector3(0.0, 0.0, 0.0);
         }
 
-        double s = this.trauma * this.trauma;
         this.shakeTime += dt * 10;
+
+        double s = this.trauma * this.trauma;
 
         double nX = smoothNoise(this.shakeTime, nxPhase, nxFreq);
         double nY = smoothNoise(this.shakeTime, nyPhase, nyFreq);
@@ -86,48 +84,39 @@ public class CameraShake implements CameraEffect {
         this.shakeOffsetY = nY * this.maxShakeOffset * s;
         this.shakeAngle   = nA * this.maxShakeAngle * s;
 
-        if (s < 0.0001) {
-            this.shakeOffsetX = 0.0;
-            this.shakeOffsetY = 0.0;
-            this.shakeAngle = 0.0;
-        }
         return new Vector3(this.shakeOffsetX, this.shakeOffsetY, this.shakeAngle);
     }
 
     @Override
     public boolean isFinished() {
-        return this.shakeOffsetX == 0 && this.shakeOffsetY == 0 && this.shakeAngle == 0;
+        return this.shakeDuration <= 0.0;
     }
 
     public enum ShakeType {
-        SMALL_HIT(1.0, 0.1, 3.0, 0, 10.5),
-        EXPLOSION(0.6, 0.22, 34.0, 9.0, 4.5);
+        SMALL_HIT(1.0, 0.1, 3.0, 0),
+        EXPLOSION(0.6, 0.22, 34.0, 9.0);
 
         // --- Core shake ---
         private final double trauma;
         private final double duration;
         private final double maxOffsetPx;
         private final double maxAngleDeg;
-        private final double decayPerSecond;
 
         ShakeType(
             double trauma,
             double duration,
             double maxOffsetPx,
-            double maxAngleDeg,
-            double decayPerSecond
+            double maxAngleDeg
         ) {
             this.trauma = trauma;
             this.duration = duration;
             this.maxOffsetPx = maxOffsetPx;
             this.maxAngleDeg = maxAngleDeg;
-            this.decayPerSecond = decayPerSecond;
         }
 
         public double getTrauma() { return trauma; }
         public double getDuration() { return duration; }
         public double getMaxOffsetPx() { return maxOffsetPx; }
         public double getMaxAngleDeg() { return maxAngleDeg; }
-        public double getDecayPerSecond() { return decayPerSecond; }
     }
 }
