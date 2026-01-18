@@ -7,20 +7,20 @@
   <object id="18" x="30" y="280" width="703" height="200"/>
  </objectgroup>
  <objectgroup color="#ffff00" id="7" name="LOWEST">
-  <object id="9" x="257" y="655" width="25" height="7"/>
+  <object id="9" x="255" y="760" width="25" height="7"/>
  </objectgroup>
  <objectgroup color="#ff5500" id="2" name="WORLD">
-  <object id="2" name="DA$WORLD_PLATFORM_1" x="-500" y="480" width="590" height="330"/>
+  <object id="2" name="DA$WORLD_PLATFORM_1" x="-500" y="480" width="590" height="500"/>
   <object id="3" name="DA$WORLD_P_2" x="-500" y="-1" width="2180" height="281"/>
   <object id="4" name="DA$WORLD_P_1" x="-500" y="280" width="530" height="200"/>
   <object id="5" name="DA$WORLD_P_3" x="733" y="280" width="750" height="200"/>
-  <object id="6" name="DA$WORLD_PLATFORM_3" x="673" y="480" width="814" height="330"/>
-  <object id="19" name="DA$WORLD_PLATFORM_2" x="133" y="480" width="497" height="330"/>
+  <object id="6" name="DA$WORLD_PLATFORM_3" x="673" y="480" width="814" height="500"/>
+  <object id="19" name="DA$WORLD_PLATFORM_2" x="133" y="480" width="497" height="500"/>
  </objectgroup>
  <objectgroup color="#aaff00" id="5" name="MOVING"/>
  <objectgroup id="4" name="SENSOR"/>
  <objectgroup color="#5500ff" id="6" name="PORTAL">
-  <object id="7" x="615" y="533" width="86" height="143"/>
+  <object id="7" x="630" y="591" width="43" height="223"/>
  </objectgroup>
  <objectgroup color="#55ffff" id="8" name="SPAWN">
   <object id="10" x="381" y="470" width="43" height="9"/>

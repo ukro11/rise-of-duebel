@@ -90,9 +90,7 @@ public class LevelStats extends LevelLoader {
     }
 
     @Override
-    public void enterPortal() {
-
-    }
+    public void enterPortal() {}
 
     @Override
     public void resetLevel() {
