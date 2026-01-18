@@ -29,7 +29,6 @@ public class LevelManager {
     private LevelMap current;
     private LevelMap next;
 
-
     private int index;
 
     public LevelManager(int levelStart) {

@@ -98,6 +98,7 @@ public class LevelStats extends LevelLoader {
     public void resetLevel() {
         Wrapper.getLevelManager().previousLevel(String.format("STATS-%d", Wrapper.getLevelManager().getIndex()));
     }
+
     private String formatSecondsToMMSS(int totalSeconds) {
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
