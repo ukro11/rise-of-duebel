@@ -92,7 +92,6 @@ public class LevelManager {
                 this.levelSwitchQueue.dequeue();
             }
         }
-        this.current.getLoader().getUserProfiles().forEach(u -> u.update(dt));
     }
 
     public void drawTransition(DrawTool drawTool) {

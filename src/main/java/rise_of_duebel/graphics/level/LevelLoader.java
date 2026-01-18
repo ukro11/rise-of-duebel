@@ -12,6 +12,7 @@ import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.dyn4j.WorldCollider;
 import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.model.scene.impl.GameScene;
+import rise_of_duebel.model.user.UserProfile;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,8 +73,8 @@ public abstract class LevelLoader {
     public abstract void resetLevel();
 
     public void onActive() {
-        if (!(this instanceof LevelStats)){
-            Wrapper.getUserProfile().start();
+        if (!(this instanceof LevelStats)) {
+            this.getUserProfiles().forEach(UserProfile::start);
         }
     }
     public void loadCollider(WorldCollider wc, BodyFixture fix) {}
@@ -102,5 +103,9 @@ public abstract class LevelLoader {
 
     public LevelColors getColors() {
         return this.colors;
+    }
+
+    public List<UserProfile> getUserProfiles() {
+        return Wrapper.getEntityManager().getPlayerEntities().stream().map(e -> e.getUserProfile()).toList();
     }
 }
