@@ -38,8 +38,8 @@
                  "type":"",
                  "visible":true,
                  "width":25,
-                 "x":257,
-                 "y":655
+                 "x":255,
+                 "y":760
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -54,7 +54,7 @@
          "name":"WORLD",
          "objects":[
                 {
-                 "height":330,
+                 "height":500,
                  "id":2,
                  "name":"DA$WORLD_PLATFORM_1",
                  "rotation":0,
@@ -98,7 +98,7 @@
                  "y":280
                 }, 
                 {
-                 "height":330,
+                 "height":500,
                  "id":6,
                  "name":"DA$WORLD_PLATFORM_3",
                  "rotation":0,
@@ -109,7 +109,7 @@
                  "y":480
                 }, 
                 {
-                 "height":330,
+                 "height":500,
                  "id":19,
                  "name":"DA$WORLD_PLATFORM_2",
                  "rotation":0,
@@ -155,7 +155,7 @@
          "name":"PORTAL",
          "objects":[
                 {
-                 "height":65,
+                 "height":223,
                  "id":7,
                  "name":"",
                  "rotation":0,
@@ -163,7 +163,7 @@
                  "visible":true,
                  "width":43,
                  "x":630,
-                 "y":611
+                 "y":591
                 }],
          "opacity":1,
          "type":"objectgroup",

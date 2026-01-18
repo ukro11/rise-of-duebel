@@ -43,10 +43,14 @@ public class ColliderBody extends Body {
     public static final long MASK_ENTITY_PLAYER = 1L << 1;
     public static final long MASK_PLATFORM = 1L << 2;
     public static final long MASK_PLATFORM_MOVING = 1L << 3;
+    public static final long MASK_SPIKE = 1L << 4;
+    public static final long MASK_SPIKE_MOVING = 1L << 5;
 
     public static final long FILTER_DEFAULT = MASK_ALL;
     public static final long FILTER_PLATFORM = MASK_ALL & ~MASK_PLATFORM_MOVING;
     public static final long FILTER_MOVING_PLATFORM = MASK_ALL & ~MASK_PLATFORM;
+    public static final long FILTER_SPIKE = MASK_ALL & ~MASK_SPIKE_MOVING;
+    public static final long FILTER_SPIKE_PLATFORM = MASK_ALL & ~MASK_SPIKE;
     private static final Logger log = LoggerFactory.getLogger(ColliderBody.class);
 
     /** The color of the object */

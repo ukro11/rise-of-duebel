@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="21">
+ <editorsettings>
+  <export target="level3.json" format="json"/>
+ </editorsettings>
+ <objectgroup id="11" name="CAMERA"/>
+ <objectgroup color="#ffff00" id="7" name="LOWEST">
+  <object id="9" x="233" y="600" width="25" height="7"/>
+ </objectgroup>
+ <objectgroup color="#ff5500" id="2" name="WORLD">
+  <object id="2" name="DA$WORLD_PLATFORM_1" x="-500" y="480" width="705" height="330"/>
+  <object id="3" name="DA$WORLD_P_2" x="-500" y="-1" width="2180" height="281"/>
+  <object id="4" name="DA$WORLD_P_1" x="-500" y="280" width="530" height="200"/>
+  <object id="5" name="DA$WORLD_P_3" x="733" y="280" width="750" height="200"/>
+  <object id="6" name="DA$WORLD_PLATFORM_2" x="428" y="480" width="1058" height="330"/>
+  <object id="18" name="DA$WORLD_PLATFORM_3" x="205" y="431" width="26" height="296"/>
+  <object id="19" name="DA$WORLD_PLATFORM_4" x="291" y="384" width="26" height="340"/>
+ </objectgroup>
+ <objectgroup color="#aaff00" id="5" name="MOVING">
+  <object id="12" name="DA$MOVING_PLATFORM_1" x="401" y="423" width="28" height="296">
+   <properties>
+    <property name="zindex" type="int" value="-1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="SENSOR">
+  <object id="13" name="SENSOR_MOVING-PLATFORM-1_1" x="319" y="281" width="109" height="199"/>
+ </objectgroup>
+ <objectgroup color="#5500ff" id="6" name="PORTAL">
+  <object id="7" x="630" y="415" width="43" height="65"/>
+ </objectgroup>
+ <objectgroup color="#55ffff" id="8" name="SPAWN">
+  <object id="10" x="90" y="471" width="43" height="9"/>
+ </objectgroup>
+</map>

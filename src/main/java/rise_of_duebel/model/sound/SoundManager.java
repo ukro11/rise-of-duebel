@@ -1,5 +1,6 @@
 package rise_of_duebel.model.sound;
 
+
 import javax.sound.sampled.Clip;
 
 public class SoundManager {

@@ -6,24 +6,24 @@ import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntityManager {
 
     private final World<ColliderBody> world;
-    private final Map<String, Entity<?>> entities;
+    private final List<Entity<?>> entities;
     private double accumulator;
 
     public EntityManager() {
         this.world = new World<ColliderBody>();
         this.world.setGravity(new Vector2(0, 900));
-        this.entities = new HashMap<>();
+        this.entities = new ArrayList<>();
     }
 
     public EntityPlayer spawnPlayer(double x, double y) {
         EntityPlayer player = new EntityPlayer(this.world, x, y, 192, 128);
-        this.entities.put(player.id, player);
+        this.entities.add(player);
         return player;
     }
 
@@ -46,8 +46,12 @@ public class EntityManager {
         }
     }
 
-    public Map<String, Entity<?>> getEntities() {
+    public List<Entity<?>> getEntities() {
         return this.entities;
+    }
+
+    public List<EntityPlayer> getPlayerEntities() {
+        return this.entities.stream().filter(e -> e instanceof EntityPlayer).map(e -> (EntityPlayer) e).toList();
     }
 
     public World<ColliderBody> getWorld() {

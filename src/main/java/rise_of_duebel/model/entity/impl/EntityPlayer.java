@@ -24,6 +24,8 @@ import rise_of_duebel.event.services.EventProcessCallback;
 import rise_of_duebel.event.services.process.EventLoadAssetsProcess;
 import rise_of_duebel.model.entity.Entity;
 import rise_of_duebel.model.entity.EntityDirection;
+import rise_of_duebel.model.sound.SoundManager;
+import rise_of_duebel.model.user.UserProfile;
 import rise_of_duebel.utils.CooldownManager;
 import rise_of_duebel.utils.MathUtils;
 
@@ -52,9 +54,12 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     private List<Consumer<EntityPlayer>> onDirectionChange = new ArrayList<>();
 
+    private final UserProfile userProfile;
+
     public EntityPlayer(World<ColliderBody> world, double x, double y, double width, double height) {
         super(world, new ColliderBody(Color.GREEN), x, y, width, height);
         this.id = String.format("ENTITY_PLAYER_%s", UUID.randomUUID());
+        this.userProfile = new UserProfile(this);
 
         double colliderWidth = 8.0;
         double colliderHeight = 10.0;
@@ -132,6 +137,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
             }
         }
         if (this.renderer != null) {
+            this.userProfile.update(dt);
             if (this.freeze && !this.isWalking()) return;
             this.onMove();
         }
@@ -176,7 +182,8 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         if (ViewController.isKeyDown(KeyEvent.VK_SPACE) && this.onGround) {
             // JUMP_FORCE * this.body.getMass().getMass()
             //this.body.applyImpulse(new Vector2(0, JUMP_FORCE * this.body.getMass().getMass()));
-
+            Wrapper.getSoundConstants().SOUND_JUMP.setVolume(0.75);
+            SoundManager.playSound(Wrapper.getSoundConstants().SOUND_JUMP, false);
             this.body.setLinearVelocity(vel.x, JUMP_FORCE);
             this.onGround = false;
             this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.IDLE));
@@ -339,6 +346,10 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     @Override
     public String getId() {
         return this.id;
+    }
+
+    public UserProfile getUserProfile() {
+        return this.userProfile;
     }
 
     @Override

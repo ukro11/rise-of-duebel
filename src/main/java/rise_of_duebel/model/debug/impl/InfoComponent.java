@@ -22,7 +22,7 @@ public class InfoComponent extends VisualModel {
         this.startY = 60;
     }
 
-    @Override
+   @Override
     public void draw(DrawTool drawTool) {
         drawTool.push();
         drawTool.setCurrentColor(new Color(47, 29, 3));

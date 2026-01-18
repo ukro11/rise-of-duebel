@@ -12,6 +12,7 @@ import rise_of_duebel.graphics.level.LevelColors;
 import rise_of_duebel.graphics.level.LevelLoader;
 import rise_of_duebel.graphics.level.LevelMap;
 import rise_of_duebel.model.debug.VisualConstants;
+import rise_of_duebel.model.user.UserProfile;
 import rise_of_duebel.utils.ColorUtil;
 import rise_of_duebel.utils.MathUtils;
 
@@ -25,11 +26,18 @@ public class LevelStats extends LevelLoader {
     private double maxDistance = 100;
 
     private WorldCollider textCollider;
+    private UserProfile localUserProfile;
 
     public LevelStats(LevelMap map) {
         super("stats.json", new LevelColors("#f4b13b", "#feab32", "#be7708", "#be7708", "#6603fc"), map);
         this.textCollider = this.map.getColliderByLayer("TEXT");
         this.font = VisualConstants.getFont(20);
+    }
+
+    @Override
+    public void onActive() {
+        this.localUserProfile = Wrapper.getLocalPlayer().getUserProfile();
+        this.getUserProfiles().forEach(UserProfile::pause);
     }
 
     @Override
@@ -62,25 +70,36 @@ public class LevelStats extends LevelLoader {
             this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
             this.textCollider.getY() + drawTool.getFontHeight() + 30
         );
-
-        drawTool.setCurrentColor(this.TEXT_COLOR);
-        String text2 = "KILLS:  " + Wrapper.getLevelManager().getIndex();
+        drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
+        String text2 = "DEATHS:" + this.localUserProfile.getDeaths();
         drawTool.drawText(
                 text2,
-                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text2)) / 2,
-                this.textCollider.getY() + drawTool.getFontHeight() + 50
+                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text2)) / 2 + offsetX * 0.8,
+                this.textCollider.getY() + drawTool.getFontHeight() + 60
         );
+        drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
+        String text3 = "TIME:" + formatSecondsToMMSS((int)this.localUserProfile.getTime());
+        drawTool.drawText(
+                text3,
+                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text3)) / 2 + offsetX * 0.6,
+                this.textCollider.getY() + drawTool.getFontHeight() + 90
+        );
+
 
         drawTool.pop();
     }
 
     @Override
-    public void enterPortal() {
-
-    }
+    public void enterPortal() {}
 
     @Override
     public void resetLevel() {
         Wrapper.getLevelManager().previousLevel(String.format("STATS-%d", Wrapper.getLevelManager().getIndex()));
+    }
+
+    private String formatSecondsToMMSS(int totalSeconds) {
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 }
