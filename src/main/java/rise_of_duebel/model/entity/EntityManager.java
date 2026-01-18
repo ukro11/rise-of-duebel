@@ -13,18 +13,18 @@ import java.util.List;
 public class EntityManager {
 
     private final World<ColliderBody> world;
-    private final Map<String, Entity<?>> entities;
+    private final List<Entity<?>> entities;
 
     public EntityManager() {
         this.world = new World<ColliderBody>();
         this.world.setGravity(PhysicsWorld.EARTH_GRAVITY.getNegative());
-        this.entities = new HashMap<>();
+        this.entities = new ArrayList<>();
     }
 
     public EntityPlayer spawnPlayer(double x, double y) {
         EntityPlayer player = new EntityPlayer(this.world, x, y, 192, 128);
         ObjectSpawner.objects.forEach(obj -> obj.onRegisterPlayer(player));
-        this.entities.put(player.id, player);
+        this.entities.add(player);
         return player;
     }
 
@@ -42,8 +42,12 @@ public class EntityManager {
         }
     }
 
-    public Map<String, Entity<?>> getEntities() {
+    public List<Entity<?>> getEntities() {
         return this.entities;
+    }
+
+    public List<EntityPlayer> getPlayerEntities() {
+        return this.entities.stream().filter(e -> e instanceof EntityPlayer).map(e -> (EntityPlayer) e).toList();
     }
 
     public World<ColliderBody> getWorld() {

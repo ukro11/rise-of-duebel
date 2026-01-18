@@ -56,10 +56,10 @@ public class LevelMap extends TileMap {
             }
 
             if (cloader != null) {
-                this.loader = cloader.getConstructor(LevelMap.class, List.class).newInstance(this, list);
+                this.loader = cloader.getConstructor(LevelMap.class).newInstance(this);
 
             } else {
-                this.loader = new LevelLoader(this.getFileName(), LevelColors.createDefault(), this, list) {
+                this.loader = new LevelLoader(this.getFileName(), LevelColors.createDefault(), this) {
                     @Override
                     public void updateCollider(TimeStep step, PhysicsWorld<ColliderBody, ?> world) {}
                     @Override

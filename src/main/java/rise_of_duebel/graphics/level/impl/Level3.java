@@ -27,8 +27,8 @@ public class Level3 extends LevelLoader {
     private Vector2 TWEEN_SAVED_VALUE_COLLIDER_MOVING_UP;
     private boolean start = false;
 
-    public Level3(LevelMap map, List<UserProfile> userProfiles) {
-        super("level3.json", LevelColors.createDefault(), map, userProfiles);
+    public Level3(LevelMap map) {
+        super("level3.json", LevelColors.createDefault(), map);
         this.moving = this.map.getColliderByLayer("MOVING", 0);
         this.sensor = this.moving.getSensorByIndex(0);
         BodyFixture sensorFixture = this.sensor.getFixture();

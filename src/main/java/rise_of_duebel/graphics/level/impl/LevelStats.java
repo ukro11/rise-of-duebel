@@ -17,7 +17,6 @@ import rise_of_duebel.utils.ColorUtil;
 import rise_of_duebel.utils.MathUtils;
 
 import java.awt.*;
-import java.util.List;
 
 public class LevelStats extends LevelLoader {
 
@@ -28,18 +27,18 @@ public class LevelStats extends LevelLoader {
     private double maxDistance = 100;
 
     private WorldCollider textCollider;
-    private final UserProfile localUserProfile;
+    private UserProfile localUserProfile;
 
-    public LevelStats(LevelMap map, List<UserProfile> userProfiles) {
-        super("stats.json", new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc"), map, userProfiles);
+    public LevelStats(LevelMap map) {
+        super("stats.json", new LevelColors("#f4b13b", "#be7708", "#be7708", "#6603fc"), map);
         this.textCollider = this.map.getColliderByLayer("TEXT");
         this.font = VisualConstants.getFont(20);
-        this.localUserProfile = this.getUserProfile(Wrapper.getLocalPlayer());
     }
 
     @Override
     public void onActive() {
-        userProfiles.forEach(UserProfile::pause);
+        this.localUserProfile = Wrapper.getLocalPlayer().getUserProfile();
+        this.getUserProfiles().forEach(UserProfile::pause);
     }
 
     @Override

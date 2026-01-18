@@ -136,6 +136,7 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
             }
         }
         if (this.renderer != null) {
+            this.userProfile.update(dt);
             if (this.freeze && !this.isWalking()) return;
             this.onMove();
         }
@@ -332,6 +333,10 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     @Override
     public String getId() {
         return this.id;
+    }
+
+    public UserProfile getUserProfile() {
+        return this.userProfile;
     }
 
     @Override

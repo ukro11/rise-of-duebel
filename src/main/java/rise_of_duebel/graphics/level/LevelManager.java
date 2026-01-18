@@ -90,7 +90,6 @@ public class LevelManager {
                 this.levelSwitchQueue.dequeue();
             }
         }
-        this.current.getLoader().getUserProfiles().forEach(u -> u.update(dt));
     }
 
     public void drawTransition(DrawTool drawTool) {
@@ -175,16 +174,27 @@ public class LevelManager {
 
     private void setPreviousLevel() {
         if (this.previous == null) return;
+
+        // Merken, ob wir gerade in der Stats-Map sind
+        boolean wasStats = (this.current != null && this.current.getLoader() instanceof LevelStats);
+
         this.next = this.current;
+
         this.previous.getLoader().resetLevel();
         this.current.onHide();
+
         this.current = this.previous;
         this.current.onActive();
-        if (this.index != 1) {
+
+        if (!wasStats && this.index != 1) {
             this.index--;
-            //Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<>("LevelManager loading previous map", () -> {
-                this.previous = this.cache.getOrDefault(this.index - 1, this.getMapByIndex(this.index - 1));
-            //}, new EventProcessCallback<>() {}));
+        }
+
+        if (this.index > 1) {
+            this.previous = this.cache.getOrDefault(this.index - 1, this.getMapByIndex(this.index - 1));
+
+        } else {
+            this.previous = null;
         }
     }
 
