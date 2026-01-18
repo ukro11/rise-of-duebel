@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.graphics.map.TileMap;
+import rise_of_duebel.model.sound.SoundManager;
 import rise_of_duebel.model.transitions.DefaultTransition;
 import rise_of_duebel.model.transitions.Transition;
 
@@ -127,6 +128,10 @@ public class LevelManager {
                 log.info("QUEUE");
                 this.levelSwitchQueue.enqueue(levelSwitch);
             }
+        }
+        if (this.next.getLoader() instanceof LevelStats) {
+            Wrapper.getSoundConstants().SOUND_WIN.setVolume(0.85);
+            SoundManager.playSound(Wrapper.getSoundConstants().SOUND_WIN, false);
         }
         if (!(this.next.getLoader() instanceof LevelStats)) {
             this.current.getLoader().getUserProfiles().forEach(u -> u.resetDeaths());

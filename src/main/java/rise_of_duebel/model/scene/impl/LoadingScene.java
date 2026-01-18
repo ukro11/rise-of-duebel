@@ -6,6 +6,7 @@ import rise_of_duebel.Wrapper;
 import rise_of_duebel.model.debug.VisualConstants;
 import rise_of_duebel.model.scene.Scene;
 import rise_of_duebel.model.sound.SoundManager;
+import rise_of_duebel.model.transitions.DefaultTransition;
 
 import java.awt.*;
 
@@ -40,10 +41,10 @@ public class LoadingScene extends Scene {
         // Titel (zentriert)
         drawTool.setCurrentColor(VisualConstants.TEXT_COLOR);
         drawTool.getGraphics2D().setFont(VisualConstants.getFont(VisualConstants.Fonts.PIXEL_FONT, 100));
-        String title = "Kago Framework";
+        String title = "DÜBEL LEVEL";
 
-        drawTool.drawCenteredText("Kago".toUpperCase(), 0, -130, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
-        drawTool.drawCenteredText("Framework".toUpperCase(), 0, -50, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        drawTool.drawCenteredText("DÜBEL".toUpperCase(), 0, -130, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        drawTool.drawCenteredText("LEVEL".toUpperCase(), 0, -50, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
 
         // Ladebalken
         int barWidth = 400;
@@ -70,7 +71,7 @@ public class LoadingScene extends Scene {
         super.draw(drawTool);
 
         if (loadingComplete) {
-            //Scene.open(new StartScene());
+            Scene.open(new StartScene(),new DefaultTransition());
         }
     }
 

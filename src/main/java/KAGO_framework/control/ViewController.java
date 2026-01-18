@@ -9,6 +9,8 @@ import rise_of_duebel.ProgramController;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.event.events.KeyPressedEvent;
 import rise_of_duebel.model.scene.Scene;
+import rise_of_duebel.model.scene.impl.LoadingScene;
+import rise_of_duebel.model.transitions.DefaultTransition;
 
 import javax.swing.*;
 import java.awt.*;
@@ -185,7 +187,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         logger.info("Graphics Device: {}", gd.getIDstring());
 
         if (rise_of_duebel.Config.RUN_ENV == rise_of_duebel.Config.Environment.PRODUCTION) {
-            //Scene.open(new LoadingScene());
+            Scene.open(new LoadingScene(),new DefaultTransition());
         }
         this.drawFrame = new DrawFrame(rise_of_duebel.Config.WINDOW_TITLE, x, y, rise_of_duebel.Config.WINDOW_WIDTH, rise_of_duebel.Config.WINDOW_HEIGHT, this);
         this.drawFrame.setResizable(false);

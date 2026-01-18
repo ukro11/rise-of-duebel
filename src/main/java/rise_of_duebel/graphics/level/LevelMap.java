@@ -18,14 +18,12 @@ import rise_of_duebel.dyn4j.PhysicsUtils;
 import rise_of_duebel.dyn4j.SensorWorldCollider;
 import rise_of_duebel.dyn4j.WorldCollider;
 import rise_of_duebel.graphics.camera.CameraShake;
-import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.graphics.level.spawner.ObjectIdResolver;
 import rise_of_duebel.graphics.map.GsonMap;
 import rise_of_duebel.graphics.map.TileMap;
-import rise_of_duebel.model.entity.Entity;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
-import rise_of_duebel.model.user.UserProfile;
+import rise_of_duebel.model.sound.SoundManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -57,8 +55,6 @@ public class LevelMap extends TileMap {
                 throw new RuntimeException(String.format("Levels needs these layers: %s, Got these layers: %s", String.join(", ", this.NEEDED_LAYERS), String.join(", ", m)));
             }
 
-            List<UserProfile> list = new ArrayList<>();
-            Wrapper.getEntityManager().getEntities().values().forEach(e -> list.add(new UserProfile((EntityPlayer) e)));
             if (cloader != null) {
                 this.loader = cloader.getConstructor(LevelMap.class, List.class).newInstance(this, list);
 
@@ -88,7 +84,9 @@ public class LevelMap extends TileMap {
                 if (lowest.getY() < Wrapper.getLocalPlayer().getY()) {
                     Wrapper.getLocalPlayer().setPosition(spawnLocation.x, spawnLocation.y);
                     reset = true;
-                    loader.getUserProfiles().forEach(UserProfile::addDeath);
+                    Wrapper.getLocalPlayer().getUserProfile().addDeath();
+                    Wrapper.getSoundConstants().SOUND_DEATH.setVolume(0.85);
+                    SoundManager.playSound(Wrapper.getSoundConstants().SOUND_DEATH, false);
                 } else {
                     if (reset) {
                         GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));

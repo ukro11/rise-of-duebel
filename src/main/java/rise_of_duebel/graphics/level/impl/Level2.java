@@ -16,12 +16,6 @@ import rise_of_duebel.graphics.level.LevelColors;
 import rise_of_duebel.graphics.level.LevelLoader;
 import rise_of_duebel.graphics.level.LevelMap;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
-import rise_of_duebel.model.scene.Scene;
-import rise_of_duebel.model.scene.impl.WinScene;
-import rise_of_duebel.model.transitions.DefaultTransition;
-import rise_of_duebel.model.user.UserProfile;
-
-import java.util.List;
 
 public class Level2 extends LevelLoader {
 

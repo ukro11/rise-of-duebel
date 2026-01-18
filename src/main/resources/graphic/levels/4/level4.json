@@ -27,8 +27,8 @@
                  "type":"",
                  "visible":true,
                  "width":25,
-                 "x":206,
-                 "y":660
+                 "x":149,
+                 "y":675
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -43,15 +43,15 @@
          "name":"WORLD",
          "objects":[
                 {
-                 "height":330,
+                 "height":246,
                  "id":2,
                  "name":"DA$WORLD_PLATFORM_1",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":958,
+                 "width":646,
                  "x":-500,
-                 "y":480
+                 "y":563
                 }, 
                 {
                  "height":281,
@@ -65,7 +65,7 @@
                  "y":-1
                 }, 
                 {
-                 "height":200,
+                 "height":283,
                  "id":4,
                  "name":"DA$WORLD_P_1",
                  "rotation":0,
@@ -93,20 +93,42 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1058,
-                 "x":428,
+                 "width":909,
+                 "x":576,
                  "y":480
                 }, 
                 {
-                 "height":27,
+                 "height":9,
                  "id":18,
                  "name":"DA$WORLD_PLATFORM_3",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":78,
-                 "x":260,
-                 "y":452
+                 "x":147,
+                 "y":554
+                }, 
+                {
+                 "height":9,
+                 "id":24,
+                 "name":"DA$WORLD_PLATFORM_4",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":78,
+                 "x":255,
+                 "y":534
+                }, 
+                {
+                 "height":9,
+                 "id":29,
+                 "name":"DA$WORLD_PLATFORM_4",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":78,
+                 "x":467,
+                 "y":497
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -121,7 +143,7 @@
          "name":"MOVING",
          "objects":[
                 {
-                 "height":28,
+                 "height":9,
                  "id":12,
                  "name":"DA$MOVING_PLATFORM_1",
                  "properties":[
@@ -134,8 +156,8 @@
                  "type":"",
                  "visible":true,
                  "width":78,
-                 "x":418,
-                 "y":451
+                 "x":362,
+                 "y":514
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -149,19 +171,19 @@
          "name":"SENSOR",
          "objects":[
                 {
-                 "height":105,
+                 "height":82,
                  "id":13,
                  "name":"SENSOR_MOVING-PLATFORM-1_1",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":109,
-                 "x":410,
-                 "y":378
+                 "width":98,
+                 "x":348,
+                 "y":452
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -179,8 +201,8 @@
                  "type":"",
                  "visible":true,
                  "width":43,
-                 "x":630,
-                 "y":415
+                 "x":629,
+                 "y":414
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -202,8 +224,8 @@
                  "type":"",
                  "visible":true,
                  "width":43,
-                 "x":90,
-                 "y":471
+                 "x":41,
+                 "y":553
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -212,7 +234,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":21,
+ "nextobjectid":30,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

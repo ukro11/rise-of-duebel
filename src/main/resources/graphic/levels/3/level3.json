@@ -98,7 +98,7 @@
                  "y":480
                 }, 
                 {
-                 "height":48,
+                 "height":296,
                  "id":18,
                  "name":"DA$WORLD_PLATFORM_3",
                  "rotation":0,
@@ -109,7 +109,7 @@
                  "y":431
                 }, 
                 {
-                 "height":95,
+                 "height":340,
                  "id":19,
                  "name":"DA$WORLD_PLATFORM_4",
                  "rotation":0,
@@ -132,7 +132,7 @@
          "name":"MOVING",
          "objects":[
                 {
-                 "height":125,
+                 "height":296,
                  "id":12,
                  "name":"DA$MOVING_PLATFORM_1",
                  "properties":[
@@ -144,9 +144,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":26,
+                 "width":28,
                  "x":401,
-                 "y":354
+                 "y":423
                 }],
          "opacity":1,
          "type":"objectgroup",

@@ -1,7 +1,6 @@
 package rise_of_duebel.model;
 
 import KAGO_framework.view.DrawTool;
-import rise_of_duebel.Config;
 import rise_of_duebel.model.debug.VisualConstants;
 
 import java.awt.*;
@@ -52,7 +51,7 @@ public class GameHandlerModel {
     }
 
     private void drawPoints(DrawTool drawTool) {
-        drawTool.push();
+        /*drawTool.push();
 
         int margin = 5;
         int width = 200;
@@ -77,10 +76,12 @@ public class GameHandlerModel {
                 this.CARD_OUTLINE_COLOR
         );
         drawTool.pop();
+
+         */
     }
 
     private void drawTimer(DrawTool drawTool) {
-        drawTool.push();
+        /*drawTool.push();
 
         int margin = 5;
         int width = 200;
@@ -105,6 +106,8 @@ public class GameHandlerModel {
                 this.CARD_OUTLINE_COLOR
         );
         drawTool.pop();
+
+         */
     }
 
     private String formatSecondsToMMSS(int totalSeconds) {

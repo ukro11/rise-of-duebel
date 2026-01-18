@@ -7,8 +7,8 @@ import rise_of_duebel.graphics.level.spawner.ObjectSpawner;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntityManager {
 
