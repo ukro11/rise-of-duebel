@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="21">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="36">
+ <editorsettings>
+  <export target="level5.json" format="json"/>
+ </editorsettings>
  <objectgroup id="11" name="CAMERA"/>
  <objectgroup color="#ffff00" id="7" name="LOWEST">
-  <object id="9" x="262" y="651.166" width="25" height="7"/>
+  <object id="9" x="262" y="651" width="25" height="7"/>
  </objectgroup>
  <objectgroup color="#ff5500" id="2" name="WORLD">
-  <object id="2" name="DA$WORLD_PLATFORM_1" x="-502.667" y="480.667" width="764.087" height="330"/>
+  <object id="2" name="DA$WORLD_PLATFORM_1" x="-502" y="480" width="696" height="330"/>
+  <object id="21" name="DA$WORLD_PLATFORM_3" x="155" y="425" width="59" height="55"/>
+  <object id="34" name="DA$WORLD_PLATFORM_3" x="255" y="362" width="110" height="54"/>
   <object id="3" name="DA$WORLD_P_2" x="-500" y="-1" width="2180" height="281"/>
   <object id="4" name="DA$WORLD_P_1" x="-500" y="280" width="530" height="200"/>
   <object id="5" name="DA$WORLD_P_3" x="733" y="280" width="750" height="200"/>
-  <object id="6" name="DA$WORLD_PLATFORM_2" x="322.833" y="480" width="1164.17" height="330"/>
+  <object id="6" name="DA$WORLD_PLATFORM_2" x="536" y="480" width="950" height="330"/>
+  <object id="35" name="DA$WORLD_PLATFORM_3" x="432" y="361" width="110" height="54"/>
  </objectgroup>
  <objectgroup color="#aaff00" id="5" name="MOVING">
-  <object id="12" name="DA$MOVING_PLATFORM_1" x="416.254" y="481.756" width="78.7786" height="28.3278">
+  <object id="12" name="DA$MOVING_PLATFORM_1" x="432" y="169" width="110" height="109">
    <properties>
     <property name="zindex" type="int" value="-1"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="4" name="SENSOR">
-  <object id="13" name="SENSOR_MOVING-PLATFORM-1_1" x="406.447" y="420.268" width="109.333" height="197.5"/>
+  <object id="13" name="SENSOR_MOVING-PLATFORM-1_1" x="379" y="209" width="131" height="149"/>
  </objectgroup>
  <objectgroup color="#5500ff" id="6" name="PORTAL">
-  <object id="7" x="624" y="414.5" width="43" height="65"/>
+  <object id="7" x="624" y="414" width="43" height="65"/>
  </objectgroup>
  <objectgroup color="#55ffff" id="8" name="SPAWN">
   <object id="10" x="90" y="471" width="43" height="9"/>

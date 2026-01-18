@@ -74,14 +74,14 @@ public class LevelStats extends LevelLoader {
         String text2 = "DEATHS:" + this.localUserProfile.getDeaths();
         drawTool.drawText(
                 text2,
-                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
+                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text2)) / 2 + offsetX * 0.8,
                 this.textCollider.getY() + drawTool.getFontHeight() + 60
         );
         drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
         String text3 = "TIME:" + formatSecondsToMMSS((int)this.localUserProfile.getTime());
         drawTool.drawText(
                 text3,
-                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
+                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text3)) / 2 + offsetX * 0.6,
                 this.textCollider.getY() + drawTool.getFontHeight() + 90
         );
 

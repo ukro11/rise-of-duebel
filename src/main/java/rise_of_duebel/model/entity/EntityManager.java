@@ -6,8 +6,8 @@ import rise_of_duebel.dyn4j.ColliderBody;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntityManager {
 

@@ -7,8 +7,10 @@ import rise_of_duebel.Config;
 import rise_of_duebel.model.KeyManagerModel;
 import rise_of_duebel.model.debug.VisualConstants;
 import rise_of_duebel.model.scene.Scene;
+import rise_of_duebel.model.transitions.DefaultTransition;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 public class StartScene extends Scene {
@@ -36,9 +38,8 @@ public class StartScene extends Scene {
         drawTool.setCurrentColor(VisualConstants.TEXT_COLOR);
         drawTool.getGraphics2D().setFont(VisualConstants.getFont(VisualConstants.Fonts.PIXEL_FONT, 100));
 
-        drawTool.drawCenteredText("Rise".toUpperCase(), 0, -130, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
-        drawTool.drawCenteredText("of".toUpperCase(), 0, -50, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
-        drawTool.drawCenteredText("Dübel".toUpperCase(), 0, 20, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        drawTool.drawCenteredText("DÜBEL".toUpperCase(), 0, -130, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        drawTool.drawCenteredText("LEVEL".toUpperCase(), 0, -50, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
 
         int keyX = Config.WINDOW_WIDTH / 2 - 210 + KeyManagerModel.KEY_START_GAME.getIcon().getWidth() / 2;
         int keyY = Config.WINDOW_HEIGHT - 210;
@@ -49,12 +50,12 @@ public class StartScene extends Scene {
         drawTool.getGraphics2D().setFont(VisualConstants.getFont(VisualConstants.Fonts.PIXEL_FONT, 18));
         drawTool.drawCenteredText(KeyManagerModel.KEY_START_GAME.getDescription().replace(" ", "  ").toUpperCase(), KeyManagerModel.KEY_START_GAME.getIcon().getWidth() / 2, (keyY - Config.WINDOW_HEIGHT / 2) + 20, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
     }
-   // @Override
-   // public void keyPressed(KeyEvent e) {
-       // if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-          //  Scene.open(GameScene.getInstance());
-       // }
-   // }
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+            Scene.open(GameScene.getInstance(), new DefaultTransition());
+        }
+    }
 
 
 }

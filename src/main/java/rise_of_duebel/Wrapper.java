@@ -8,7 +8,6 @@ import rise_of_duebel.graphics.tooltip.TooltipManager;
 import rise_of_duebel.model.entity.EntityManager;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.sound.SoundConstants;
-import rise_of_duebel.model.user.UserProfile;
 import rise_of_duebel.utils.TimerUtils;
 
 public class Wrapper {

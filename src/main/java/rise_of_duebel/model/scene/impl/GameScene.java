@@ -103,42 +103,42 @@ public class GameScene extends Scene {
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-        Wrapper.getEntityManager().getEntities().values().forEach(entity -> entity.mouseClicked(e));
+        Wrapper.getEntityManager().getEntities().forEach(entity -> entity.mouseClicked(e));
         this.interactables.forEach(entity -> entity.mouseClicked(e));
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         super.mouseReleased(e);
-        Wrapper.getEntityManager().getEntities().values().forEach(entity -> entity.mouseReleased(e));
+        Wrapper.getEntityManager().getEntities().forEach(entity -> entity.mouseReleased(e));
         this.interactables.forEach(entity -> entity.mouseReleased(e));
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         super.mouseMoved(e);
-        Wrapper.getEntityManager().getEntities().values().forEach(entity -> entity.mouseMoved(e));
+        Wrapper.getEntityManager().getEntities().forEach(entity -> entity.mouseMoved(e));
         this.interactables.forEach(entity -> entity.mouseMoved(e));
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
         super.mouseDragged(e);
-        Wrapper.getEntityManager().getEntities().values().forEach(entity -> entity.mouseDragged(e));
+        Wrapper.getEntityManager().getEntities().forEach(entity -> entity.mouseDragged(e));
         this.interactables.forEach(entity -> entity.mouseDragged(e));
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
-        Wrapper.getEntityManager().getEntities().values().forEach(entity -> entity.keyPressed(e));
+        Wrapper.getEntityManager().getEntities().forEach(entity -> entity.keyPressed(e));
         this.interactables.forEach(entity -> entity.keyPressed(e));
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         super.keyReleased(e);
-        Wrapper.getEntityManager().getEntities().values().forEach(entity -> entity.keyReleased(e));
+        Wrapper.getEntityManager().getEntities().forEach(entity -> entity.keyReleased(e));
         this.interactables.forEach(entity -> entity.keyReleased(e));
     }
 

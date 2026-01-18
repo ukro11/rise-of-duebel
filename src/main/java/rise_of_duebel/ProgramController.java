@@ -8,6 +8,7 @@ import rise_of_duebel.graphics.gui.impl.GuiPause;
 import rise_of_duebel.model.debug.impl.InfoComponent;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
 import rise_of_duebel.model.scene.impl.GameScene;
+import rise_of_duebel.model.sound.SoundManager;
 import rise_of_duebel.utils.CooldownManager;
 
 import java.awt.event.KeyEvent;
@@ -49,6 +50,8 @@ public class ProgramController {
      * was zu diesem Zeipunkt passieren muss.
      */
     public void startProgram() {
+        Wrapper.getSoundConstants().SOUND_BACKGROUND.setVolume(0.75);
+        SoundManager.playSound(Wrapper.getSoundConstants().SOUND_BACKGROUND, true);
         if (Config.RUN_ENV == Config.Environment.DEVELOPMENT) {
             Wrapper.getEventManager().addEventListener("keypressed", (KeyPressedEvent event) -> {
                 if (event.getKeyCode() == KeyEvent.VK_F9) {

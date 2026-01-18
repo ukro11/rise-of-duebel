@@ -1,8 +1,6 @@
 package rise_of_duebel.model.debug.impl;
 
 import KAGO_framework.view.DrawTool;
-import rise_of_duebel.Config;
-import rise_of_duebel.Wrapper;
 import rise_of_duebel.model.debug.VisualConstants;
 import rise_of_duebel.model.debug.VisualModel;
 
@@ -22,9 +20,9 @@ public class InfoComponent extends VisualModel {
         this.startY = 60;
     }
 
-    @Override
+   @Override
     public void draw(DrawTool drawTool) {
-        drawTool.push();
+        /* drawTool.push();
         drawTool.setCurrentColor(new Color(47, 29, 3));
         drawTool.getGraphics2D().setFont(this.debugFont);
 
@@ -56,6 +54,8 @@ public class InfoComponent extends VisualModel {
         }
         drawTool.resetColor();
         drawTool.pop();
+
+         */
     }
 
     @Override

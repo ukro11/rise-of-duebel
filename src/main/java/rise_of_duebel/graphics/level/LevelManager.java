@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.graphics.map.TileMap;
+import rise_of_duebel.model.sound.SoundManager;
 import rise_of_duebel.model.scene.Scene;
 import rise_of_duebel.model.scene.impl.GameScene;
 import rise_of_duebel.model.transitions.DefaultTransition;
@@ -35,13 +36,9 @@ public class LevelManager {
         this.cache = new HashMap<>();
         this.index = levelStart;
         this.levelSwitchQueue = new Queue<>();
-
-        //Wrapper.getProcessManager().queue(new EventLoadAssetsProcess<>("LevelManager loading", () -> {
-            this.previous = null;
-            this.current = this.cache.getOrDefault(this.index, this.getMapByIndex(this.index));
-            this.next = this.getStatsMap();
-
-        //}, new EventProcessCallback<>() {}));
+        this.previous = null;
+        this.current = this.cache.getOrDefault(this.index, this.getMapByIndex(this.index));
+        this.next = this.getStatsMap();
     }
 
     public void loadStartLevel() {
@@ -133,6 +130,10 @@ public class LevelManager {
                 this.levelSwitchQueue.enqueue(levelSwitch);
             }
         }
+        if (this.next.getLoader() instanceof LevelStats) {
+            Wrapper.getSoundConstants().SOUND_WIN.setVolume(0.85);
+            SoundManager.playSound(Wrapper.getSoundConstants().SOUND_WIN, false);
+        }
         if (!(this.next.getLoader() instanceof LevelStats)) {
             this.current.getLoader().getUserProfiles().forEach(u -> u.resetDeaths());
         }
@@ -147,7 +148,6 @@ public class LevelManager {
     }
 
     public void nextLevel(String id, Runnable runWhileTransition, Transition transition) {
-        System.out.println(id);
         if (Scene.getCurrentScene() != GameScene.getInstance()) return;
         if (this.next != null && this.next.getLoader() instanceof LevelStats) {
             LevelMap nnext = this.cache.getOrDefault(this.index + 1, this.getMapByIndex(this.index + 1));

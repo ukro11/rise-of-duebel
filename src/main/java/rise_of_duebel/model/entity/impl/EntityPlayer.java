@@ -24,6 +24,7 @@ import rise_of_duebel.event.services.EventProcessCallback;
 import rise_of_duebel.event.services.process.EventLoadAssetsProcess;
 import rise_of_duebel.model.entity.Entity;
 import rise_of_duebel.model.entity.EntityDirection;
+import rise_of_duebel.model.sound.SoundManager;
 import rise_of_duebel.model.user.UserProfile;
 import rise_of_duebel.utils.CooldownManager;
 import rise_of_duebel.utils.MathUtils;
@@ -180,7 +181,8 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         if (ViewController.isKeyDown(KeyEvent.VK_SPACE) && this.onGround) {
             // JUMP_FORCE * this.body.getMass().getMass()
             //this.body.applyImpulse(new Vector2(0, JUMP_FORCE * this.body.getMass().getMass()));
-
+            Wrapper.getSoundConstants().SOUND_JUMP.setVolume(0.75);
+            SoundManager.playSound(Wrapper.getSoundConstants().SOUND_JUMP, false);
             this.body.setLinearVelocity(vel.x, JUMP_FORCE);
             this.onGround = false;
             this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.IDLE));
