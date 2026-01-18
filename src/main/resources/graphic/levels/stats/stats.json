@@ -155,15 +155,15 @@
          "name":"PORTAL",
          "objects":[
                 {
-                 "height":65,
+                 "height":143,
                  "id":7,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":43,
-                 "x":630,
-                 "y":611
+                 "width":86,
+                 "x":615,
+                 "y":533
                 }],
          "opacity":1,
          "type":"objectgroup",

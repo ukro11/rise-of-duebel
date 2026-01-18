@@ -20,7 +20,7 @@
  <objectgroup color="#aaff00" id="5" name="MOVING"/>
  <objectgroup id="4" name="SENSOR"/>
  <objectgroup color="#5500ff" id="6" name="PORTAL">
-  <object id="7" x="630" y="611" width="43" height="65"/>
+  <object id="7" x="615" y="533" width="86" height="143"/>
  </objectgroup>
  <objectgroup color="#55ffff" id="8" name="SPAWN">
   <object id="10" x="381" y="470" width="43" height="9"/>

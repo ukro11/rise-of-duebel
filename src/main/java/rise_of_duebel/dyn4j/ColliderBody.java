@@ -27,8 +27,8 @@ package rise_of_duebel.dyn4j;
 import KAGO_framework.view.DrawTool;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
-import org.dyn4j.geometry.*;
 import org.dyn4j.geometry.Polygon;
+import org.dyn4j.geometry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

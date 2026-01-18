@@ -31,8 +31,8 @@ import rise_of_duebel.utils.MathUtils;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class EntityPlayer extends Entity<CharacterAnimationState> {

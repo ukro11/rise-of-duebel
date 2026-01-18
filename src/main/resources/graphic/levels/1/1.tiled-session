@@ -9,15 +9,15 @@
         },
         "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/stats/stats.tmx": {
             "expandedObjectLayers": [
-                4,
                 5,
+                4,
                 2
             ],
-            "scale": 11,
-            "selectedLayer": 0,
+            "scale": 1,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 124.18181818181819,
-                "y": 477.5
+                "x": 329,
+                "y": 628.5
             }
         },
         "level1.tmx": {

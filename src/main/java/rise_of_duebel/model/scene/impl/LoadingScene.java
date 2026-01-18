@@ -2,10 +2,8 @@ package rise_of_duebel.model.scene.impl;
 
 import KAGO_framework.view.DrawTool;
 import rise_of_duebel.Config;
-import rise_of_duebel.Wrapper;
 import rise_of_duebel.model.debug.VisualConstants;
 import rise_of_duebel.model.scene.Scene;
-import rise_of_duebel.model.sound.SoundManager;
 import rise_of_duebel.model.transitions.DefaultTransition;
 
 import java.awt.*;
@@ -76,10 +74,7 @@ public class LoadingScene extends Scene {
     }
 
     @Override
-    public void onOpen(Scene last) {
-        Wrapper.getSoundConstants().SOUND_BACKGROUND.setVolume(0.5);
-        SoundManager.playSound(Wrapper.getSoundConstants().SOUND_BACKGROUND, true);
-    }
+    public void onOpen(Scene last) {}
 
     public boolean isLoadingComplete() {
         return loadingComplete;

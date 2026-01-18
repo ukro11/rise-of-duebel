@@ -7,9 +7,10 @@ import org.slf4j.LoggerFactory;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.graphics.level.impl.LevelStats;
 import rise_of_duebel.graphics.map.TileMap;
-import rise_of_duebel.model.sound.SoundManager;
 import rise_of_duebel.model.scene.Scene;
 import rise_of_duebel.model.scene.impl.GameScene;
+import rise_of_duebel.model.scene.impl.WinScene;
+import rise_of_duebel.model.sound.SoundManager;
 import rise_of_duebel.model.transitions.DefaultTransition;
 import rise_of_duebel.model.transitions.Transition;
 
@@ -150,8 +151,8 @@ public class LevelManager {
         if (this.next != null && this.next.getLoader() instanceof LevelStats) {
             LevelMap nnext = this.cache.getOrDefault(this.index + 1, this.getMapByIndex(this.index + 1));
             if (nnext == null) {
-                //Scene.open(new WinScene(), new DefaultTransition());
-                //return;
+                Scene.open(new WinScene(), new DefaultTransition());
+                return;
             }
         }
         this.initiateNewLevel(id, LevelSwitch.LevelSwitchDirection.NEXT, this.next, runWhileTransition, transition);
@@ -170,16 +171,20 @@ public class LevelManager {
     }
 
     private void setNextLevel() {
+        if (this.current != null) log.info("NEXT SWITCH 1 {}", this.current.getLoader());
+        if (this.next != null) log.info("NEXT SWITCH 2 {}", this.next.getLoader());
+
         this.previous = this.current;
-        this.next.getLoader().resetLevel();
+        if (this.next != null && !(this.next.getLoader() instanceof LevelStats)) {
+            this.next.getLoader().resetLevel();
+        }
+
         this.current.onHide();
         this.current = this.next;
         this.current.onActive();
         if (!(this.current.getLoader() instanceof LevelStats)) {
-            this.index++;
-        }
-        if (!(this.current.getLoader() instanceof LevelStats)) {
             this.next = this.getStatsMap();
+            this.index++;
 
         } else {
             this.next = this.cache.getOrDefault(this.index + 1, this.getMapByIndex(this.index + 1));

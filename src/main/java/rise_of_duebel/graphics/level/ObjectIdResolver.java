@@ -27,7 +27,7 @@ public class ObjectIdResolver {
                 }
             });
             this.type = split[1];
-            if (this.type2 == null) log.warn("Type not existing ({}), fix it or add it to MapSpawner (enum)", split[1]);
+            //if (this.type2 == null) log.warn("Type not existing ({}), fix it or add it to MapSpawner (enum)", split[1]);
             this.index = Integer.parseInt(split[2]);
         }
     }

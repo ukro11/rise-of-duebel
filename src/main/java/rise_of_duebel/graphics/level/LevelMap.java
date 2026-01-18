@@ -21,7 +21,6 @@ import rise_of_duebel.dyn4j.SensorWorldCollider;
 import rise_of_duebel.dyn4j.WorldCollider;
 import rise_of_duebel.graphics.camera.CameraShake;
 import rise_of_duebel.graphics.level.impl.LevelStats;
-import rise_of_duebel.graphics.level.spawner.ObjectIdResolver;
 import rise_of_duebel.graphics.map.GsonMap;
 import rise_of_duebel.graphics.map.TileMap;
 import rise_of_duebel.model.entity.impl.EntityPlayer;
@@ -48,7 +47,6 @@ public class LevelMap extends TileMap {
     private AnimationRenderer<PortalAnimationState> portalRenderer;
 
     private boolean reset = false;
-    private double portalCooldownSeconds = 0.0;
 
     private StepListenerAdapter<ColliderBody> stepListener;
     private ContactListenerAdapter<ColliderBody> contactListener;
@@ -86,8 +84,6 @@ public class LevelMap extends TileMap {
     public void onActive() {
         Wrapper.getLocalPlayer().setPosition(this.spawnLocation.x, this.spawnLocation.y);
 
-        this.portalCooldownSeconds = 4.0;
-
         WorldCollider lowest = this.getColliderByLayer("LOWEST");
         this.stepListener = new StepListenerAdapter<ColliderBody>() {
             @Override
@@ -121,7 +117,6 @@ public class LevelMap extends TileMap {
                 BodyFixture f1 = data.getFixture1();
                 BodyFixture f2 = data.getFixture2();
                 if (f1.getUserData() == null || f2.getUserData() == null) return;
-                if (portalCooldownSeconds > 0.0) return;
                 if (EntityPlayer.containsPlayer(f1, f2) && PhysicsUtils.contains("PORTAL", f1, f2) &&
                         !Wrapper.getLocalPlayer().isFreeze()) {
                     if (loader instanceof LevelStats) {
@@ -130,15 +125,16 @@ public class LevelMap extends TileMap {
                         loader.enterPortal();
                         Wrapper.getLevelManager().nextLevel(String.format("PORTAL-%d", Wrapper.getLevelManager().getIndex()));
 
-                    } else if (portalCooldownSeconds == 0) {
-                        Wrapper.getLocalPlayer().freeze(1.0);
+                    } else {
+                        Wrapper.getLocalPlayer().freeze(0.6);
                         portalRenderer.switchState(PortalAnimationState.DISAPPEAR);
                         Wrapper.getProgramController().focusPlayer(-1);
                         Wrapper.getLocalPlayer().setVisible(false);
-                        portalRenderer.onFinish(() -> {
+                        Wrapper.getLocalPlayer().getBody().setLinearVelocity(0, 0);
+                        portalRenderer.onFinish(PortalAnimationState.DISAPPEAR, () -> {
                             loader.enterPortal();
-                            portalRenderer.switchState(PortalAnimationState.IDLE);
                             Wrapper.getLevelManager().nextLevel(String.format("PORTAL-%d", Wrapper.getLevelManager().getIndex()), () -> {
+                                portalRenderer.switchState(PortalAnimationState.IDLE);
                                 Wrapper.getLocalPlayer().setVisible(true);
                                 Wrapper.getProgramController().focusDefault(-1);
                             });
@@ -241,11 +237,6 @@ public class LevelMap extends TileMap {
     }
 
     public void update(double dt) {
-        if (this.portalCooldownSeconds > 0.0) {
-            this.portalCooldownSeconds -= dt;
-            if (this.portalCooldownSeconds < 0.0) this.portalCooldownSeconds = 0.0;
-        }
-
         if (this.portalLocation != null && !this.getFileName().equals("stats.json")) {
             if (!this.portalRenderer.isRunning()) this.portalRenderer.start();
             this.portalRenderer.update(dt);
@@ -279,7 +270,7 @@ public class LevelMap extends TileMap {
             drawTool.push();
             drawTool.getGraphics2D().drawImage(
                     this.portalRenderer.getCurrentFrame(),
-                    (int) this.portalLocation.x - 32,
+                    (int) this.portalLocation.x - 24,
                     (int) this.portalLocation.y,
                     64,
                     64,

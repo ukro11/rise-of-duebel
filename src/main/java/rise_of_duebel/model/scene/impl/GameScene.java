@@ -47,7 +47,7 @@ public class GameScene extends Scene {
         this.getDrawables().forEach(d -> d.update(dt));
         if (this.currentGui == null || !this.currentGui.pauseGame()) {
             this.cameraRenderer.update(dt);
-            Wrapper.getEntityManager().getEntities().values().forEach(e -> e.update(dt));
+            Wrapper.getEntityManager().getEntities().forEach(e -> e.update(dt));
             Wrapper.getTooltipManager().update(dt);
             Wrapper.getLevelManager().update(dt);
         }
