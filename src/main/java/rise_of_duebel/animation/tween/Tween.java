@@ -11,6 +11,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/***
+ * @author Mark
+ */
 public class Tween<T extends Number, Q extends TweenValue> {
 
     private static CopyOnWriteArrayList<Tween<?, ?>> tweens = new CopyOnWriteArrayList<>();
@@ -42,6 +45,14 @@ public class Tween<T extends Number, Q extends TweenValue> {
 
     protected Tween<?, ?> after;
 
+    /**
+     * Erstellt einen Tween zwischen value und target.
+     * Unterstützt nur Double und Integer.
+     *
+     * @param value Startwert
+     * @param target Zielwert
+     * @param duration Dauer
+     */
     private Tween(T value, T target, double duration) {
         this.start = value;
         this.target = target;
@@ -64,10 +75,25 @@ public class Tween<T extends Number, Q extends TweenValue> {
         }
     }
 
+    /**
+     * Factory-Methode für einen Tween.
+     *
+     * @param value Startwert
+     * @param target Zielwert
+     * @param duration Dauer
+     * @param <T> Number-Typ
+     * @param <Q> TweenValue-Typ
+     * @return neuer Tween
+     */
     public static <T extends Number, Q extends TweenValue> Tween<T, Q> to(T value, T target, double duration) {
         return new Tween<T, Q>(value, target, duration);
     }
 
+    /**
+     * Aktualisiert den Tween (Delay, Interpolation, Callbacks, Loop/Finish).
+     *
+     * @param dt delta time
+     */
     public void update(double dt) {
         if (this.value == null) return;
 
@@ -105,6 +131,7 @@ public class Tween<T extends Number, Q extends TweenValue> {
         }
     }
 
+    /** Startet den Tween (reset + in globale Liste eintragen). */
     public void animate() {
         this.reset();
         this.running = true;
@@ -112,10 +139,16 @@ public class Tween<T extends Number, Q extends TweenValue> {
         if (this.onStart != null) this.onStart.accept(this);
     }
 
+    /** Stoppt den Tween ohne Finish-Callback. */
     public void stop() {
         this.stop(false);
     }
 
+    /**
+     * Stoppt den Tween und setzt ihn zurück.
+     *
+     * @param callFinish true, wenn onFinish zusätzlich ausgeführt werden soll
+     */
     public void stop(boolean callFinish) {
         this.running = false;
         this.reset();
@@ -123,21 +156,45 @@ public class Tween<T extends Number, Q extends TweenValue> {
         if (this.onFinish != null && callFinish) this.onFinish.accept(this);
     }
 
+    /**
+     * Setzt die Easing-Funktion.
+     *
+     * @param easing easing
+     * @return this
+     */
     public Tween<T, Q> ease(Function<Double, Double> easing) {
         this.easing = easing;
         return this;
     }
 
+    /**
+     * Setzt die Dauer.
+     *
+     * @param duration Dauer
+     * @return this
+     */
     public Tween<T, Q> duration(double duration) {
         this.duration = duration;
         return this;
     }
 
+    /**
+     * Setzt die Richtung.
+     *
+     * @param direction Direction
+     * @return this
+     */
     public Tween<T, Q> direction(TweenDirection direction) {
         this.direction = direction;
         return this;
     }
 
+    /**
+     * Setzt eine Startverzögerung.
+     *
+     * @param delay Delay
+     * @return this
+     */
     public Tween<T, Q> delay(double delay) {
         this.delay = delay;
         if (delay > 0) {
@@ -146,28 +203,55 @@ public class Tween<T extends Number, Q extends TweenValue> {
         return this;
     }
 
+    /**
+     * Aktiviert/deaktiviert Loop.
+     *
+     * @param loop Loop-Flag
+     * @return this
+     */
     public Tween<T, Q> loop(boolean loop) {
         this.loop = loop;
         return this;
     }
 
+    /**
+     * Steuert, ob der Tween nach Finish in der Liste bleibt.
+     *
+     * @param stayAlive Flag
+     * @return this
+     */
     public Tween<T, Q> stayAlive(boolean stayAlive) {
         this.stayAlive = stayAlive;
         return this;
     }
 
+    /**
+     * Setzt Pause zurück.
+     *
+     * @return this
+     */
     public Tween<T, Q> resume() {
         this.paused = false;
         if (this.onResume != null) this.onResume.accept(this);
         return this;
     }
 
+    /**
+     * Pausiert den Tween.
+     *
+     * @return this
+     */
     public Tween<T, Q> pause() {
         this.paused = true;
         if (this.onPause != null) this.onPause.accept(this);
         return this;
     }
 
+    /**
+     * Setzt Wert intern zurück auf start/target und setzt elapsed auf 0.
+     *
+     * @return this
+     */
     public Tween<T, Q> reset() {
         if (this.start instanceof Double) {
             this.value = (Q) new Tween2d((double) this.start, (double) this.target, this.direction);
@@ -179,11 +263,25 @@ public class Tween<T extends Number, Q extends TweenValue> {
         return this;
     }
 
+    /**
+     * Setzt den aktuellen Wert direkt.
+     *
+     * @param value neuer Wert
+     * @return this
+     */
     public Tween<T, Q> set(T value) {
         this.value.setValue(value);
         return this;
     }
 
+    /**
+     * Konfiguriert den Tween neu (Start/Ziel/Dauer) und erstellt den Value-Adapter neu.
+     *
+     * @param value neuer Startwert
+     * @param target neues Ziel
+     * @param duration neue Dauer
+     * @return this
+     */
     public Tween<T, Q> redo(T value, T target, double duration) {
         this.start = value;
         this.target = target;
@@ -203,76 +301,147 @@ public class Tween<T extends Number, Q extends TweenValue> {
         return this;
     }
 
+    /**
+     * Setzt Start-Callback.
+     *
+     * @param onStart Callback
+     * @return this
+     */
     public Tween<T, Q> onStart(Consumer<Tween<T, Q>> onStart) {
         this.onStart = onStart;
         return this;
     }
 
+    /**
+     * Setzt Stop-Callback.
+     *
+     * @param onStop Callback
+     * @return this
+     */
     public Tween<T, Q> onStop(Consumer<Tween<T, Q>> onStop) {
         this.onStop = onStop;
         return this;
     }
 
+    /**
+     * Setzt Resume-Callback.
+     *
+     * @param onResume Callback
+     * @return this
+     */
     public Tween<T, Q> onResume(Consumer<Tween<T, Q>> onResume) {
         this.onResume = onResume;
         return this;
     }
 
+    /**
+     * Setzt Pause-Callback.
+     *
+     * @param onPause Callback
+     * @return this
+     */
     public Tween<T, Q> onPause(Consumer<Tween<T, Q>> onPause) {
         this.onPause = onPause;
         return this;
     }
 
+    /**
+     * Setzt Update-Callback.
+     *
+     * @param onUpdate Callback
+     * @return this
+     */
     public Tween<T, Q> onUpdate(Consumer<Tween<T, Q>> onUpdate) {
         this.onUpdate = onUpdate;
         return this;
     }
 
+    /**
+     * Setzt Finish-Callback.
+     *
+     * @param onFinish Callback
+     * @return this
+     */
     public Tween<T, Q> onFinish(Consumer<Tween<T, Q>> onFinish) {
         this.onFinish = onFinish;
         return this;
     }
 
+    /**
+     * @return true, wenn Tween läuft
+     */
     public boolean isRunning() {
         return this.running;
     }
 
+    /**
+     * @return true, wenn Loop aktiv ist
+     */
     public boolean isLoop() {
         return this.loop;
     }
 
+    /**
+     * @return Dauer
+     */
     public double getDuration() {
         return this.duration;
     }
 
+    /**
+     * @return Delay
+     */
     public double getDelay() {
         return this.delay;
     }
 
+    /**
+     * @return aktueller TweenValue-Adapter
+     */
     public TweenValue getTweenValue() {
         return this.value;
     }
 
+    /**
+     * @return aktueller Wert (Number)
+     */
     public T getValue() {
         return (T) this.value.getValue();
     }
 
+    /**
+     * @return aktueller Wert als double
+     */
     public double getValueDouble() {
         return (double) this.value.getValue();
     }
 
+    /**
+     * @return aktueller Wert als int
+     */
     public int getValueInt() {
         return (int) this.value.getValue();
     }
 
+    /**
+     * @return true, wenn elapsed >= duration
+     */
     public boolean isFinished() {
         return this.elapsed >= this.duration;
     }
 
+    /**
+     * @return true, wenn pausiert
+     */
     public boolean isPaused() {
         return this.paused;
     }
 
+    /**
+     * Aktualisiert alle registrierten Tweens.
+     *
+     * @param dt delta time
+     */
     public static void updateAll(double dt) {
         for (Tween<?, ?> tween : Tween.tweens) {
             tween.update(dt);
@@ -282,6 +451,9 @@ public class Tween<T extends Number, Q extends TweenValue> {
         }
     }
 
+    /**
+     * @return Debug-String des Tweens
+     */
     @Override
     public String toString() {
         return "Tween{" +

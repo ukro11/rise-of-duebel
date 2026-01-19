@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+/***
+ * @author Mark
+ */
 public abstract class Scene {
 
     private static final Logger log = LoggerFactory.getLogger(Scene.class);
@@ -35,6 +38,11 @@ public abstract class Scene {
     private String id;
     protected CopyOnWriteArrayList<VisualModel> visuals;
 
+    /**
+     * Erstellt eine Szene, registriert sie unter ihrer ID und initialisiert die Visual-Liste.
+     *
+     * @param id eindeutige Szenen-ID
+     */
     public Scene(String id) {
         this.viewController = ViewController.getInstance();
         this.programController = this.viewController.getProgramController();
@@ -44,6 +52,10 @@ public abstract class Scene {
         Scene.scenes.put(this.id, this);
     }
 
+    /**
+     * Öffnet die GameScene sofort (ohne Queue-Logik).
+     * Ruft onClose/onOpen passend auf.
+     */
     public static void showGameScene() {
         GameScene next = GameScene.getInstance();
         if (Scene.current != null) {
@@ -53,6 +65,13 @@ public abstract class Scene {
         Scene.current = next;
     }
 
+    /**
+     * Startet einen Szenenwechsel mit Transition.
+     * Falls bereits ein Wechsel läuft, wird der Wechsel ggf. in die Queue gelegt.
+     *
+     * @param scene Zielszene
+     * @param sceneTransition Transition-Implementierung für den Wechsel
+     */
     public static void open(Scene scene, Transition sceneTransition) {
         if (scene == null) return;
 
@@ -66,16 +85,27 @@ public abstract class Scene {
         }
     }
 
+    /**
+     * Öffnet eine GUI in dieser Szene und schließt die bisherige GUI.
+     *
+     * @param gui neue GUI (oder null)
+     */
     public void openGUI(Gui gui) {
         if (this.currentGui != null) this.currentGui.onGuiClose();
         this.currentGui = gui;
         if (this.currentGui != null) this.currentGui.onGuiOpen();
     }
 
+    /** Schließt die aktuelle GUI ohne Callback. */
     public void closeGUI() {
         this.currentGui = null;
     }
 
+    /**
+     * Aktualisiert den globalen Szenenwechsel-Status (Transition/Queue).
+     *
+     * @param dt delta time
+     */
     public static void updateAll(double dt) {
         if (Scene.transition != null) {
             Scene last = Scene.transition.last();
@@ -103,37 +133,68 @@ public abstract class Scene {
         }
     }
 
+    /**
+     * Zeichnet die aktuelle Transition (falls aktiv).
+     *
+     * @param drawTool DrawTool
+     */
     public static void drawTransition(DrawTool drawTool) {
         if (Scene.transition != null) {
             Scene.transition.transition().draw(drawTool);
         }
     }
 
+    /**
+     * Schließt die aktuelle Szene und setzt current auf GameScene.
+     */
     public static void close() {
         Scene.current.onClose(null);
         Scene.current = GameScene.getInstance();
     }
 
+    /**
+     * @return Registry aller Szenen
+     */
     public static HashMap<String, Scene> getScenes() {
         return Scene.scenes;
     }
 
+    /**
+     * @return aktuell aktive Szene
+     */
     public static Scene getCurrentScene() {
         return Scene.current;
     }
 
+    /**
+     * @return Szenen-ID
+     */
     public String getId() {
         return this.id;
     }
 
+    /**
+     * @return Liste aller VisualModels der Szene
+     */
     public List<VisualModel> getVisuals() {
         return this.visuals;
     }
 
+    /**
+     * Sucht ein VisualModel anhand seiner ID.
+     *
+     * @param id Visual-ID
+     * @return VisualModel oder null
+     */
     public VisualModel getVisual(String id) {
         return this.visuals.stream().filter(_vis -> _vis.getId().equals(id)).findFirst().orElse(null);
     }
 
+    /**
+     * Zeichnet alle sichtbaren VisualModels und optional die GUI.
+     *
+     * @param drawTool DrawTool
+     */
     public void draw(DrawTool drawTool) {
         for (VisualModel visual : this.visuals) {
             if (visual.isVisible()) {
@@ -143,6 +204,11 @@ public abstract class Scene {
         if (this.currentGui != null) this.currentGui.draw(drawTool);
     }
 
+    /**
+     * Aktualisiert alle VisualModels und optional die GUI.
+     *
+     * @param dt delta time
+     */
     public void update(double dt) {
         for (VisualModel visual : this.visuals) {
             visual.update(dt);
@@ -150,41 +216,98 @@ public abstract class Scene {
         if (this.currentGui != null) this.currentGui.update(dt);
     }
 
+    /**
+     * Callback beim Öffnen der Szene.
+     *
+     * @param last vorherige Szene (kann null sein)
+     */
     public void onOpen(Scene last) {}
+
+    /**
+     * Callback beim Schließen der Szene.
+     *
+     * @param newScene nächste Szene (kann null sein)
+     */
     public void onClose(Scene newScene) {}
 
+    /**
+     * Mouse-Event Weiterleitung an die aktuelle GUI.
+     *
+     * @param e MouseEvent
+     */
     public void mouseEntered(MouseEvent e) {
         if (this.currentGui != null) this.currentGui.mouseEntered(e);
     }
 
+    /**
+     * Mouse-Event Weiterleitung an die aktuelle GUI.
+     *
+     * @param e MouseEvent
+     */
     public void mouseExited(MouseEvent e) {
         if (this.currentGui != null) this.currentGui.mouseExited(e);
     }
 
+    /**
+     * Mouse-Event Weiterleitung an die aktuelle GUI.
+     *
+     * @param e MouseEvent
+     */
     public void mouseReleased(MouseEvent e) {
         if (this.currentGui != null) this.currentGui.mouseReleased(e);
     }
 
+    /**
+     * Mouse-Event Weiterleitung an die aktuelle GUI.
+     *
+     * @param e MouseEvent
+     */
     public void mouseClicked(MouseEvent e) {
         if (this.currentGui != null) this.currentGui.mouseClicked(e);
     }
 
+    /**
+     * Mouse-Event Weiterleitung an die aktuelle GUI.
+     *
+     * @param e MouseEvent
+     */
     public void mouseDragged(MouseEvent e) {
         if (this.currentGui != null) this.currentGui.mouseDragged(e);
     }
 
+    /**
+     * Mouse-Event Weiterleitung an die aktuelle GUI.
+     *
+     * @param e MouseEvent
+     */
     public void mouseMoved(MouseEvent e) {
         if (this.currentGui != null) this.currentGui.mouseMoved(e);
     }
 
+    /**
+     * Mouse-Event Weiterleitung an die aktuelle GUI.
+     *
+     * @param e MouseEvent
+     */
     public void mousePressed(MouseEvent e) {
         if (this.currentGui != null) this.currentGui.mousePressed(e);
     }
 
+    /**
+     * Key-Event Weiterleitung an die aktuelle GUI.
+     *
+     * @param e KeyEvent
+     */
     public void keyTyped(KeyEvent e) {
         if (this.currentGui != null) this.currentGui.keyTyped(e);
     }
 
+    /**
+     * Öffnet passende GUI per Tastendruck oder leitet Events weiter.
+     * ESC schließt die GUI und öffnet ggf. die Parent-GUI.
+     *
+     * @param e KeyEvent
+     */
     public void keyPressed(KeyEvent e) {
         if (this.currentGui == null) {
             List<Gui> guisOpen = Gui.guis.stream().filter(it -> it.keyToOpen() == e.getKeyCode() && it.shouldOpen()).collect(Collectors.toList());
@@ -204,6 +327,11 @@ public abstract class Scene {
         }
     }
 
+    /**
+     * Key-Event Weiterleitung an die aktuelle GUI.
+     *
+     * @param e KeyEvent
+     */
     public void keyReleased(KeyEvent e) {
         if (this.currentGui != null) this.currentGui.keyReleased(e);
     }

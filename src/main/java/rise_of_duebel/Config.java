@@ -15,7 +15,7 @@ public class Config {
     public final static int WINDOW_HEIGHT = 1080;   // Effektive Höhe ist etwa 29 Pixel geringer (Titelleiste wird mitgezählt)
     public final static boolean WINDOW_FULLSCREEN = true;
 
-    public final static Environment RUN_ENV = Environment.DEVELOPMENT;
+    public final static Environment RUN_ENV = Environment.PRODUCTION;
 
     // Weitere Optionen für das Projekt
     public final static boolean USE_SOUND = true;

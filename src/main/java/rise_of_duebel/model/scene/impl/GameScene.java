@@ -85,8 +85,6 @@ public class GameScene extends Scene {
         Wrapper.getTooltipManager().draw(drawTool);
         Wrapper.getLevelManager().drawTransition(drawTool);
         super.draw(drawTool);
-        //drawTool.setCurrentColor(new Color(157, 196, 94), 50);
-        //drawTool.drawFilledRectangle(0, 0, 4000, 4000);
         drawTool.resetColor();
     }
 

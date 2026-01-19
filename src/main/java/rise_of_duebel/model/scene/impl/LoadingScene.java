@@ -69,7 +69,7 @@ public class LoadingScene extends Scene {
         super.draw(drawTool);
 
         if (loadingComplete) {
-            Scene.open(new StartScene(),new DefaultTransition());
+            Scene.open(GameScene.getInstance(), new DefaultTransition());
         }
     }
 

@@ -10,8 +10,6 @@ import org.dyn4j.world.ContactCollisionData;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.listener.ContactListenerAdapter;
 import org.dyn4j.world.listener.StepListenerAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import rise_of_duebel.Wrapper;
 import rise_of_duebel.animation.AnimationRenderer;
 import rise_of_duebel.animation.states.PortalAnimationState;
@@ -33,9 +31,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/***
+ * @author Mark
+ */
 public class LevelMap extends TileMap {
 
-    private static final Logger log = LoggerFactory.getLogger(LevelMap.class);
     private static List<String> NEEDED_LAYERS = List.of("SPAWN", "PORTAL", "WORLD", "LOWEST");
     private static List<String> SENSOR_LAYERS = List.of("SPAWN", "PORTAL", "LOWEST", "SENSOR");
 
@@ -51,6 +51,17 @@ public class LevelMap extends TileMap {
     private StepListenerAdapter<ColliderBody> stepListener;
     private ContactListenerAdapter<ColliderBody> contactListener;
 
+    /**
+     * Erstellt eine LevelMap und instanziiert optional einen LevelLoader per Reflection.
+     * Prüft außerdem, ob die benötigten Layer in der Map vorhanden sind.
+     *
+     * @param fileName Map-Datei
+     * @param cloader Loader-Klasse (kann null sein)
+     * @param staticLayers statische Render-Layer
+     * @param staticLayersAfterPlayer statische Render-Layer nach Player
+     * @param batchLayers Batch-Render-Layer
+     * @param batchLayersAfterPlayer Batch-Render-Layer nach Player
+     */
     public LevelMap(String fileName, Class<? extends LevelLoader> cloader, List<String> staticLayers, List<String> staticLayersAfterPlayer, List<String> batchLayers, List<String> batchLayersAfterPlayer) {
         super(fileName, staticLayers, staticLayersAfterPlayer, batchLayers, batchLayersAfterPlayer);
         try {
@@ -81,6 +92,11 @@ public class LevelMap extends TileMap {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Aktiviert das Level: setzt Spieler-Spawn, registriert Listener und fügt Collider zur World hinzu.
+     * Behandelt außerdem Death/Reset und Portal-Kollisionen.
+     */
     public void onActive() {
         Wrapper.getLocalPlayer().setPosition(this.spawnLocation.x, this.spawnLocation.y);
 
@@ -154,16 +170,27 @@ public class LevelMap extends TileMap {
         });
     }
 
+    /**
+     * Deaktiviert das Level: entfernt Listener und löscht alle Collider aus der World.
+     */
     public void onHide() {
         Wrapper.getEntityManager().getWorld().removeStepListener(this.stepListener);
         Wrapper.getEntityManager().getWorld().removeContactListener(this.contactListener);
         this.removeAll();
     }
 
+    /** Entfernt alle Collider aus der Physics-World. */
     private void removeAll() {
         colliders.forEach(c -> Wrapper.getEntityManager().getWorld().removeBody(c));
     }
 
+    /**
+     * Erzeugt WorldCollider/SensorWorldCollider aus Map-Objekten und setzt Filter/Sensoren.
+     * Aktualisiert außerdem Spawn- und Portal-Position.
+     *
+     * @param layer Map-Layer
+     * @param o Collider-Objekt aus der Map
+     */
     @Override
     public void loadCollider(GsonMap.Layer layer, GsonMap.ObjectCollider o) {
         WorldCollider wc = null;
@@ -195,10 +222,10 @@ public class LevelMap extends TileMap {
 
         } else {
             var vertices = new Vector2[] {
-                new Vector2(o.getX(), o.getY()),
-                new Vector2(o.getX() + o.getWidth(), o.getY()),
-                new Vector2(o.getX() + o.getWidth(), o.getY() + o.getHeight()),
-                new Vector2(o.getX(), o.getY() + o.getHeight()),
+                    new Vector2(o.getX(), o.getY()),
+                    new Vector2(o.getX() + o.getWidth(), o.getY()),
+                    new Vector2(o.getX() + o.getWidth(), o.getY() + o.getHeight()),
+                    new Vector2(o.getX(), o.getY() + o.getHeight()),
             };
             fix = wc.addFixture(Geometry.createPolygon(vertices));
         }
@@ -236,6 +263,11 @@ public class LevelMap extends TileMap {
         this.colliders.add(wc);
     }
 
+    /**
+     * Aktualisiert Portal-Animation (außer im Stats-Level).
+     *
+     * @param dt delta time
+     */
     public void update(double dt) {
         if (this.portalLocation != null && !this.getFileName().equals("stats.json")) {
             if (!this.portalRenderer.isRunning()) this.portalRenderer.start();
@@ -243,6 +275,11 @@ public class LevelMap extends TileMap {
         }
     }
 
+    /**
+     * Zeichnet Debug-Collider mit Prefix "D$" über den Loader.
+     *
+     * @param drawTool DrawTool
+     */
     private void drawCollider(DrawTool drawTool) {
         this.colliders.forEach(c -> {
             if (c.getUserData().startsWith("D$")) {
@@ -251,6 +288,11 @@ public class LevelMap extends TileMap {
         });
     }
 
+    /**
+     * Zeichnet Debug-Collider mit Prefix "DA$" nach dem Player über den Loader.
+     *
+     * @param drawTool DrawTool
+     */
     private void drawColliderAfter(DrawTool drawTool) {
         this.colliders.forEach(c -> {
             if (c.getUserData().startsWith("DA$")) {
@@ -259,6 +301,11 @@ public class LevelMap extends TileMap {
         });
     }
 
+    /**
+     * Zeichnet TileMap, Debug-Collider, Loader-Inhalte und Portal.
+     *
+     * @param drawTool DrawTool
+     */
     @Override
     public void draw(DrawTool drawTool) {
         if (!this.staticQuads.isEmpty()) super.draw(drawTool);
@@ -280,12 +327,23 @@ public class LevelMap extends TileMap {
         }
     }
 
+    /**
+     * Zeichnet Layer nach dem Player und entsprechende Debug-Collider.
+     *
+     * @param drawTool DrawTool
+     */
     @Override
     public void drawAfterPlayer(DrawTool drawTool) {
         if (!this.staticQuadsAfterPlayer.isEmpty()) super.drawAfterPlayer(drawTool);
         this.drawColliderAfter(drawTool);
     }
 
+    /**
+     * Liefert alle Sensoren, die zu einem Collider gehören (über Resolver-Format).
+     *
+     * @param collider Haupt-Collider
+     * @return Sensoren-Liste
+     */
     public List<WorldCollider> getSensorsByCollider(WorldCollider collider) {
         return this.sensors.stream().filter(s -> {
             String[] sp = s.getResolver().getType().split("-");
@@ -299,6 +357,12 @@ public class LevelMap extends TileMap {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Findet den Haupt-Collider zu einem Sensor (über Resolver-Format).
+     *
+     * @param sensor Sensor-Collider
+     * @return zugehöriger Collider oder null
+     */
     public WorldCollider getColliderBySensor(WorldCollider sensor) {
         if (!sensor.getResolver().isValid()) return null;
         return this.colliders.stream().filter(c -> {
@@ -313,30 +377,63 @@ public class LevelMap extends TileMap {
         }).findAny().orElse(null);
     }
 
+    /**
+     * @param collider Haupt-Collider
+     * @return erster zugehöriger Sensor
+     */
     public WorldCollider getSensorByCollider(WorldCollider collider) {
         return this.getSensorsByCollider(collider).get(0);
     }
 
+    /**
+     * @param collider Haupt-Collider
+     * @param index Sensor-Index in der Liste
+     * @return Sensor
+     */
     public WorldCollider getSensorByCollider(WorldCollider collider, int index) {
         return this.getSensorsByCollider(collider).get(index);
     }
 
+    /**
+     * Sucht einen Collider per Suffix im UserData.
+     *
+     * @param name Name/Suffix
+     * @return Collider oder null
+     */
     public WorldCollider getColliderByName(String name) {
         return this.colliders.stream().filter(c -> ((String) c.getUserData()).endsWith(name)).findFirst().orElse(null);
     }
 
+    /**
+     * Liefert Collider eines Layers, sortiert nach Resolver-Index.
+     *
+     * @param layer Layername
+     * @return Collider-Liste
+     */
     public List<WorldCollider> getCollidersByLayer(String layer) {
         return this.colliders.stream().filter(c -> c.getLayer().equals(layer)).sorted(Comparator.comparing(c -> c.getResolver() != null ? c.getResolver().getIndex() : 0)).collect(Collectors.toList());
     }
 
+    /**
+     * @param layer Layername
+     * @return erster Collider im Layer
+     */
     public WorldCollider getColliderByLayer(String layer) {
         return this.getCollidersByLayer(layer).get(0);
     }
 
+    /**
+     * @param layer Layername
+     * @param index Index innerhalb des Layers
+     * @return Collider
+     */
     public WorldCollider getColliderByLayer(String layer, int index) {
         return this.getCollidersByLayer(layer).get(index);
     }
 
+    /**
+     * @return zugehöriger LevelLoader
+     */
     public LevelLoader getLoader() {
         return this.loader;
     }

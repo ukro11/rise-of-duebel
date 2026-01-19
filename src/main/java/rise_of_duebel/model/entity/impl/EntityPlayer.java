@@ -35,6 +35,9 @@ import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
 
+/***
+ * @author Mark
+ */
 public class EntityPlayer extends Entity<CharacterAnimationState> {
 
     private EntityDirection direction = EntityDirection.RIGHT;
@@ -49,13 +52,22 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
     private boolean onGround = false;
 
     private final static double MOVE_SPEED = 245.0;
-    private final static double JUMP_FORCE = -360.0; // 120
+    private final static double JUMP_FORCE = -360.0;
     private final static double AIR_CONTROL = 0.5;
 
     private List<Consumer<EntityPlayer>> onDirectionChange = new ArrayList<>();
 
     private final UserProfile userProfile;
 
+    /**
+     * Erstellt den Player inkl. Collider, Fußsensor, Animations-Loading und Ground-Detection.
+     *
+     * @param world Physics-World
+     * @param x Start-X
+     * @param y Start-Y
+     * @param width Render-Breite
+     * @param height Render-Höhe
+     */
     public EntityPlayer(World<ColliderBody> world, double x, double y, double width, double height) {
         super(world, new ColliderBody(Color.GREEN), x, y, width, height);
         this.id = String.format("ENTITY_PLAYER_%s", UUID.randomUUID());
@@ -70,10 +82,10 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
 
         var center = this.getBody().getLocalCenter();
         var footVertices = new Vector2[] {
-            new Vector2(center.x - 1, colliderHeight / 2 - 2),
-            new Vector2(center.x + 1, colliderHeight / 2 - 2),
-            new Vector2(center.x + 1, colliderHeight / 2),
-            new Vector2(center.x - 1, 0 + colliderHeight / 2),
+                new Vector2(center.x - 1, colliderHeight / 2 - 2),
+                new Vector2(center.x + 1, colliderHeight / 2 - 2),
+                new Vector2(center.x + 1, colliderHeight / 2),
+                new Vector2(center.x - 1, 0 + colliderHeight / 2),
         };
         var foot = this.body.addFixture(Geometry.createPolygon(footVertices));
         foot.setUserData(String.format("FOOT_%s", this.id));
@@ -121,6 +133,11 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         });
     }
 
+    /**
+     * Aktualisiert Freeze-Logik, UserProfile und Bewegung (wenn Renderer geladen).
+     *
+     * @param dt delta time
+     */
     @Override
     public void update(double dt) {
         super.update(dt);
@@ -143,6 +160,11 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         }
     }
 
+    /**
+     * Setzt/entfernt permanenten Freeze und leert die Freeze-Queue.
+     *
+     * @param flag true = einfrieren, false = freigeben
+     */
     public void freezeInfinity(boolean flag) {
         this.freezePermanent = true;
         this.freezeCooldown = null;
@@ -150,15 +172,24 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         this.freeze = flag;
     }
 
+    /**
+     * Fügt einen zeitbegrenzten Freeze in die Queue ein.
+     *
+     * @param time Dauer in Sekunden
+     */
     public void freeze(double time) {
         this.freezePermanent = false;
         this.freezeQueue.enqueue(time);
     }
 
+    /**
+     * @return true, wenn aktuell eingefroren
+     */
     public boolean isFreeze() {
         return this.freeze;
     }
 
+    /** Verarbeitet Bewegung/Sprung und wechselt Animationszustände. */
     private void onMove() {
         double SPEED = MOVE_SPEED;
         if (!this.viewController.getDrawFrame().isFocused() || this.freeze) {
@@ -180,8 +211,6 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         this.setY(Math.floor(this.body.getY()));
 
         if (ViewController.isKeyDown(KeyEvent.VK_SPACE) && this.onGround) {
-            // JUMP_FORCE * this.body.getMass().getMass()
-            //this.body.applyImpulse(new Vector2(0, JUMP_FORCE * this.body.getMass().getMass()));
             Wrapper.getSoundConstants().SOUND_JUMP.setVolume(0.75);
             SoundManager.playSound(Wrapper.getSoundConstants().SOUND_JUMP, false);
             this.body.setLinearVelocity(vel.x, JUMP_FORCE);
@@ -197,10 +226,13 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
                 this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
             }
         }
-
-        //this.body.setGravityScale(16);
     }
 
+    /**
+     * Zeichnet den aktuellen Animationsframe (optional gespiegelt bei LEFT).
+     *
+     * @param drawTool DrawTool
+     */
     @Override
     protected void drawEntity(DrawTool drawTool) {
         if (this.renderer != null && this.renderer.getCurrentFrame() != null && this.isVisible()) {
@@ -215,22 +247,32 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
             }
 
             drawTool.getGraphics2D().drawImage(
-                this.renderer.getCurrentFrame(),
-                (int) this.getX() - 58,
-                (int) this.getY() - (int) this.height / 2 - 13 + 2,
-                (int) this.width,
-                (int) this.height,
-                null
+                    this.renderer.getCurrentFrame(),
+                    (int) this.getX() - 58,
+                    (int) this.getY() - (int) this.height / 2 - 13 + 2,
+                    (int) this.width,
+                    (int) this.height,
+                    null
             );
             drawTool.pop();
         }
     }
 
+    /**
+     * @return zIndex über Basis-Entity (Player vor anderen Entities)
+     */
     @Override
     public double zIndex() {
         return super.zIndex() + 5;
     }
 
+    /**
+     * Sammelt alle AnimationStates, die zu Richtung und EntityState passen.
+     *
+     * @param direction Richtung
+     * @param state EntityState
+     * @return Liste passender AnimationStates
+     */
     private List<CharacterAnimationState> getStatesForEntityState(EntityDirection direction, EntityState state) {
         List<CharacterAnimationState> s = List.of();
         for (CharacterAnimationState anim : CharacterAnimationState.values()) {
@@ -241,6 +283,11 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         return s;
     }
 
+    /**
+     * @param direction Richtung
+     * @param state EntityState
+     * @return erster passender AnimationState oder null
+     */
     private CharacterAnimationState getStateForEntityState(EntityDirection direction, EntityState state) {
         for (CharacterAnimationState anim : CharacterAnimationState.values()) {
             if (anim.getDirection() == direction && anim.getState() == state) {
@@ -250,82 +297,163 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         return null;
     }
 
+    /**
+     * @param state EntityState
+     * @return true, wenn aktuelle Animation diesen State hat
+     */
     private boolean isCurrentAnimation(EntityState state) {
         var anim = this.renderer.getCurrentAnimation().getState();
         return anim.getState() == state;
     }
 
+    /**
+     * @param direction Richtung
+     * @param state EntityState
+     * @return true, wenn aktuelle Animation Richtung und State matcht
+     */
     private boolean isCurrentAnimation(EntityDirection direction, EntityState state) {
         var anim = this.renderer.getCurrentAnimation().getState();
         return anim.getDirection() == direction && anim.getState() == state;
     }
 
+    /**
+     * Setzt die Body-Position direkt per Transform.
+     *
+     * @param x Ziel-X
+     * @param y Ziel-Y
+     */
     public void setPosition(double x, double y) {
         Transform t = this.body.getTransform().copy();
         t.setTranslation(x, y);
         this.body.setTransform(t);
     }
 
+    /**
+     * Setzt Sichtbarkeit für Rendering.
+     *
+     * @param visible Sichtbarkeit
+     */
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
 
+    /**
+     * @return true, wenn sichtbar
+     */
     public boolean isVisible() {
         return this.visible;
     }
 
+    /**
+     * Prüft per UserData, ob ein ColliderBody ein Player ist.
+     *
+     * @param c ColliderBody
+     * @return true, wenn Player
+     */
     public static boolean isPlayer(ColliderBody c) {
         return c.getUserData().startsWith("ENTITY_PLAYER");
     }
 
+    /**
+     * Prüft per UserData, ob ein BodyFixture ein Player ist.
+     *
+     * @param c BodyFixture
+     * @return true, wenn Player
+     */
     public static boolean isPlayer(BodyFixture c) {
         return ((String) c.getUserData()).startsWith("ENTITY_PLAYER");
     }
 
+    /**
+     * @param c ColliderBodies
+     * @return true, wenn mindestens einer ein Player ist
+     */
     public static boolean containsPlayer(ColliderBody... c) {
         return Arrays.stream(c).anyMatch(_c -> _c.getUserData().startsWith("ENTITY_PLAYER"));
     }
 
+    /**
+     * @param c BodyFixtures
+     * @return true, wenn mindestens einer ein Player ist
+     */
     public static boolean containsPlayer(BodyFixture... c) {
         return Arrays.stream(c).anyMatch(_c -> ((String) _c.getUserData()).startsWith("ENTITY_PLAYER"));
     }
 
+    /**
+     * @param collider ColliderBody
+     * @return true, wenn collider zu diesem Player gehört
+     */
     public boolean is(ColliderBody collider) {
         return this.body.getUserData().equals(collider.getUserData());
     }
 
+    /**
+     * @param collider BodyFixture
+     * @return true, wenn collider zu diesem Player gehört
+     */
     public boolean is(BodyFixture collider) {
         return this.body.getUserData().equals(collider.getUserData());
     }
 
+    /**
+     * @param colliders ColliderBodies
+     * @return true, wenn eines zu diesem Player gehört
+     */
     public boolean is(ColliderBody... colliders) {
         return Arrays.stream(colliders).anyMatch(c -> this.body.getUserData().equals(c.getUserData()));
     }
 
+    /**
+     * @param colliders BodyFixtures
+     * @return true, wenn eines zu diesem Player gehört
+     */
     public boolean is(BodyFixture... colliders) {
         return Arrays.stream(colliders).anyMatch(c -> this.body.getUserData().equals(c.getUserData()));
     }
 
+    /**
+     * @return true, wenn Walk-Animation aktiv ist
+     */
     private boolean isWalking() {
         return this.isCurrentAnimation(EntityState.WALKING);
     }
 
+    /**
+     * @param direction Richtung
+     * @return true, wenn Walk-Animation in Richtung aktiv ist
+     */
     private boolean isWalking(EntityDirection direction) {
         return this.isCurrentAnimation(direction, EntityState.WALKING);
     }
 
+    /**
+     * @return aktuelle Blickrichtung
+     */
     public EntityDirection getDirection() {
         return this.direction;
     }
 
+    /**
+     * Registriert einen Listener für Richtungswechsel.
+     *
+     * @param onDirectionChange Callback
+     */
     public void onDirectionChange(Consumer<EntityPlayer> onDirectionChange) {
         this.onDirectionChange.add(onDirectionChange);
     }
 
+    /** Triggert alle registrierten Richtungswechsel-Listener. */
     private void onDirectionChange() {
         this.onDirectionChange.forEach(d -> d.accept(this));
     }
 
+    /**
+     * Reagiert auf A/D für Blickrichtung.
+     * Bei Freeze werden Eingaben ggf. ignoriert.
+     *
+     * @param key KeyEvent
+     */
     @Override
     public void keyPressed(KeyEvent key) {
         if (this.freeze && !this.isWalking()) return;
@@ -343,15 +471,27 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
         }
     }
 
+    /**
+     * @return eindeutige Entity-ID
+     */
     @Override
     public String getId() {
         return this.id;
     }
 
+    /**
+     * @return UserProfile des Spielers
+     */
     public UserProfile getUserProfile() {
         return this.userProfile;
     }
 
+    /**
+     * Vergleicht Player anhand der ID.
+     *
+     * @param o Vergleichsobjekt
+     * @return true bei gleicher ID
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+/***
+ * @author Mark
+ */
 public abstract class LevelLoader {
 
     protected final LevelMap map;
@@ -29,6 +32,11 @@ public abstract class LevelLoader {
     protected final World<ColliderBody> world;
     private static List<Class<LevelLoader>> loaders = new ArrayList<>();
 
+
+    /**
+     * Sammelt alle LevelLoader-Implementierungen aus dem impl-Package per Reflection.
+     * LevelStats wird dabei ignoriert.
+     */
     static {
         try {
             String packageName = String.format("%s.impl", LevelLoader.class.getPackageName());
@@ -60,6 +68,14 @@ public abstract class LevelLoader {
         }
     }
 
+    /**
+     * Erstellt einen LevelLoader und setzt Hintergrund/World.
+     * Prüft, ob der übergebene Dateiname zur Map passt.
+     *
+     * @param filename erwarteter Map-Dateiname
+     * @param colors Level-Farben
+     * @param map Level-Map
+     */
     public LevelLoader(String filename, LevelColors colors, LevelMap map) {
         if (!map.getFileName().equals(filename)) throw new RuntimeException(String.format("The assigned level code does not match with the map:\nmap: %s\ncode:%s", map.getFileName(), filename));
         this.colors = colors;
@@ -68,18 +84,51 @@ public abstract class LevelLoader {
         GameScene.getInstance().setBackground(colors.background());
     }
 
+    /**
+     * Aktualisiert Collider/Physics-Logik des Levels.
+     *
+     * @param step Zeitschritt
+     * @param world Physics-World
+     */
     public abstract void updateCollider(TimeStep step, PhysicsWorld<ColliderBody, ?> world);
+
+    /** Wird aufgerufen, wenn ein Portal betreten/ausgelöst wird. */
     public abstract void enterPortal();
+
+    /** Setzt das Level auf den Startzustand zurück. */
     public abstract void resetLevel();
 
+    /**
+     * Callback, wenn der Loader aktiv wird.
+     * Startet UserProfiles (außer bei LevelStats).
+     */
     public void onActive() {
         if (!(this instanceof LevelStats)) {
             this.getUserProfiles().forEach(UserProfile::start);
         }
     }
+
+    /**
+     * Callback pro Collider beim Laden.
+     *
+     * @param wc Collider-Wrapper
+     * @param fix Fixture
+     */
     public void loadCollider(WorldCollider wc, BodyFixture fix) {}
+
+    /**
+     * Zeichnen pro Frame für level-spezifische Inhalte.
+     *
+     * @param drawTool DrawTool
+     */
     public void draw(DrawTool drawTool) {}
 
+    /**
+     * Debug-Zeichnen eines Colliders anhand seiner Shape und Layer-Farbe.
+     *
+     * @param wc Collider-Wrapper
+     * @param drawTool DrawTool
+     */
     public void drawCollider(WorldCollider wc, DrawTool drawTool) {
         BodyFixture f = wc.getFixture();
         drawTool.push();
@@ -93,6 +142,12 @@ public abstract class LevelLoader {
         drawTool.pop();
     }
 
+    /**
+     * Findet eine Loader-Klasse anhand der Index-Nummer im Klassennamen (z.B. Level3 -> 3).
+     *
+     * @param index Level-Index
+     * @return passende Loader-Klasse oder null
+     */
     public static Class<LevelLoader> getLoaderByIndex(int index) {
         return LevelLoader.loaders.stream().filter(l -> {
             String str = l.getSimpleName().replace("Level", "");
@@ -101,10 +156,16 @@ public abstract class LevelLoader {
         }).findFirst().orElse(null);
     }
 
+    /**
+     * @return Level-Farben
+     */
     public LevelColors getColors() {
         return this.colors;
     }
 
+    /**
+     * @return alle UserProfiles der aktuellen PlayerEntities
+     */
     public List<UserProfile> getUserProfiles() {
         return Wrapper.getEntityManager().getPlayerEntities().stream().map(e -> e.getUserProfile()).toList();
     }

@@ -18,7 +18,6 @@ public class Wrapper {
     private final static TooltipManager tooltipManager = new TooltipManager();
     private final static SoundConstants soundConstants = new SoundConstants();
     private final static TimerUtils timer = new TimerUtils();
-    private final static TimerUtils physicsTimer = new TimerUtils();
     private final static LevelManager levelManager = new LevelManager(1);
 
     public static EventManager getEventManager() {
@@ -38,8 +37,6 @@ public class Wrapper {
     public static SoundConstants getSoundConstants() { return soundConstants; }
 
     public static TimerUtils getTimer() { return timer; }
-
-    public static TimerUtils getPhysicsTimer() { return physicsTimer; }
 
     public static ViewController getViewController() { return ViewController.getInstance(); }
 

@@ -48,7 +48,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
     private int mouseY;
 
     /**
-     * Erzeugt ein Objekt zur Kontrolle des Programmflusses.
+     * Initialisiert ProgramController, Fenster und startet die Engine.
      */
     public ViewController() {
         ViewController.instance = this;
@@ -82,13 +82,14 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         this.startProgram();
     }
 
+    /**
+     * @return Singleton-Instanz
+     */
     public static ViewController getInstance() {
         return instance;
     }
 
-    /**
-     * Startet das Programm, nachdem Vorarbeiten abgeschlossen sind.
-     */
+    /** Startet Engine-Setup nach PreStart. */
     private void startProgram() {
         try {
             this.setWatchPhyics(false);
@@ -99,12 +100,16 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /**
+     * Startet den Game-Loop (Update/Draw) und initialisiert BufferStrategy.
+     *
+     * @throws InterruptedException wenn Start unterbrochen wird
+     */
     private void startGameEngine() throws InterruptedException {
         this.programController.startProgram();
         this.setWatchPhyics(true);
         Wrapper.getProcessManager().processPostGame();
 
-        // TODO: https://github.com/dyn4j/dyn4j-samples/blob/master/src/main/java/org/dyn4j/samples/framework/SimulationFrame.java Line 305
         this.createBufferStrategy(3);
 
         this.requestFocus();
@@ -142,6 +147,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         t.start();
     }
 
+    /** Beendet Programm und Services kontrolliert und ruft System.exit. */
     public void shutdown() {
         this.programController.shutdown();
         Wrapper.getProcessManager().shutdown();
@@ -156,26 +162,42 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         System.exit(0);
     }
 
+    /**
+     * @return aktueller Physics-Watch Status
+     */
     public boolean watchPhysics() {
         return this.watchPhysics.get();
     }
 
+    /**
+     * Setzt Physics-Watch Status.
+     *
+     * @param flag Flag
+     */
     public void setWatchPhyics(boolean flag) {
         this.watchPhysics.set(flag);
     }
 
+    /** Signalisiert das Ende der PreStart-Initialisierung. */
     public void continueStart() {
         this.initializing.set(false);
     }
 
+    /**
+     * @return Bildschirmbreite
+     */
     public int getScreenWidth() {
         return this.screenWidth;
     }
 
+    /**
+     * @return Bildschirmhöhe
+     */
     public int getScreenHeight() {
         return this.screenHeight;
     }
 
+    /** Erstellt das Fenster, registriert Listener und initialisiert Start-Scene. */
     private void createWindow(){
         this.setBackground(Color.decode("#d0b99c"));
         logger.info("Creating Window...");
@@ -246,39 +268,42 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
     }
 
     /**
-     * Diese Methode überprüft, ob die angebene Taste momentan heruntergedrückt ist.
-     * @param key Der Tastecode der zu überprüfenden Taste.
-     * @return True, falls die entsprechende Taste momentan gedrückt ist, andernfalls false.
+     * Prüft, ob eine Taste aktuell gedrückt ist.
+     *
+     * @param key KeyCode
+     * @return true, wenn gedrückt
      */
     public static boolean isKeyDown(int key){
         return ViewController.currentlyPressedKeys.contains(key);
     }
 
     /**
-     * Diese Methode überprüft, ob die angebene Taste momentan heruntergedrückt ist.
-     * @param key Der Tastecode der zu überprüfenden Taste.
-     * @return True, falls die entsprechende Taste momentan gedrückt ist, andernfalls false.
+     * Prüft, ob ein Mausbutton aktuell gedrückt ist.
+     *
+     * @param key Button-Code
+     * @return true, wenn gedrückt
      */
     public static boolean isMouseDown(int key){
         return ViewController.currentlyPressedMouseButtons.contains(key);
     }
 
     /**
-     * Nötig zur Einbindung nativer Java-Fensterelemente
-     * @return Liefert das DrawFrame-Objekt zurück (als Schnittstelle zu den JFrame-Methoden)
+     * @return DrawFrame (Fenster) der Engine
      */
     public DrawFrame getDrawFrame(){
         return this.drawFrame;
     }
 
     /**
-     * Zeigt das Standardfenster an oder versteckt es.
-     * @param b der gewünschte Sichtbarkeitsstatus
+     * Setzt Sichtbarkeit des Fensters.
+     *
+     * @param b sichtbar
      */
     public void setDrawFrameVisible(boolean b){
         drawFrame.setVisible(b);
     }
 
+    /** Leitet Mouse-Event an die aktuelle Scene weiter. */
     @Override
     public void mouseEntered(MouseEvent e) {
         if (Scene.getCurrentScene() != null) {
@@ -286,6 +311,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /** Leitet Mouse-Event an die aktuelle Scene weiter. */
     @Override
     public void mouseExited(MouseEvent e) {
         if (Scene.getCurrentScene() != null) {
@@ -293,6 +319,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /** Speichert Button-Status und leitet Event weiter. */
     @Override
     public void mouseReleased(MouseEvent e) {
         if (!ViewController.currentlyPressedMouseButtons.contains(e.getButton()))
@@ -302,6 +329,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /** Entfernt Button-Status und leitet Event weiter. */
     @Override
     public void mouseClicked(MouseEvent e) {
         ViewController.currentlyPressedMouseButtons.remove(Integer.valueOf(e.getButton()));
@@ -310,6 +338,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /** Leitet Mouse-Event an die aktuelle Scene weiter. */
     @Override
     public void mouseDragged(MouseEvent e) {
         if (Scene.getCurrentScene() != null) {
@@ -317,6 +346,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /** Aktualisiert Mausposition und leitet Event weiter. */
     @Override
     public void mouseMoved(MouseEvent e) {
         if (Scene.getCurrentScene() != null) {
@@ -326,6 +356,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /** Leitet Mouse-Event an die aktuelle Scene weiter. */
     @Override
     public void mousePressed(MouseEvent e) {
         if (Scene.getCurrentScene() != null) {
@@ -333,6 +364,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /** Leitet Key-Event an die aktuelle Scene weiter. */
     @Override
     public void keyTyped(KeyEvent e) {
         if (Scene.getCurrentScene() != null) {
@@ -340,6 +372,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /** Speichert Key-Status, dispatcht Event und leitet an Scene weiter. */
     @Override
     public void keyPressed(KeyEvent e) {
         if (!ViewController.currentlyPressedKeys.contains(e.getKeyCode()))
@@ -350,6 +383,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /** Entfernt Key-Status und leitet an Scene weiter. */
     @Override
     public void keyReleased(KeyEvent e) {
         currentlyPressedKeys.remove(Integer.valueOf(e.getKeyCode()));
@@ -358,14 +392,23 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         }
     }
 
+    /**
+     * @return Maus-X im Fenster
+     */
     public int getMouseX() {
         return this.mouseX;
     }
 
+    /**
+     * @return Maus-Y im Fenster
+     */
     public int getMouseY() {
         return this.mouseY;
     }
 
+    /**
+     * @return ProgramController Instanz
+     */
     public ProgramController getProgramController() {
         return this.programController;
     }
