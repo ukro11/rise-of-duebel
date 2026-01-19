@@ -23,7 +23,7 @@
   </object>
  </objectgroup>
  <objectgroup id="4" name="SENSOR">
-  <object id="13" name="SENSOR_MOVING-PLATFORM-1_1" x="440" y="396" width="100" height="63"/>
+  <object id="13" name="SENSOR_MOVING-PLATFORM-1_1" x="315" y="342" width="225" height="119"/>
  </objectgroup>
  <objectgroup color="#5500ff" id="6" name="PORTAL">
   <object id="7" x="630" y="415" width="43" height="65"/>

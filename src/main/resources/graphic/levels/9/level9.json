@@ -28,7 +28,7 @@
                  "visible":true,
                  "width":25,
                  "x":233,
-                 "y":600
+                 "y":529
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -93,7 +93,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1102,
+                 "width":73,
                  "x":384,
                  "y":480
                 }, 
@@ -115,9 +115,31 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":234,
+                 "width":73,
                  "x":384,
                  "y":270
+                }, 
+                {
+                 "height":225,
+                 "id":24,
+                 "name":"DA$WORLD_PLATFORM_5",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":76,
+                 "x":542,
+                 "y":270
+                }, 
+                {
+                 "height":330,
+                 "id":27,
+                 "name":"DA$WORLD_PLATFORM_3",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1102,
+                 "x":542,
+                 "y":479
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -147,6 +169,23 @@
                  "width":85,
                  "x":299,
                  "y":270
+                }, 
+                {
+                 "height":502,
+                 "id":25,
+                 "name":"DA$MOVING_PLATFORM_2",
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":-1
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":85,
+                 "x":457,
+                 "y":270
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -169,6 +208,17 @@
                  "width":109,
                  "x":294,
                  "y":184
+                }, 
+                {
+                 "height":199,
+                 "id":26,
+                 "name":"SENSOR_MOVING-PLATFORM-2_1",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":109,
+                 "x":450,
+                 "y":183
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -223,7 +273,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":24,
+ "nextobjectid":28,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

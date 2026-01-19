@@ -118,17 +118,6 @@
                  "width":950,
                  "x":536,
                  "y":480
-                }, 
-                {
-                 "height":54,
-                 "id":35,
-                 "name":"DA$WORLD_PLATFORM_3",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":110,
-                 "x":432,
-                 "y":361
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -158,6 +147,23 @@
                  "width":110,
                  "x":432,
                  "y":169
+                }, 
+                {
+                 "height":54,
+                 "id":37,
+                 "name":"DA$MOVING_PLATFORM_2",
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":-1
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":110,
+                 "x":432,
+                 "y":361
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -177,9 +183,20 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":131,
+                 "width":53,
                  "x":379,
-                 "y":209
+                 "y":212
+                }, 
+                {
+                 "height":19,
+                 "id":38,
+                 "name":"SENSOR_MOVING-PLATFORM-2_1",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":102,
+                 "x":440,
+                 "y":342
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -234,7 +251,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":36,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

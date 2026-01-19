@@ -86,6 +86,15 @@ public abstract class Scene {
     }
 
     /**
+     * Überprüft, ob gerade eine Transition ausgeführt wird
+     *
+     * @return true/false, falls eine gerade ausgeführt wird
+     */
+    public static boolean performingTransition() {
+        return Scene.transition != null;
+    }
+
+    /**
      * Öffnet eine GUI in dieser Szene und schließt die bisherige GUI.
      *
      * @param gui neue GUI (oder null)

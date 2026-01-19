@@ -7,17 +7,67 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/4/level4.tmx": {
+            "expandedObjectLayers": [
+                5,
+                2,
+                4
+            ],
+            "scale": 2,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 459.5,
+                "y": 444.75
+            }
+        },
+        "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/5/level5.tmx": {
+            "expandedObjectLayers": [
+                5,
+                2,
+                4
+            ],
+            "scale": 2,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 438,
+                "y": 282.25
+            }
+        },
+        "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/6/level6.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 295.33333333333326,
+                "y": 454.99999999999994
+            }
+        },
+        "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/7/level7.tmx": {
+            "scale": 2,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 459.5,
+                "y": 412.25
+            }
+        },
+        "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/8/level8.tmx": {
+            "scale": 1,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 126,
+                "y": 301.5
+            }
+        },
         "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/stats/stats.tmx": {
             "expandedObjectLayers": [
                 5,
-                4,
-                2
+                2,
+                4
             ],
-            "scale": 1,
-            "selectedLayer": 5,
+            "scale": 0.75,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 329,
-                "y": 628.5
+                "x": 489.33333333333337,
+                "y": 397.99999999999994
             }
         },
         "level1.tmx": {
@@ -37,7 +87,7 @@
             "scaleInEditor": 1
         }
     },
-    "last.exportedFilePath": "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/stats",
+    "last.exportedFilePath": "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/9",
     "last.imagePath": "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/map/sprites",
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "openFiles": [
@@ -47,6 +97,8 @@
     "project": "1.tiled-project",
     "property.type": "int",
     "recentFiles": [
+        "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/4/level4.tmx",
+        "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/5/level5.tmx",
         "level1.tmx",
         "C:/Users/ladsk/OneDrive/Dokumente/Schule/Informatik/rise-of-duebel/src/main/resources/graphic/levels/stats/stats.tmx",
         "temp.tsx",

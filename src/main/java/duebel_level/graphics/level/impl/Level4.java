@@ -5,10 +5,12 @@ import duebel_level.animation.tween.Tween;
 import duebel_level.dyn4j.ColliderBody;
 import duebel_level.dyn4j.PhysicsUtils;
 import duebel_level.dyn4j.WorldCollider;
+import duebel_level.graphics.camera.CameraShake;
 import duebel_level.graphics.level.LevelColors;
 import duebel_level.graphics.level.LevelLoader;
 import duebel_level.graphics.level.LevelMap;
 import duebel_level.model.entity.impl.EntityPlayer;
+import duebel_level.model.scene.impl.GameScene;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.TimeStep;
 import org.dyn4j.dynamics.contact.Contact;
@@ -21,23 +23,46 @@ public class Level4 extends LevelLoader{
 
     private WorldCollider moving;
     private WorldCollider sensor;
+    private WorldCollider moving2;
+    private WorldCollider moving3;
+    private WorldCollider sensor2;
 
     private Tween TWEEN_COLLIDER_MOVING_RIGHT;
     private double TWEEN_START_COLLIDER_MOVING_RIGHT = 0.0;
+    private double TWEEN_TARGET_COLLIDER_MOVING_RIGHT;
     private Vector2 TWEEN_SAVED_VALUE_COLLIDER_MOVING_RIGHT;
     private boolean start = false;
+
+    private Tween TWEEN_COLLIDER_MOVING2_RIGHT;
+    private double TWEEN_START_COLLIDER_MOVING2_RIGHT = 0.0;
+    private double TWEEN_TARGET_COLLIDER_MOVING2_RIGHT;
+    private Vector2 TWEEN_SAVED_VALUE_COLLIDER_MOVING2_RIGHT;
+    private boolean start2 = false;
 
     public Level4(LevelMap map) {
         super("level4.json", LevelColors.createDefault(), map);
         this.moving = this.map.getColliderByLayer("MOVING", 0);
         this.sensor = this.moving.getSensorByIndex(0);
-        BodyFixture sensorFixture = this.sensor.getFixture();
 
-        this.TWEEN_COLLIDER_MOVING_RIGHT = Tween.to(this.TWEEN_START_COLLIDER_MOVING_RIGHT, this.moving.getWidth(), 0.3)
+        this.moving2 = this.map.getColliderByLayer("MOVING", 1);
+        this.moving3 = this.map.getColliderByLayer("MOVING", 2);
+        this.sensor2 = this.moving2.getSensorByIndex(0);
+
+        BodyFixture sensorFixture = this.sensor.getFixture();
+        BodyFixture sensor2Fixture = this.sensor2.getFixture();
+
+        this.TWEEN_TARGET_COLLIDER_MOVING_RIGHT = 200;
+        this.TWEEN_COLLIDER_MOVING_RIGHT = Tween.to(this.TWEEN_START_COLLIDER_MOVING_RIGHT, this.TWEEN_TARGET_COLLIDER_MOVING_RIGHT, 0.3)
                 .ease((x) -> Easings.easeOutBounce(x))
                 .loop(false);
 
-        TWEEN_SAVED_VALUE_COLLIDER_MOVING_RIGHT = new Vector2(moving.getTransform().getTranslationX(), moving.getTransform().getTranslationY());
+        this.TWEEN_TARGET_COLLIDER_MOVING2_RIGHT = this.moving3.getHeight();
+        this.TWEEN_COLLIDER_MOVING2_RIGHT = Tween.to(this.TWEEN_START_COLLIDER_MOVING_RIGHT, this.TWEEN_TARGET_COLLIDER_MOVING2_RIGHT, 0.3)
+                .ease((x) -> Easings.easeOutBounce(x))
+                .loop(false);
+
+        this.TWEEN_SAVED_VALUE_COLLIDER_MOVING_RIGHT = new Vector2(this.moving.getTransform().getTranslationX(), this.moving.getTransform().getTranslationY());
+        this.TWEEN_SAVED_VALUE_COLLIDER_MOVING2_RIGHT = new Vector2(this.moving2.getTransform().getTranslationX(), this.moving2.getTransform().getTranslationY());
 
         this.world.addContactListener(new ContactListenerAdapter<>() {
             @Override
@@ -47,11 +72,25 @@ public class Level4 extends LevelLoader{
                 if (PhysicsUtils.is(sensorFixture, body1, body2) && EntityPlayer.containsPlayer(body1, body2)) {
                     if (!start && !TWEEN_COLLIDER_MOVING_RIGHT.isRunning()) {
                         TWEEN_COLLIDER_MOVING_RIGHT.animate();
+                        GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));
+
                         TWEEN_COLLIDER_MOVING_RIGHT.onFinish((t) -> {
                             TWEEN_COLLIDER_MOVING_RIGHT.redo(TWEEN_COLLIDER_MOVING_RIGHT.getValueDouble(), TWEEN_START_COLLIDER_MOVING_RIGHT, 0.5).delay(1);
                             TWEEN_COLLIDER_MOVING_RIGHT.animate();
                         });
                         start = true;
+                    }
+                }
+                if (PhysicsUtils.is(sensor2Fixture, body1, body2) && EntityPlayer.containsPlayer(body1, body2)) {
+                    if (!start2 && !TWEEN_COLLIDER_MOVING2_RIGHT.isRunning()) {
+                        TWEEN_COLLIDER_MOVING2_RIGHT.animate();
+                        GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));
+
+                        TWEEN_COLLIDER_MOVING2_RIGHT.onFinish((t) -> {
+                            TWEEN_COLLIDER_MOVING2_RIGHT.redo(TWEEN_COLLIDER_MOVING2_RIGHT.getValueDouble(), TWEEN_START_COLLIDER_MOVING2_RIGHT, 0.5).delay(1);
+                            TWEEN_COLLIDER_MOVING2_RIGHT.animate();
+                        });
+                        start2 = true;
                     }
                 }
             }
@@ -61,15 +100,23 @@ public class Level4 extends LevelLoader{
     @Override
     public void resetLevel() {
         this.start = false;
+        this.start2 = false;
         this.TWEEN_COLLIDER_MOVING_RIGHT.stop();
-        this.TWEEN_COLLIDER_MOVING_RIGHT = Tween.to(this.TWEEN_START_COLLIDER_MOVING_RIGHT, this.moving.getWidth(), 0.3)
+        this.TWEEN_COLLIDER_MOVING_RIGHT = Tween.to(this.TWEEN_START_COLLIDER_MOVING_RIGHT, this.TWEEN_TARGET_COLLIDER_MOVING_RIGHT, 0.3)
+                .ease((x) -> Easings.easeOutBounce(x))
+                .loop(false);
+
+        this.TWEEN_COLLIDER_MOVING2_RIGHT.stop();
+        this.TWEEN_COLLIDER_MOVING2_RIGHT = Tween.to(this.TWEEN_START_COLLIDER_MOVING2_RIGHT, this.TWEEN_TARGET_COLLIDER_MOVING2_RIGHT, 0.3)
                 .ease((x) -> Easings.easeOutBounce(x))
                 .loop(false);
     }
 
     @Override
     public void updateCollider(TimeStep step, PhysicsWorld<ColliderBody, ?> world) {
-        moving.getTransform().setTranslation(TWEEN_SAVED_VALUE_COLLIDER_MOVING_RIGHT.x + TWEEN_COLLIDER_MOVING_RIGHT.getValueDouble(), TWEEN_SAVED_VALUE_COLLIDER_MOVING_RIGHT.y);
+        this.moving.getTransform().setTranslation(this.TWEEN_SAVED_VALUE_COLLIDER_MOVING_RIGHT.x - this.TWEEN_COLLIDER_MOVING_RIGHT.getValueDouble(), this.TWEEN_SAVED_VALUE_COLLIDER_MOVING_RIGHT.y);
+        this.moving2.getTransform().setTranslation(this.TWEEN_SAVED_VALUE_COLLIDER_MOVING2_RIGHT.x, this.TWEEN_SAVED_VALUE_COLLIDER_MOVING2_RIGHT.y - this.TWEEN_COLLIDER_MOVING_RIGHT.getValueDouble() - this.TWEEN_COLLIDER_MOVING2_RIGHT.getValueDouble());
+        this.moving3.getTransform().setTranslation(this.TWEEN_SAVED_VALUE_COLLIDER_MOVING2_RIGHT.x, this.TWEEN_SAVED_VALUE_COLLIDER_MOVING2_RIGHT.y - this.TWEEN_COLLIDER_MOVING2_RIGHT.getValueDouble());
     }
 
     @Override

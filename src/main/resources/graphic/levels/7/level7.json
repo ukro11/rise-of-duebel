@@ -149,15 +149,15 @@
          "name":"SENSOR",
          "objects":[
                 {
-                 "height":63,
+                 "height":119,
                  "id":13,
                  "name":"SENSOR_MOVING-PLATFORM-1_1",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":100,
-                 "x":440,
-                 "y":396
+                 "width":225,
+                 "x":315,
+                 "y":342
                 }],
          "opacity":1,
          "type":"objectgroup",

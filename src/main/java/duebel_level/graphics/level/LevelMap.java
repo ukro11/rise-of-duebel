@@ -108,11 +108,12 @@ public class LevelMap extends TileMap {
                 if (lowest.getY() < Wrapper.getLocalPlayer().getY()) {
                     Wrapper.getLocalPlayer().setPosition(spawnLocation.x, spawnLocation.y);
                     reset = true;
-                    Wrapper.getLocalPlayer().getUserProfile().addDeath();
-                    Wrapper.getSoundConstants().SOUND_DEATH.setVolume(0.85);
-                    SoundManager.playSound(Wrapper.getSoundConstants().SOUND_DEATH, false);
+
                 } else {
                     if (reset) {
+                        Wrapper.getLocalPlayer().getUserProfile().addDeath();
+                        Wrapper.getSoundConstants().SOUND_DEATH.setVolume(0.85);
+                        SoundManager.playSound(Wrapper.getSoundConstants().SOUND_DEATH, false);
                         portalRenderer.switchState(PortalAnimationState.IDLE);
                         GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));
                         loader.resetLevel();
@@ -148,6 +149,8 @@ public class LevelMap extends TileMap {
                         Wrapper.getLocalPlayer().setVisible(false);
                         Wrapper.getLocalPlayer().getBody().setLinearVelocity(0, 0);
                         portalRenderer.onFinish(PortalAnimationState.DISAPPEAR, () -> {
+                            Wrapper.getSoundConstants().SOUND_WIN.setVolume(0.85);
+                            SoundManager.playSound(Wrapper.getSoundConstants().SOUND_WIN, false);
                             loader.enterPortal();
                             Wrapper.getLevelManager().nextLevel(String.format("PORTAL-%d", Wrapper.getLevelManager().getIndex()), () -> {
                                 portalRenderer.switchState(PortalAnimationState.IDLE);

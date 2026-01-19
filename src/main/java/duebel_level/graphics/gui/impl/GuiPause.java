@@ -41,7 +41,7 @@ public class GuiPause extends Gui {
 
     @Override
     public boolean shouldOpen() {
-        return Scene.getCurrentScene() == GameScene.getInstance();
+        return Scene.getCurrentScene() == GameScene.getInstance() && !Scene.performingTransition() && !Wrapper.getLevelManager().performingTransition();
     }
 
     @Override

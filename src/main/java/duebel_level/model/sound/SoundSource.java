@@ -36,16 +36,22 @@ public class SoundSource {
         }
     }
 
-    public void playSound(int loop) {
-        if (this.audioClip != null) {
-            this.audioClip.loop(loop);
-            if (this.isPaused) {
-                this.resumeSound();
+    public void playSound(int loopCount) {
+        if (this.audioClip == null) return;
 
-            } else {
-                this.audioClip.setFramePosition(0);
-                this.audioClip.start();
-            }
+        this.audioClip.stop();
+        this.audioClip.flush();
+        this.audioClip.setFramePosition(0);
+        this.isPaused = false;
+
+        if (loopCount == Clip.LOOP_CONTINUOUSLY) {
+            this.audioClip.loop(Clip.LOOP_CONTINUOUSLY);
+
+        } else if (loopCount > 0) {
+            this.audioClip.loop(loopCount);
+
+        } else {
+            this.audioClip.start();
         }
     }
 

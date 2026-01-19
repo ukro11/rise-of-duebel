@@ -2,13 +2,11 @@ package duebel_level.graphics.level;
 
 import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.view.DrawTool;
-import duebel_level.Wrapper;
 import duebel_level.graphics.level.impl.LevelStats;
 import duebel_level.graphics.map.TileMap;
 import duebel_level.model.scene.Scene;
 import duebel_level.model.scene.impl.GameScene;
 import duebel_level.model.scene.impl.WinScene;
-import duebel_level.model.sound.SoundManager;
 import duebel_level.model.transitions.DefaultTransition;
 import duebel_level.model.transitions.Transition;
 import org.slf4j.Logger;
@@ -106,6 +104,7 @@ public class LevelManager {
                     } else {
                         this.setPreviousLevel();
                     }
+                    if (!(next.getLoader() instanceof LevelStats)) this.current.getLoader().getUserProfiles().forEach(u -> u.resetDeaths());
                     if (this.transition.runnable() != null) this.transition.runnable().run();
                     tr.out(last, next);
                 }
@@ -176,13 +175,6 @@ public class LevelManager {
             if (!this.levelSwitchQueue.isEmpty() && !this.levelSwitchQueue.front().id().equals(id) && !this.levelSwitchQueue.tail().id().equals(id)) {
                 this.levelSwitchQueue.enqueue(levelSwitch);
             }
-        }
-        if (this.next.getLoader() instanceof LevelStats) {
-            Wrapper.getSoundConstants().SOUND_WIN.setVolume(0.85);
-            SoundManager.playSound(Wrapper.getSoundConstants().SOUND_WIN, false);
-        }
-        if (!(this.next.getLoader() instanceof LevelStats)) {
-            this.current.getLoader().getUserProfiles().forEach(u -> u.resetDeaths());
         }
     }
 
@@ -305,6 +297,15 @@ public class LevelManager {
         } else {
             this.previous = null;
         }
+    }
+
+    /**
+     * Überprüft, ob gerade eine Transition ausgeführt wird
+     *
+     * @return true/false, falls eine gerade ausgeführt wird
+     */
+    public boolean performingTransition() {
+        return this.transition != null;
     }
 
     /**

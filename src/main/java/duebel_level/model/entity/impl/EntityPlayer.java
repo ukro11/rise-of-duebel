@@ -225,6 +225,13 @@ public class EntityPlayer extends Entity<CharacterAnimationState> {
             } else {
                 this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.WALKING));
             }
+        } else {
+            if (this.body.getLinearVelocity().y > 0) {
+                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.JUMP_UP));
+
+            } else {
+                this.renderer.switchState(this.getStateForEntityState(this.direction, EntityState.JUMP_DOWN));
+            }
         }
     }
 

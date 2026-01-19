@@ -5,10 +5,12 @@ import duebel_level.animation.tween.Tween;
 import duebel_level.dyn4j.ColliderBody;
 import duebel_level.dyn4j.PhysicsUtils;
 import duebel_level.dyn4j.WorldCollider;
+import duebel_level.graphics.camera.CameraShake;
 import duebel_level.graphics.level.LevelColors;
 import duebel_level.graphics.level.LevelLoader;
 import duebel_level.graphics.level.LevelMap;
 import duebel_level.model.entity.impl.EntityPlayer;
+import duebel_level.model.scene.impl.GameScene;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.TimeStep;
 import org.dyn4j.dynamics.contact.Contact;
@@ -47,6 +49,8 @@ public class Level3 extends LevelLoader {
                 if (PhysicsUtils.is(sensorFixture, body1, body2) && EntityPlayer.containsPlayer(body1, body2)) {
                     if (!start && !TWEEN_COLLIDER_MOVING_UP.isRunning()) {
                         TWEEN_COLLIDER_MOVING_UP.animate();
+                        GameScene.getInstance().getCameraRenderer().shake(new CameraShake(CameraShake.ShakeType.SMALL_HIT));
+
                         TWEEN_COLLIDER_MOVING_UP.onFinish((t) -> {
                             TWEEN_COLLIDER_MOVING_UP.redo(TWEEN_COLLIDER_MOVING_UP.getValueDouble(), TWEEN_START_COLLIDER_MOVING_UP, 0.5).delay(1);
                             TWEEN_COLLIDER_MOVING_UP.animate();

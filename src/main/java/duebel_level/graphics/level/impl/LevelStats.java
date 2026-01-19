@@ -21,6 +21,7 @@ import java.awt.*;
 public class LevelStats extends LevelLoader {
 
     private Color TEXT_COLOR = Color.decode("#b29f99");
+    private Font titleFont;
     private Font font;
 
     private double maxDistance = 100;
@@ -31,6 +32,7 @@ public class LevelStats extends LevelLoader {
     public LevelStats(LevelMap map) {
         super("stats.json", new LevelColors("#f4b13b", "#feab32", "#be7708", "#be7708", "#6603fc"), map);
         this.textCollider = this.map.getColliderByLayer("TEXT");
+        this.titleFont = VisualConstants.getFont(30);
         this.font = VisualConstants.getFont(20);
     }
 
@@ -56,33 +58,41 @@ public class LevelStats extends LevelLoader {
         double t = Easings.easeOutElastic(MathUtils.clamp(Math.abs(dx) / this.maxDistance, 0.0, 1.0));
         double dir = Math.signum(dx);
         Color target = (dx < 0) ? Color.RED : Color.GREEN;
-        double maxOffsetPx = 100.0;
-        double offsetX = dir * maxOffsetPx * t;
 
         drawTool.push();
 
-        drawTool.getGraphics2D().setFont(this.font);
+        drawTool.getGraphics2D().setFont(this.titleFont);
 
         drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
-        String text = dir < 0 ? "NOCHMAL  SPIELEN" : "NÄCHSTES  LEVEL";
+        String text = dir < 0 ? "PLAY  AGAIN" : "PLAY  NEXT";
+        double maxOffsetPx = drawTool.getFontWidth(text) / 2;
+        double offsetX = dir * maxOffsetPx * t;
         drawTool.drawText(
             text,
             this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text)) / 2 + offsetX,
             this.textCollider.getY() + drawTool.getFontHeight() + 30
         );
+
+        drawTool.getGraphics2D().setFont(this.font);
+
         drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
-        String text2 = "DEATHS:" + this.localUserProfile.getDeaths();
+        String text2 = "TIME:  " + formatSecondsToMMSS((int)this.localUserProfile.getTime());
+        maxOffsetPx = drawTool.getFontWidth(text2) / 2;
+        offsetX = dir * maxOffsetPx * t;
         drawTool.drawText(
                 text2,
-                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text2)) / 2 + offsetX * 0.8,
-                this.textCollider.getY() + drawTool.getFontHeight() + 60
+                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text2)) / 2 + offsetX,
+                this.textCollider.getY() + drawTool.getFontHeight() + 70
         );
+
         drawTool.setCurrentColor(ColorUtil.lerp(this.TEXT_COLOR, target, t));
-        String text3 = "TIME:" + formatSecondsToMMSS((int)this.localUserProfile.getTime());
+        String text3 = "DEATHS:  " + this.localUserProfile.getDeaths();
+        maxOffsetPx = drawTool.getFontWidth(text3) / 2;
+        offsetX = dir * maxOffsetPx * t;
         drawTool.drawText(
                 text3,
-                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text3)) / 2 + offsetX * 0.6,
-                this.textCollider.getY() + drawTool.getFontHeight() + 90
+                this.textCollider.getX() + (this.textCollider.getWidth() - drawTool.getFontWidth(text3)) / 2 + offsetX,
+                this.textCollider.getY() + drawTool.getFontHeight() + 100
         );
 
 
