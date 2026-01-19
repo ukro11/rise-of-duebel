@@ -3,7 +3,7 @@ package KAGO_framework.view;
 import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
 import KAGO_framework.control.ViewController;
-import rise_of_duebel.model.debug.VisualModel;
+import duebel_level.model.debug.VisualModel;
 
 import java.util.ArrayList;
 import java.util.List;

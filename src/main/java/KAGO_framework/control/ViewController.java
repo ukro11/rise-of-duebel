@@ -3,14 +3,14 @@ package KAGO_framework.control;
 import KAGO_framework.Config;
 import KAGO_framework.view.DrawFrame;
 import KAGO_framework.view.DrawTool;
+import duebel_level.ProgramController;
+import duebel_level.Wrapper;
+import duebel_level.event.events.KeyPressedEvent;
+import duebel_level.model.scene.Scene;
+import duebel_level.model.scene.impl.LoadingScene;
+import duebel_level.model.transitions.DefaultTransition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rise_of_duebel.ProgramController;
-import rise_of_duebel.Wrapper;
-import rise_of_duebel.event.events.KeyPressedEvent;
-import rise_of_duebel.model.scene.Scene;
-import rise_of_duebel.model.scene.impl.LoadingScene;
-import rise_of_duebel.model.transitions.DefaultTransition;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,7 +75,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
 
         this.createWindow();
 
-        if (!rise_of_duebel.Config.SHOW_DEFAULT_WINDOW) {
+        if (!duebel_level.Config.SHOW_DEFAULT_WINDOW) {
             if(Config.INFO_MESSAGES) System.out.println("** Achtung! Standardfenster deaktiviert => wird nicht angezeigt.). **");
         }
 
@@ -206,17 +206,17 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         GraphicsDevice gd = env.getDefaultScreenDevice();
         this.screenWidth = gd.getDisplayMode().getWidth();
         this.screenHeight = gd.getDisplayMode().getHeight();
-        int x = this.screenWidth / 2 - rise_of_duebel.Config.WINDOW_WIDTH / 2;
-        int y = this.screenHeight / 2 - rise_of_duebel.Config.WINDOW_HEIGHT / 2;
+        int x = this.screenWidth / 2 - duebel_level.Config.WINDOW_WIDTH / 2;
+        int y = this.screenHeight / 2 - duebel_level.Config.WINDOW_HEIGHT / 2;
         logger.info("Graphics Device: {}", gd.getIDstring());
 
-        if (rise_of_duebel.Config.RUN_ENV == rise_of_duebel.Config.Environment.PRODUCTION) {
+        if (duebel_level.Config.RUN_ENV == duebel_level.Config.Environment.PRODUCTION) {
             Scene.open(new LoadingScene(), new DefaultTransition());
         }
-        this.drawFrame = new DrawFrame(rise_of_duebel.Config.WINDOW_TITLE, x, y, rise_of_duebel.Config.WINDOW_WIDTH, rise_of_duebel.Config.WINDOW_HEIGHT, this);
+        this.drawFrame = new DrawFrame(duebel_level.Config.WINDOW_TITLE, x, y, duebel_level.Config.WINDOW_WIDTH, duebel_level.Config.WINDOW_HEIGHT, this);
         this.drawFrame.setResizable(false);
 
-        if (rise_of_duebel.Config.RUN_ENV == rise_of_duebel.Config.Environment.PRODUCTION) {
+        if (duebel_level.Config.RUN_ENV == duebel_level.Config.Environment.PRODUCTION) {
             this.drawFrame.addWindowListener(new WindowListener() {
                 @Override
                 public void windowOpened(WindowEvent e) {}
@@ -246,7 +246,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
             }
         });
 
-        if (rise_of_duebel.Config.WINDOW_FULLSCREEN) {
+        if (duebel_level.Config.WINDOW_FULLSCREEN) {
             this.drawFrame.setUndecorated(true);
             this.drawFrame.setVisible(true);
             this.drawFrame.setResizable(false);
@@ -262,7 +262,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         this.setFocusable(true);
         this.requestFocusInWindow();
 
-        if (rise_of_duebel.Config.RUN_ENV == rise_of_duebel.Config.Environment.DEVELOPMENT) {
+        if (duebel_level.Config.RUN_ENV == duebel_level.Config.Environment.DEVELOPMENT) {
             Scene.showGameScene();
         }
     }

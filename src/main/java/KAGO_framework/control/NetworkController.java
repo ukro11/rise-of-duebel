@@ -2,7 +2,7 @@ package KAGO_framework.control;
 
 import KAGO_framework.Config;
 import KAGO_framework.model.abitur.netz.Client;
-import rise_of_duebel.ProgramController;
+import duebel_level.ProgramController;
 
 import javax.swing.*;
 import java.io.IOException;

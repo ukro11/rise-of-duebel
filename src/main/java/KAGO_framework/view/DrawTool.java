@@ -1,7 +1,7 @@
 package KAGO_framework.view;
 
+import duebel_level.graphics.FrameworkGraphics;
 import org.dyn4j.geometry.Vector2;
-import rise_of_duebel.graphics.FrameworkGraphics;
 
 import javax.swing.*;
 import java.awt.*;

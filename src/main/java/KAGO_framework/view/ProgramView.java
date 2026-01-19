@@ -2,7 +2,7 @@ package KAGO_framework.view;
 
 import KAGO_framework.control.ViewController;
 import KAGO_framework.model.InteractiveGraphicalObject;
-import rise_of_duebel.ProgramController;
+import duebel_level.ProgramController;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
