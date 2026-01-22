@@ -18,7 +18,7 @@ public class Wrapper {
     private final static TooltipManager tooltipManager = new TooltipManager();
     private final static SoundConstants soundConstants = new SoundConstants();
     private final static TimerUtils timer = new TimerUtils();
-    private final static LevelManager levelManager = new LevelManager(9);
+    private final static LevelManager levelManager = new LevelManager(1);
 
     public static EventManager getEventManager() {
         return eventManager;
