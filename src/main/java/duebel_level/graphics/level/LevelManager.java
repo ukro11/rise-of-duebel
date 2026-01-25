@@ -252,9 +252,6 @@ public class LevelManager {
      * Stats-Level werden als Zwischenstufe verwendet.
      */
     private void setNextLevel() {
-        if (this.current != null) log.info("NEXT SWITCH 1 {}", this.current.getLoader());
-        if (this.next != null) log.info("NEXT SWITCH 2 {}", this.next.getLoader());
-
         this.previous = this.current;
         if (this.next != null && !(this.next.getLoader() instanceof LevelStats)) {
             this.next.getLoader().resetLevel();
