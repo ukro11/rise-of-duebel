@@ -9,6 +9,7 @@ import duebel_level.event.events.KeyPressedEvent;
 import duebel_level.model.scene.Scene;
 import duebel_level.model.scene.impl.LoadingScene;
 import duebel_level.model.transitions.DefaultTransition;
+import duebel_level.utils.panel.DebugPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +102,18 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
     }
 
     /**
+     * Erstellt die BufferStrategy (Backbuffer) neu.
+     *
+     * Die Methode erstellt die konfigurierte Anzahl an Grafikpuffern neu.
+     * Sie sollte nur aufgerufen werden, wenn das Canvas bereits
+     * angezeigt wird (isDisplayable()).
+     */
+    public void recreateBackBuffer() {
+        if (!isDisplayable()) return;
+        this.createBufferStrategy(duebel_level.Config.NUM_BUFFERS);
+    }
+
+    /**
      * Startet den Game-Loop (Update/Draw) und initialisiert BufferStrategy.
      *
      * @throws InterruptedException wenn Start unterbrochen wird
@@ -110,7 +123,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         this.setWatchPhyics(true);
         Wrapper.getProcessManager().processPostGame();
 
-        this.createBufferStrategy(3);
+        this.createBufferStrategy(duebel_level.Config.NUM_BUFFERS);
 
         this.requestFocus();
 
@@ -118,28 +131,33 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
             @Override
             public void run() {
                 while (true) {
-                    Graphics2D g = (Graphics2D) getBufferStrategy().getDrawGraphics();
-
-                    Wrapper.getTimer().update();
-                    double dt = Wrapper.getTimer().getDeltaTime();
-
-                    programController.updateProgram(dt);
-                    Wrapper.getEntityManager().updateWorld(dt);
-                    if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
-                    Scene.updateAll(dt);
-
-                    drawTool.setGraphics2D(g);
-                    if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(drawTool);
-                    Scene.drawTransition(drawTool);
-
-                    g.dispose();
-
                     BufferStrategy strategy = getBufferStrategy();
-                    if (!strategy.contentsLost()) {
-                        strategy.show();
-                    }
+                    if (strategy != null) {
+                        Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
 
-                    Wrapper.getTimer().updateFrames();
+                        Wrapper.getTimer().update();
+                        double dt = Wrapper.getTimer().getDeltaTime();
+
+                        programController.updateProgram(dt);
+                        Wrapper.getEntityManager().updateWorld(dt);
+                        if (Scene.getCurrentScene() != null) Scene.getCurrentScene().update(dt);
+                        Scene.updateAll(dt);
+
+                        drawTool.setGraphics2D(g);
+                        if (Scene.getCurrentScene() != null) Scene.getCurrentScene().draw(drawTool);
+                        Scene.drawTransition(drawTool);
+
+                        g.dispose();
+
+                        try {
+                            if (strategy != null && !strategy.contentsLost()) {
+                                strategy.show();
+                            }
+                        } catch (IllegalStateException e) {
+                            e.printStackTrace();
+                        }
+                        Wrapper.getTimer().updateFrames();
+                    }
                 }
             }
         };
@@ -255,6 +273,7 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         } else {
             this.drawFrame.setVisible(true);
         }
+        this.createDebugWindow(x, y);
 
         this.addMouseListener(this);
         this.addKeyListener(this);
@@ -265,6 +284,18 @@ public class ViewController extends Canvas implements KeyListener, MouseListener
         if (duebel_level.Config.RUN_ENV == duebel_level.Config.Environment.DEVELOPMENT) {
             Scene.showGameScene();
         }
+    }
+
+    private void createDebugWindow(int x, int y) {
+        JFrame debugFrame = new JFrame("Debugger");
+        debugFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        debugFrame.setLocation(x, y);
+        debugFrame.setResizable(false);
+        debugFrame.setVisible(true);
+        debugFrame.setAlwaysOnTop(true);
+        DebugPanel panel = new DebugPanel(debugFrame, this);
+        debugFrame.setContentPane(panel);
+        debugFrame.pack();
     }
 
     /**

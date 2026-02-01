@@ -14,6 +14,7 @@ public class Config {
     public final static int WINDOW_WIDTH = 1920;
     public final static int WINDOW_HEIGHT = 1080;   // Effektive Höhe ist etwa 29 Pixel geringer (Titelleiste wird mitgezählt)
     public final static boolean WINDOW_FULLSCREEN = true;
+    public static int NUM_BUFFERS = 3;
 
     public final static Environment RUN_ENV = Environment.PRODUCTION;
 

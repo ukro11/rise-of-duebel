@@ -4,6 +4,7 @@ import KAGO_framework.control.Drawable;
 import KAGO_framework.control.Interactable;
 import KAGO_framework.view.DrawTool;
 import duebel_level.Wrapper;
+import duebel_level.dyn4j.PhysicsRenderer;
 import duebel_level.graphics.OrderRenderer;
 import duebel_level.graphics.camera.CameraRenderer;
 import duebel_level.model.scene.Scene;
@@ -23,6 +24,7 @@ public class GameScene extends Scene {
     private List<Drawable> drawables;
     private OrderRenderer renderer;
     private Color background = Color.decode("#4d222c");
+    private boolean drawHitboxes;
 
     private static GameScene instance = new GameScene();
 
@@ -40,6 +42,7 @@ public class GameScene extends Scene {
                 .offset(new Vector2(0, -150))
                 .smooth();
         this.renderer = new OrderRenderer();
+        this.drawHitboxes = false;
     }
 
     @Override
@@ -58,7 +61,15 @@ public class GameScene extends Scene {
         this.background = color;
     }
 
-    private void drawAllHitboxes(DrawTool drawTool) {}
+    private void drawAllHitboxes(DrawTool drawTool) {
+        if (this.drawHitboxes) {
+            Wrapper.getEntityManager().getWorld().getBodies().forEach(b -> {
+                b.getFixtures().forEach(f -> {
+                    PhysicsRenderer.render(drawTool.getGraphics2D(), f.getShape(), 1.0, Color.RED);
+                });
+            });
+        }
+    }
 
     public void drawGame(DrawTool drawTool) {
         this.cameraRenderer.attach(drawTool);
@@ -86,6 +97,14 @@ public class GameScene extends Scene {
         Wrapper.getLevelManager().drawTransition(drawTool);
         super.draw(drawTool);
         drawTool.resetColor();
+    }
+
+    public void setDrawHitboxes(boolean hitboxes) {
+        this.drawHitboxes = hitboxes;
+    }
+
+    public boolean shouldDrawHitboxes() {
+        return drawHitboxes;
     }
 
     @Override

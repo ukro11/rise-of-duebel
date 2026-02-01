@@ -2,6 +2,7 @@ package duebel_level.graphics.level;
 
 import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.view.DrawTool;
+import duebel_level.Wrapper;
 import duebel_level.graphics.level.impl.LevelStats;
 import duebel_level.graphics.map.TileMap;
 import duebel_level.model.scene.Scene;
@@ -9,6 +10,7 @@ import duebel_level.model.scene.impl.GameScene;
 import duebel_level.model.scene.impl.WinScene;
 import duebel_level.model.transitions.DefaultTransition;
 import duebel_level.model.transitions.Transition;
+import duebel_level.model.user.ProfileStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,6 +209,12 @@ public class LevelManager {
      */
     public void nextLevel(String id, Runnable runWhileTransition, Transition transition) {
         if (Scene.getCurrentScene() != GameScene.getInstance()) return;
+        if (!(this.current.getLoader() instanceof LevelStats)) {
+            Wrapper.getEntityManager().getPlayerEntities().forEach(player -> {
+                player.getUserProfile().getPastStats().enqueue(new ProfileStats(this.index, (int) player.getUserProfile().getTime(), player.getUserProfile().getDeaths()));
+                player.getUserProfile().pause();
+            });
+        }
         if (this.next != null && this.next.getLoader() instanceof LevelStats) {
             LevelMap nnext = this.cache.getOrDefault(this.index + 1, this.getMapByIndex(this.index + 1));
             if (nnext == null) {

@@ -1,5 +1,6 @@
 package duebel_level.model.user;
 
+import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import duebel_level.model.entity.impl.EntityPlayer;
 
 public class UserProfile {
@@ -8,6 +9,8 @@ public class UserProfile {
     private boolean run;
     private int deaths;
     private final EntityPlayer player;
+
+    private final Queue<ProfileStats> pastStats = new Queue<>();
 
     public UserProfile(EntityPlayer player) {
         this.player = player;
@@ -49,6 +52,10 @@ public class UserProfile {
 
     public void resetDeaths() {
         deaths = 0;
+    }
+
+    public Queue<ProfileStats> getPastStats() {
+        return this.pastStats;
     }
 
     public EntityPlayer getPlayer() {
